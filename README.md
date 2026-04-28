@@ -55,6 +55,18 @@ cd ~/projects/claude-skills && git pull
 
 These skills started as personal tooling for evaluating side-project ideas without falling for my own hype. Sharing them in case they're useful to anyone else doing the same.
 
+## Roadmap
+
+Curated, not comprehensive. Each new skill needs to earn its place against the same bar as the existing four.
+
+Things being considered, in no particular order:
+- A media-strategy skill drawing on operating consumer publishing at scale (Aktuality, Azet, Pokec)
+- A subscription-product playbook (acquisition, retention, churn diagnosis)
+- A pre-mortem partner skill that pairs with `business-sharks` for adversarial stress-testing
+- A founder-fit assessment (the YC question: can *this person* ship *this*?)
+
+Want one of these prioritized? Open an issue.
+
 ## License
 
 MIT. Use them, fork them, build on them. No warranty.
