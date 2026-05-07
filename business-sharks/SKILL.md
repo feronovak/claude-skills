@@ -1,7 +1,7 @@
 ---
 name: business-sharks
 description: Rigorous startup/business idea validation — market research, competitive intel, SEO/GEO, financials, and YC-style shark panel. Use this skill when the user wants to evaluate a startup idea, validate a business concept, assess whether to build something, do due diligence on a product idea, analyze market opportunity, or get a GO/NO-GO verdict on a new venture. Triggers on phrases like 'is this idea worth pursuing', 'should I build this', 'analyze this business', 'evaluate my startup', 'shark tank this idea'.
-version: "4.1"
+version: "4.3"
 team: business-sharks
 authors: Fero Novak <https://feronovak.com>
 ---
@@ -141,6 +141,13 @@ Before creating the team, ask the user which mode to use.
 - Phase 3: Team lead presents findings directly. No interactive follow-up.
 - Token savings: ~60% vs Standard
 
+When asking the user to choose a mode, call `AskUserQuestion` — header `"Mode"`, question `"Pick a validation mode."`, multiSelect false, options:
+  - `"💰 HYBRID (Recommended)"` — `"Balanced. Background subagents for Phase 1, chief-shark team for Phases 2-3. ~40% token savings."`
+  - `"🦈 STANDARD"` — `"Full team for all phases. Best for high-stakes validation."`
+  - `"⚡ QUICK"` — `"All Sonnet, single pass, no Phase 3 follow-up. Fastest, cheapest. ~60% token savings."`
+
+Map the answer to `QUICK`, `HYBRID`, or `STANDARD`.
+
 ---
 
 ## PHASE 1: TWO-PASS PARALLEL RESEARCH (Fully autonomous)
@@ -231,7 +238,17 @@ When Phase 2 completes, the team lead presents to the user:
 6. **Questions for Founder** — unanswered questions (from `15-questions.md`)
 7. **The single most important thing** the founder needs to hear
 
-Then STOP and WAIT for user response.
+Then STOP and WAIT for user response. Adapt the first option's label to match the verdict (GO → "🚀 Build it"; CONDITIONAL → "🔁 Iterate"; NO-GO → "🧭 Pivot"). Call `AskUserQuestion` — header `"Next step"`, question `"What's next?"`, multiSelect false, options (4 max — "Other" is auto-added for free text, do NOT add it manually):
+
+- **First option, verdict-dependent:**
+  - GO → `"🚀 Build it (Recommended)"` — `"Chain to app-factory using this folder as input."`
+  - CONDITIONAL → `"🔁 Iterate (Recommended)"` — `"Re-test the WWNBT assumptions before building."`
+  - NO-GO → `"🧭 Pivot (Recommended)"` — `"Explore pivot suggestions and write `16-pivot.md`."`
+- `"🔍 Refine"` — `"Deeper dive on a section OR challenge a rating with new info. You'll specify which next."`
+- `"🧭 Explore pivot path"` — `"Write `16-pivot.md` with pivot suggestions."` (skip this option if verdict is NO-GO — it's already absorbed into the first option)
+- `"✅ Final"` — `"Lock the report and stop."`
+
+If the user picks `"🔍 Refine"`, follow up with a second `AskUserQuestion` — header `"Refine"`, question `"What kind?"`, options: `"Deeper dive on a section"`, `"Challenge a rating with new info"`. Then ask the user to specify which section or which rating + the new info as free text.
 
 ### Phase 3 Interaction Rules
 
