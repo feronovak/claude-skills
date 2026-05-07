@@ -1,7 +1,7 @@
 ---
 name: brainstormers-idea
 description: Creative idea research team — takes a raw idea, interviews for context, researches market/competition/timing/revenue in parallel, then synthesizes into a refined idea with strategy. Use this skill when the user wants to explore a business idea, brainstorm a product concept, research whether something is worth building, shape a raw idea into something concrete, or get creative research on a new venture. Triggers on phrases like 'brainstorm this idea', 'research this concept', 'help me shape this idea', 'explore this opportunity', 'is this idea any good'.
-version: "2.1"
+version: "2.3"
 authors: Fero Novak <https://feronovak.com>
 ---
 
@@ -85,6 +85,12 @@ After confirming the project folder, ask the user which mode to use.
 - Token savings: ~40% vs Standard
 
 Default to STANDARD if user says "go" or doesn't specify. If the user explicitly asks for speed or says something like "quick pass" or "just a rough look", use QUICK.
+
+When asking the user to choose a mode, call `AskUserQuestion` — header `"Mode"`, question `"Pick a research mode."`, multiSelect false, options:
+  - `"🔬 STANDARD (Recommended)"` — `"Full depth, best models. For ideas you're seriously pursuing."`
+  - `"⚡ QUICK"` — `"All Sonnet, shorter interview. For early gut-checks."`
+
+Map the answer to `STANDARD` or `QUICK`.
 
 The selected mode determines model assignments in the Teammate Assignments table (Phase 2). In QUICK mode, override all researcher models to Sonnet.
 
@@ -215,7 +221,16 @@ When Phase 3 completes, the team lead presents to the user:
 7. **Critical Assumptions** — Top 5 things to validate (from `06-strategy-brief.md`)
 8. **Recommended Next Steps** — What to do now (from `06-strategy-brief.md`)
 
-Then STOP and WAIT for user response.
+Then STOP and WAIT for user response. Adapt the first option's label to match the verdict (PROMISING → "🦈 Validate with business-sharks"; PIVOT/RECONSIDER → "🧭 Explore pivot"). Call `AskUserQuestion` — header `"Next step"`, question `"What's next?"`, multiSelect false, options (4 max — "Other" is auto-added for free text, do NOT add it manually):
+
+- **First option, verdict-dependent:**
+  - PROMISING → `"🦈 Validate with business-sharks (Recommended)"` — `"Hand this folder to business-sharks for GO/NO-GO validation."`
+  - PIVOT or RECONSIDER → `"🧭 Explore pivot (Recommended)"` — `"Refine the idea in a new direction based on what we learned."`
+- `"🔁 Refine"` — `"Iterate the direction OR deep-dive a section. You'll specify which next."`
+- `"🚀 Build directly"` — `"Skip validation, chain to app-factory."`
+- `"✅ Final"` — `"Lock the research and stop."`
+
+If the user picks `"🔁 Refine"`, follow up with a second `AskUserQuestion` — header `"Refine"`, question `"What kind of refinement?"`, options: `"Iterate direction"`, `"Deeper dive on a section"`. Then ask the user to specify which direction or which section as free text.
 
 ### Phase 4 Interaction
 
