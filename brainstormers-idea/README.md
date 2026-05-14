@@ -19,16 +19,17 @@ The skill triggers on idea-shaping language:
 
 ## What you get
 
-A project folder under your CWD with five numbered files:
+A project folder under your CWD with seven numbered files:
 
 | File | Content |
 |---|---|
-| `00-raw-idea.md` | your input + interview answers |
+| `00-idea-brief.md` | your input + interview answers, compiled by the team lead |
 | `01-market-landscape.md` | who's the audience, where do they spend time, what alternatives exist |
 | `02-competition-map.md` | direct/indirect competitors, gaps, positioning |
 | `03-timing-window.md` | why now, what's enabling/blocking, market readiness |
 | `04-revenue-models.md` | how this could make money — pricing, channels, unit shape |
 | `05-refined-idea.md` | the synthesis: a tighter version of your original idea, with strategic angle |
+| `06-strategy-brief.md` | critical assumptions, next steps, recommended actions |
 
 `05-refined-idea.md` is the file you'd hand to `business-sharks` next. The skill emits it in a format that sharks can ingest as Phase 0 input — analysts will challenge and extend rather than re-research from scratch.
 

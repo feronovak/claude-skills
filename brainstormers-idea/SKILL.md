@@ -1,6 +1,6 @@
 ---
 name: brainstormers-idea
-description: Creative idea research team — takes a raw idea, interviews for context, researches market/competition/timing/revenue in parallel, then synthesizes into a refined idea with strategy. Use this skill when the user wants to explore a business idea, brainstorm a product concept, research whether something is worth building, shape a raw idea into something concrete, or get creative research on a new venture. Triggers on phrases like 'brainstorm this idea', 'research this concept', 'help me shape this idea', 'explore this opportunity', 'is this idea any good'.
+description: Use when you have a raw idea — a phrase, hunch, or one-liner — and want to shape it into something concrete before validation. Interviews for context, then runs four parallel research streams (market, competition, timing, revenue) and synthesizes a refined idea with strategy. Triggers on phrases like 'brainstorm this idea', 'research this concept', 'help me shape this idea', 'explore this opportunity', 'is this idea any good'.
 version: "2.3"
 authors: Fero Novak <https://feronovak.com>
 ---
@@ -113,14 +113,16 @@ Cover these dimensions (adapt to the specific idea — not every question applie
 5. **Constraints**: Budget, timeline, solo vs team, technical limitations, geographic focus?
 6. **Why Now**: What triggered this idea? Is there a trend, event, or personal experience?
 7. **Revenue Intuition**: Initial sense of how this makes money?
-8. **Existing Landscape**: Any known competitors? What's missing from them?
+8. **Devil's Advocate**: Devil's advocate moment - what's the strongest argument that this DOESN'T work? Even if you're convinced it does — name the failure mode that would worry a skeptical investor.
+9. **Existing Landscape**: Any known competitors? What's missing from them?
 
 ### Interview Rules
-- Ask 2-3 questions at a time maximum. Do NOT dump all 8 at once.
+- Ask 2-3 questions at a time maximum. Do NOT dump all 9 at once.
 - Use AskUserQuestion with concrete options where possible.
 - Listen for signals — if the user reveals something important, follow up before moving on.
 - Keep it conversational, not interrogative. You're a curious co-founder, not a form.
-- 5-8 questions total across 2-4 rounds of interaction.
+- Ask the Devil's Advocate question (question 8) AFTER the user has shared their positive context — not in the opening round.
+- 5-9 questions total across 2-4 rounds of interaction.
 
 ### Writing the Idea Brief
 
@@ -137,6 +139,9 @@ After the interview, write `{project-folder}/docs/00-idea-brief.md` with this st
 
 ## Target Audience
 [Primary audience description — specific persona(s)]
+
+## Founder's Own Doubt
+[The failure mode the founder named — the strongest argument this doesn't work. Capture it verbatim or close to it. This is input for the research team, not a verdict.]
 
 ## Vision
 - **Dream version:** [what success looks like at scale]
