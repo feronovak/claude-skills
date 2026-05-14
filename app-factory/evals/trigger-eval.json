@@ -1,0 +1,82 @@
+[
+  {
+    "query": "ok so I've got this idea — a tiny app where parents can upload photos of their kid and get AI-generated bedtime stories featuring the kid as the hero. Want to actually build the MVP. Probably Next.js since I know it. business-sharks already gave me a CONDITIONAL with 8/10 problem fit",
+    "should_trigger": true
+  },
+  {
+    "query": "Build me a habit tracker for solo founders. Just iOS for now via Expo. Simple — log daily wins, weekly reflection, no social features. I want to ship in 2 weeks so this is a serious bet, not a prototype.",
+    "should_trigger": true
+  },
+  {
+    "query": "I have the output from brainstormers-idea (folder is in ~/projects/_ideas/seo-rewriter/) — it's an SEO rewriter for content teams using Anthropic API. Take it from here and ship it.",
+    "should_trigger": true
+  },
+  {
+    "query": "make me a slack bot that summarizes daily standups using AI. team of 6, hosted on fly.io probably",
+    "should_trigger": true
+  },
+  {
+    "query": "Turn this idea into a product: a Tauri desktop app where freelancers track time per client, generate invoices, send via email. Stripe Tax for EU VAT. solo dev, want it production-grade because I'll actually use it for billing.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create this product: a B2C web app called 'inbox amnesty' — users connect Gmail, AI categorizes promos/newsletters/personal, then bulk-archive with one click. need auth + GDPR compliance because EU.",
+    "should_trigger": true
+  },
+  {
+    "query": "develop this please — a CLI tool in Go that takes a markdown file, lints it for AI-slop phrases (humanizer-style) and outputs a cleaned version. should be installable via brew",
+    "should_trigger": true
+  },
+  {
+    "query": "want to build a quick MVP this weekend, dashboards for ad agencies showing client KPIs from GA4 + Meta + LinkedIn, just for me + 2 friends to test. nothing fancy, just functional.",
+    "should_trigger": true
+  },
+  {
+    "query": "Build this app: AI-powered legal-doc summarizer for SMBs in Slovakia. user uploads PDF, gets executive summary + risk flags. need this to be ready for paid users in 6 weeks. Already validated demand via 12 customer interviews.",
+    "should_trigger": true
+  },
+  {
+    "query": "i have this validated idea from /home/me/projects/business-sharks/dog-walker-marketplace/ — 12-scorecard.md says GO. Ready to build. Web app, Next.js + Supabase probably. Stripe Connect for payments to walkers.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add a dark mode toggle to my Next.js app at ~/projects/dashboard. The component is in src/components/Header.tsx",
+    "should_trigger": false
+  },
+  {
+    "query": "I have this idea for a meal planning SaaS but I'm not sure if it's worth pursuing. The market seems crowded but I think there's a gap for celiac/gluten-free families specifically. Should I build it?",
+    "should_trigger": false
+  },
+  {
+    "query": "My Vercel deploy is failing on the build step — getting 'Module not found: Can't resolve @/lib/utils' error. Already checked the path alias in tsconfig.json. Help me debug.",
+    "should_trigger": false
+  },
+  {
+    "query": "Review this PR — I added a new endpoint /api/users/[id]/preferences in my Next.js app. Want to make sure the auth check is correct and I'm not leaking other users' data via IDOR.",
+    "should_trigger": false
+  },
+  {
+    "query": "brainstorm with me on this — I work at a dental clinic and we have constant problems with patient no-shows. there's gotta be something tech can do here but I dont know what",
+    "should_trigger": false
+  },
+  {
+    "query": "Refactor my checkout flow at src/pages/checkout/ — too much logic in the page component, want to extract to hooks and a service layer. ~400 lines of code total, mostly state management plus Stripe integration.",
+    "should_trigger": false
+  },
+  {
+    "query": "Write me a python script that takes a CSV of customer emails and deduplicates by lowercase + trim, then outputs the cleaned file. About 50k rows.",
+    "should_trigger": false
+  },
+  {
+    "query": "Help me deploy my existing Tale Album Next.js app to Fly.io. I have the Dockerfile but the env vars aren't being picked up at build time.",
+    "should_trigger": false
+  },
+  {
+    "query": "Looking at the analytics on my SaaS — activation rate is 18%, way below the benchmark for B2B at 40%. What experiments should I run to improve onboarding?",
+    "should_trigger": false
+  },
+  {
+    "query": "I want to add a notifications feature to my existing project management tool — bell icon in header, dropdown with 10 most recent items, mark-as-read. Tech stack is React + Convex.",
+    "should_trigger": false
+  }
+]

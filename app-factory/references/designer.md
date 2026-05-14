@@ -1,6 +1,6 @@
 # Designer
 
-**Model:** Sonnet
+**Model:** Opus
 **Reads:** `docs/product-spec.md`
 **Writes:** `docs/design-system.md`, `docs/component-specs.md`, `docs/ux-flows.md`
 

@@ -104,7 +104,40 @@ For each P0 feature:
 ## Technical Requirements
 - **Data:** [what data is stored, API integrations needed]
 - **Auth:** [authentication needs, or "none for MVP"]
-- **Hosting:** [deployment target if known]
+- **Hosting topology:**
+  - Platform: [Vercel / Fly.io / Railway / Render / self-hosted VPS]
+  - Database: [Postgres on managed (Neon, Supabase, Fly Postgres) / self-hosted / SQLite]
+  - Connection pooling: [PgBouncer / Supavisor / built-in pooler / N/A for serverless]
+  - CDN / asset hosting: [platform-native / Cloudflare / Bunny / N/A]
+  - Object storage (images, uploads): [S3 / R2 / platform-native / N/A]
+  - Email provider: [Brevo / Resend / SES / Postmark / N/A]
+  - Estimated egress / month: [order of magnitude — informs cost]
+- **Locales (v1 + roadmap):**
+  - v1 launch locales: [e.g., `en`, `sk`]
+  - Roadmap: [planned for v2+, or "English only for foreseeable future"]
+  - i18n strategy: [framework's i18n primitive (Next.js i18n routing, react-i18next, vue-i18n) / no i18n with rationale]
+- **Timezone strategy:**
+  - Backend: UTC for all storage and computation (always)
+  - Frontend: detect from browser, allow user override in profile (if account system exists)
+  - Display: `Intl.DateTimeFormat` for dates/times, never raw timestamps
+- **Currency / number formatting:**
+  - Currency: [primary currency for v1; `Intl.NumberFormat` for display]
+  - Number formats: [decimal/thousands separators per locale via `Intl.NumberFormat`]
+- **AI provider (if applicable):**
+  - Primary: [Anthropic / OpenAI / Gemini / OpenRouter / self-hosted]
+  - Fallback: [or "no fallback for v1, document risk"]
+  - Estimated cost ceiling per user: [from unit econ analysis if available]
+- **Recovery objectives (RTO / RPO):**
+  - **RTO** (Recovery Time Objective) — max acceptable downtime to restore service after disaster
+  - **RPO** (Recovery Point Objective) — max acceptable data loss measured in time
+  - Defaults by mode:
+    | Mode | RTO default | RPO default | Notes |
+    |---|---|---|---|
+    | BUILD ONLY | N/A | N/A | prototype, not deployable |
+    | FULL | ≤ 4 hours | ≤ 24 hours | declare and verify backups support it |
+    | SERIOUS BET | ≤ 1 hour | ≤ 1 hour | declare explicitly; backups must run at least hourly; restore drill timed |
+  - Verification: test restore + cold-start from scratch in staging. Time it. If actual > target, either upgrade infra or relax target before launch — don't ship with a fictional RTO.
+- **Service Level Objectives (SLOs)** — declared at spec time, verified in observability tooling at launch. See `references/devops.md` § Distributed Tracing for the SLO + error budget framework. At minimum: availability, critical-flow latency p95, critical-flow success rate (SERIOUS BET); availability only (FULL); skipped (BUILD ONLY).
 
 ## Success Metrics
 [3-5 measurable outcomes that prove the MVP works]
