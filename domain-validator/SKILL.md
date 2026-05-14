@@ -1,6 +1,6 @@
 ---
 name: domain-validator
-description: This skill should be used when the user asks to "check a domain", "validate a domain name", "score a domain", "rank domain candidates", "is X.com a good domain", "should I buy X.com", "evaluate domain for brand", "pre ktorú doménu by som išiel", "oplatí sa kúpiť X.com", or provides a list of domains to compare. Evaluates writing/spelling risk, phone-dictation clarity, brand fit, distinctiveness, extensibility, and optional domain equity (SEO history) across EN and Slovak markets.
+description: "Use when: user asks to check, score, or rank domain candidates - \"is X.com a good domain\", \"should I buy X.com\", \"evaluate domain for brand\", \"rank these domains\", \"pre ktorú doménu by som išiel\", \"oplatí sa kúpiť X.com\", or provides a list to compare. Evaluates spelling risk, phone-dictation clarity, brand fit, distinctiveness, extensibility, and optional domain equity (SEO history). EN and Slovak first-class; other CEE languages supported."
 ---
 
 # domain-validator
@@ -127,21 +127,17 @@ Add header block showing what was pulled from project context so user can catch 
 
 ## Additional Resources
 
-_(These reference, script, and example files are populated by later Phase 1 tasks. If absent, skip - core rubric above is sufficient to produce a verdict.)_
+Reference files (populated - extend inline rubric with concrete lookup tables):
+- `references/gates-and-tests.md` - per-gate test conditions and failure examples
+- `references/scoring-rubric.md` - scored axes deep dive with worked examples
+- `references/cee-language-checks.md` - pejorative scan and phonetic pitfall lists (EN/SK/CZ/PL/DE/HU)
+- `references/equity-evaluation.md` - domain equity / SEO history evaluation detail
+- `references/weight-profiles.md` - profile selection guide and edge cases
 
-Detailed content in:
-- `references/rubric-details.md` - per-gate/axis deep dive with failure examples
-- `references/phonetic-traps.md` - SK/EN/CZ/PL/DE/HU pitfall lookup lists
-- `references/weight-profiles.md` - profile selection edge cases
-- `references/output-templates.md` - full output templates
-- `references/brand-context-reading.md` - how to pull brand info from memory/project files
-
-Scripts:
+Planned (not yet created - see `references/scripts-todo.md` for intent):
 - `scripts/check-whois.sh` - WHOIS creation date + registrar + status
 - `scripts/fetch-archive-snapshots.sh` - archive.org CDX API query
 - `scripts/domain-sanity.sh` - domain string validation
-
-Examples:
 - `examples/single-domain.md` - worked Shape 1
 - `examples/list-comparison.md` - worked Shape 2
 - `examples/brand-contextual.md` - worked Shape 3
