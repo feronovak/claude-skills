@@ -38,7 +38,8 @@ If zero DIRECT evidence exists, flag "NO DIRECT USER VALIDATION" prominently in 
 
 A tarpit is an idea that generates enthusiasm but historically resists retention, monetization, or scale. Hundreds of startups have tried and failed — the problem is real but the business isn't.
 
-**Known tarpit categories:**
+**Known tarpit categories:** (a condensed copy of this list lives in `business-sharks-screen/references/screen-rubric.md` — if you change patterns here, update it there too)
+
 | Category | Pattern | Why It Fails | Example |
 |----------|---------|-------------|---------|
 | Social networks for niche groups | "LinkedIn for [X]" | Network effects require critical mass; niche can't reach it | LinkedIn for teachers, social network for pet owners |

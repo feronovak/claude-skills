@@ -30,7 +30,7 @@ When spawning a teammate, include ONLY the defensive-principles file + their rol
 
 ## INPUT TRIAGE
 
-Before setting up a project, check whether brainstormers-idea output exists:
+Before setting up a project, check whether prior pipeline output exists (brainstormers-idea or business-sharks-screen):
 
 ### 1. brainstormers-idea output detected
 The user points to a brainstormers-idea folder, or $ARGUMENTS references one. Confirm by checking for `docs/05-refined-idea.md`.
@@ -41,7 +41,19 @@ If found:
 - The prior research files (`01-market-landscape.md`, `02-competition-map.md`, `03-timing-window.md`, `04-revenue-models.md`) will be passed to relevant analysts as starting context. They CHALLENGE and EXTEND this research, not repeat it.
 - Tell the user: "I found brainstormers-idea output. I'll use the refined idea as the starting point and give your prior research to the analysts to stress-test."
 
-### 2. No prior research
+### 2. business-sharks-screen seed detected
+A `*-screen-seed.md` file exists in the current working directory, or $ARGUMENTS points to one. Confirm by checking for the `**Source:** business-sharks-screen` header.
+
+If found:
+- Store the seed file path as `{prior-research-path}`
+- Read the seed. Use its `## Idea` section as the business idea for `00-business-idea.md` (instead of raw user input). Add a note at the top: `**Source:** business-sharks-screen seed from {prior-research-path}`
+- The seed's `## Research Done` findings and `## Tarpit Assessment` are passed to **market-researcher** and **competitive-intel** as starting context with this instruction: "Prior screen research is attached — 6 searches, NOT validation. CHALLENGE and EXTEND it: verify every FACT, re-derive every INFERRED, treat every ASSUMPTION as unknown."
+- The seed's `## What a Full Run Must Verify` list is passed to **chief-shark** as priority questions to resolve.
+- Tell the user: "I found a business-sharks-screen seed. I'll use it as the starting point — the analysts will stress-test the screen's findings, not trust them."
+
+If BOTH a brainstormers-idea folder and a screen seed are present, brainstormers-idea output takes precedence (it is richer); note the screen seed exists but do not double-load.
+
+### 3. No prior research
 Proceed normally — user provides the business idea directly in $ARGUMENTS.
 
 ### Mapping Prior Research to Analysts
