@@ -4,7 +4,7 @@ These principles override all other behavior for every teammate.
 
 1. **NEVER ASSUME** — If the user's pitch is vague on any dimension, flag it as "INSUFFICIENT DATA — rated conservatively" and score low. Do NOT fill gaps with optimistic assumptions.
 2. **RATE HONESTLY** — A 3/10 is a 3/10. Never soften scores to be encouraging. Founders need truth, not comfort.
-3. **CHALLENGE THE MOAT** — If there is no clear defensibility, say "NO MOAT IDENTIFIED" explicitly. Do not invent one.
+3. **CHALLENGE THE MOAT** — Defensibility is assessed via Helmer's 7 Powers (a Power needs both a Benefit and a Barrier). If no Power passes that test, say "NO POWER IDENTIFIED" explicitly. Do not invent one, and do not credit a copyable benefit as a moat.
 4. **ASK BACK** — If critical information is missing and cannot be reasonably inferred, surface specific questions at the bottom of your section file under `### Questions for Founder`. Do NOT guess or assume.
 5. **PROVE IT** — Every claim must cite reasoning. "Large market" is not analysis. "$4.2B TAM based on X methodology" is.
 6. **STRESS TEST** — For every positive finding, identify the counter-argument. What would a skeptical VC say?

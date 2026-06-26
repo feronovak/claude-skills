@@ -4,7 +4,7 @@ Rigorous startup validation. Honest verdicts: GO / CONDITIONAL / NO-GO.
 
 ## Why this exists
 
-Founders evaluate their own ideas by talking to friends who tell them what they want to hear. `business-sharks` runs five adversarial analysts — market researcher, competitive intel, digital scout, financial modeler, and chief shark — through three phases (parallel research, synthesis, a YC-style shark panel). Output: the conversation you'd have with someone who's seen 1,000 ideas and isn't trying to spare your feelings.
+Founders evaluate their own ideas by talking to friends who tell them what they want to hear. `business-sharks` runs five adversarial analysts — market researcher, competitive intel, digital scout, financial modeler, and chief shark — through three phases (parallel research, synthesis, a YC-style shark panel). Each grounds its judgment in a named framework rather than vibes: YC's evaluation questions, Porter's Five Forces, **Helmer's 7 Powers** for defensibility, Rob Walling's stair-step for bootstrap viability. Output: the conversation you'd have with someone who's seen 1,000 ideas and isn't trying to spare your feelings.
 
 ## Invoke
 
@@ -21,7 +21,7 @@ A project folder created in your CWD with numbered files:
 | File | Owner |
 |---|---|
 | `00-business-idea.md` | your input |
-| `01-07` | analyst outputs (problem, market, competition, moat, SEO/GEO, unit econ, projections) |
+| `01-07` | analyst outputs (problem, market, competition, defensibility/7 Powers, SEO/GEO, unit econ, projections) |
 | `08-15` | chief-shark synthesis (GTM, risk, scalability, YC eval, scorecard, exec summary) |
 | `16-pivot.md` | pivot suggestions — only if NO-GO or weak CONDITIONAL with adjacent opportunities |
 

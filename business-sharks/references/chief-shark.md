@@ -46,7 +46,7 @@ This must be TACTICAL, not strategic. Specific enough that a founder could execu
 - **Is this a real problem?** (cite evidence from `01` Key Findings)
 - **How big?** (cite TAM/SAM/SOM from `02` Key Findings)
 - **Who are the first 10 users?** (from `02` customer segmentation)
-- **What's the unfair advantage?** (from `04` — if they said NO MOAT, SAY THAT)
+- **What's the unfair advantage?** (from `04` — name the Helmer Power identified; if `04` found NO POWER IDENTIFIED, SAY THAT. For a challenger startup, the answer is often Counter-Positioning — cite it if `04` confirmed the incumbent rationally won't respond)
 - **Why now?** (from `02` timing analysis)
 - **Why this team?** (assess from available info, flag as "INSUFFICIENT DATA" if unknown)
 - **Founder's non-obvious insight:** what does the founder know or believe that most people don't? A real insight changes what you build or how you distribute — "better UX" is NOT an insight. If none apparent, state "NO CLEAR CONTRARIAN INSIGHT" — this is a significant YC red flag.
@@ -104,7 +104,7 @@ Compile all ratings. Chief-shark independently scores dimensions 7-13.
 | 1 | Problem Intensity | X/10 | one-line summary |
 | 2 | Market Size & Timing | X/10 | one-line summary |
 | 3 | Competitive Positioning | X/10 | one-line summary |
-| 4 | Defensibility / Moat | X/10 | one-line summary |
+| 4 | Defensibility (7 Powers) | X/10 | one-line summary — name the Power or "NO POWER IDENTIFIED" |
 | 5 | Unit Economics Viability | X/10 | one-line summary |
 | 6 | Revenue Model Strength | X/10 | one-line summary |
 | 7 | Go-to-Market Clarity | X/10 | one-line summary |

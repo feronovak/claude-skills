@@ -1,7 +1,7 @@
 ---
 name: business-sharks
 description: Rigorous startup/business idea validation — market research, competitive intel, SEO/GEO, financials, and structured multi-analyst stress-test with GO/NO-GO verdict. Use this skill when the user wants to evaluate a startup idea, validate a business concept, assess whether to build something, do due diligence on a product idea, analyze market opportunity, or get a GO/NO-GO verdict on a new venture. Triggers on phrases like 'is this idea worth pursuing', 'should I build this', 'analyze this business', 'evaluate my startup', 'shark tank this idea', 'due diligence'.
-version: "4.3"
+version: "5.0"
 team: business-sharks
 authors: Fero Novak <https://feronovak.com>
 ---
