@@ -73,6 +73,7 @@ User can override a gate explicitly ("proceed anyway, I want the hyphen"). Note 
 2. **Fresh-reg:** skip gates 6 and 7 (mark N/A), domain equity = neutral/1 informational, no paid-data prompts.
 3. **Aged:** run archive.org CDX check for history gate. In seo-primary/mixed profile, soft-prompt user to paste Majestic/Ahrefs data for link-quality gate. Soft = score anyway with gap flagged if user declines.
 4. Never invent data. Gaps explicit in output ("domain equity scored without Majestic data - confidence: medium").
+5. **No WHOIS access -> `Domain status: unknown (no WHOIS access)`.** Never infer age, registration count, or re-registration history from the name alone. Unknown is a valid status; a guessed age is a data fabrication.
 
 ## Output format
 
@@ -84,7 +85,7 @@ Produce structured markdown in Fero's voice: direct, no corporate filler, short 
 # Domain verdict: <domain>
 
 **Verdict: <VERDICT>** (weighted <score>/10, profile: <profile>, lang: <languages>)
-**Domain status:** <fresh-reg | aged since YYYY | expired-and-reclaimed>
+**Domain status:** <fresh-reg | aged since YYYY | expired-and-reclaimed | unknown (no WHOIS access)>
 
 ## Gates
 - ✅/❌/⚠️/N/A <gate name> - <one-line finding>
