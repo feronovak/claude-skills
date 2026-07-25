@@ -14,6 +14,7 @@ Not generic tooling. Not framework-of-the-week. Each skill is rigorous enough to
 | `/business-sharks` | Rigorous startup validation — market research, competitive intel, SEO/GEO, financials, and a YC-style shark panel. Honest verdicts: GO / CONDITIONAL / NO-GO with WWNBT and pivot suggestions. |
 | `/app-factory` | End-to-end app development from a validated idea: spec, design, engineering, QA, and parallel product validation. |
 | `/domain-validator` | Score and rank domain candidates: writing risk, dictation clarity, brand fit, distinctiveness. EN + Slovak markets. |
+| `/exec-steps` | Validates what actually got done in a session against real evidence, then writes a board-ready summary: Why, What, How, Value, plus ranked next steps. Unverified claims are reported as unverified. |
 
 The first three form a complete pipeline: brainstorm → validate → build. Each runs independently or chains into the next.
 
@@ -40,6 +41,8 @@ cd ~/projects/claude-skills && git pull
 /business-sharks A B2B SaaS that automates compliance reporting for fintech
 /app-factory A Next.js app for kids' story illustration with AI
 /domain-validator talealbum.com vs storybook.app vs makemystory.io
+exesteps                        # executive summary of this session, validated against evidence
+exesteps week                   # last 7 days; also 'today' or 'since <ref>'
 ```
 
 ## Philosophy
