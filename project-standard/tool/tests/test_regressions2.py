@@ -286,3 +286,50 @@ class TestSecretPosture(unittest.TestCase):
             r.write("docs/setup.md", "# Setup\n\nRun `npm install`.\n")
             r.commit()
             self.assertEqual(by_check(runner.run(r.dir).findings, "41"), [])
+
+
+class TestInvocationIndependence(unittest.TestCase):
+    """The same repository must produce the same findings from anywhere.
+
+    Link targets were resolved against the process working directory rather
+    than the repository, so one repo reported 0 errors or 62 depending on where
+    the checker was invoked from. A validator whose answer depends on the
+    caller's shell is not a validator.
+    """
+
+    def test_results_do_not_depend_on_the_working_directory(self):
+        import os
+        with TempRepo() as r:
+            r.standard_repo()
+            r.write("docs/PROJECT_MAP.md",
+                    "# Code map\n\n[readme](../README.md) [flow](DEVELOPMENT_FLOW.md)\n")
+            r.write("docs/deep/nested.md", "# Nested\n\n[up](../PROJECT_MAP.md)\n")
+            r.commit()
+
+            here = os.getcwd()
+            seen = []
+            try:
+                for where in (r.dir, r.dir / "docs", Path("/tmp"), Path.home()):
+                    os.chdir(where)
+                    findings = runner.run(r.dir).findings
+                    seen.append(sorted(f.render() for f in findings))
+            finally:
+                os.chdir(here)
+
+            for other in seen[1:]:
+                self.assertEqual(seen[0], other,
+                                 "findings changed with the working directory")
+
+    def test_relative_links_resolve_against_the_repo(self):
+        import os
+        with TempRepo() as r:
+            r.standard_repo()
+            r.write("docs/PROJECT_MAP.md",
+                    "# Code map\n\n[readme](../README.md)\n")
+            r.commit()
+            here = os.getcwd()
+            try:
+                os.chdir("/tmp")
+                self.assertEqual(by_check(runner.run(r.dir).findings, "4"), [])
+            finally:
+                os.chdir(here)

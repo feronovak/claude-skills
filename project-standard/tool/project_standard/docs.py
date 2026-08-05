@@ -192,13 +192,18 @@ def _links(ctx, tracked, required):
             target = target.split("#")[0].strip()
             if not target:
                 continue
-            resolved = str(Path(*(base / target).parts)).replace("\\", "/")
+            # Resolve against the repository, never against the process's
+            # working directory. `base` is repo-relative, so resolving it bare
+            # anchored the link at wherever the checker happened to be invoked
+            # from — the same repository reported 0 errors or 62 depending on
+            # the caller's cwd.
+            root = Path(ctx.repo).resolve()
             try:
-                resolved = str((base / target).resolve().relative_to(
-                    Path(ctx.repo).resolve()))
+                resolved = str((root / base / target).resolve()
+                               .relative_to(root))
             except (ValueError, OSError):
-                pass
-            exists = resolved in tracked_set or (Path(ctx.repo) / resolved).exists()
+                resolved = str(Path(*(base / target).parts)).replace("\\", "/")
+            exists = resolved in tracked_set or (root / resolved).exists()
             if exists:
                 continue
             line = text[:m.start()].count("\n") + 1
