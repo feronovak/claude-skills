@@ -24,14 +24,16 @@ guard that does not exist is never claimed to.
 
 ## Where the guards live
 
-Canonical, version-controlled, in `~/.claude/git-hooks/`, reached by
-`core.hooksPath`. A hook vendored into a repo's own `.git/hooks` never fires
-when `core.hooksPath` is set — and it is set globally here, so the vendored
-approach would install one dead file per repo while the check that confirmed
-the file existed reported green.
+Install them with `project-standard install-hooks`, which copies both guards
+into a directory and points `core.hooksPath` at it.
+
+A hook placed in a repo's own `.git/hooks` never fires when `core.hooksPath` is
+set elsewhere. Any setup that assumes otherwise installs one dead file per repo
+while a naive "the file exists" check reports green.
 
 A local `core.hooksPath` override pointing at a directory without the guards
-disables every hook silently. That is check 11b, and it has happened twice.
+disables every hook silently — that is check 11b, and it is easy to create by
+accident when a repository is renamed or moved.
 
 ## Scope: the two rules differ
 

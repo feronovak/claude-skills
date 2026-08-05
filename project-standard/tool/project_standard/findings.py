@@ -62,6 +62,7 @@ def skipped(check: str, message: str) -> Finding:
 @dataclass
 class Report:
     findings: list = field(default_factory=list)
+    summary: str = ""
 
     @property
     def errors(self):

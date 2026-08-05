@@ -82,13 +82,25 @@ class TestAttribution(unittest.TestCase):
 
 
 class TestLocalOnly(unittest.TestCase):
-    def test_tracked_local_only_path_is_an_error(self):
+    def test_tracked_local_only_errors_only_when_opted_in(self):
+        """A stranger's repo that never adopted the convention must not be told
+        it is broken — that is how a checker gets switched off."""
+        with TempRepo() as r:
+            r.standard_repo()
+            r.write(".gitignore", hygiene.MARKER_LINE + "\n")
+            r.write("docs/exec-summaries/2026-08-01.md", "# summary\n")
+            r.commit()
+            found = by_check(hygiene.check(ctx_for(r.dir)), "7")
+            self.assertTrue(any(f.severity == "error" for f in found))
+
+    def test_tracked_local_only_only_warns_without_opt_in(self):
         with TempRepo() as r:
             r.standard_repo()
             r.write("docs/exec-summaries/2026-08-01.md", "# summary\n")
             r.commit()
             found = by_check(hygiene.check(ctx_for(r.dir)), "7")
-            self.assertTrue(any(f.severity == "error" for f in found))
+            self.assertTrue(found)
+            self.assertTrue(all(f.severity == "warn" for f in found))
 
     def test_exec_summary_by_pattern_is_a_warn(self):
         """Exact paths catch the convention; a summary written outside it needs

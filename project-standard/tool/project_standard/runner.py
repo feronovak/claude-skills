@@ -1,6 +1,6 @@
 """Wire the checkers together, and decide what runs where.
 
-Not every check is answerable in CI. A runner has no `~/.claude/git-hooks` and
+Not every check is answerable in CI. A CI runner has no developer hooks directory, and
 GitHub Actions clones with `fetch-depth: 1` and no tags, so history-dependent
 checks and the hook check are *skipped* there — reported as skipped, never
 silently passed. A check that did not run must never read as one that did.
@@ -19,6 +19,8 @@ DEV, CI = "dev", "ci"
 # Checks that need a hooks directory only a developer's machine has.
 HOOK_CHECKS = ("11", "11b")
 # Checks that need real history and tags.
+# Checks that genuinely need history or tags. `5b` (version sources disagree)
+# reads only files and must stay live on a shallow clone.
 HISTORY_CHECKS = ("5", "8a", "8b", "8c", "8d", "8e", "10c", "13", "14", "15",
                   "29", "38")
 
@@ -33,6 +35,7 @@ class Ctx:
     version: str = None
     profile: str = DEV
     skipped: set = field(default_factory=set)
+    workspaces: list = field(default_factory=list)
 
 
 def build_ctx(repo, profile=DEV):
@@ -47,6 +50,38 @@ def build_ctx(repo, profile=DEV):
                resolved=resolved, version=version, profile=profile)
 
 
+
+
+def _workspaces(ctx):
+    """Check 16 — a bounded scope that announces itself.
+
+    The spec promises this rather than passing a monorepo silently; without it
+    a workspace tree reads as fully covered when only the root was validated.
+    """
+    import json
+    pkg = ctx.repo / "package.json"
+    if not pkg.is_file():
+        return []
+    try:
+        data = json.loads(pkg.read_text(errors="ignore"))
+    except ValueError:
+        return []
+    ws = data.get("workspaces")
+    if isinstance(ws, dict):
+        ws = ws.get("packages")
+    return list(ws) if isinstance(ws, list) else []
+
+
+def workspace_check(ctx):
+    if not ctx.workspaces:
+        return []
+    return [F.warn(
+        "16", f"{len(ctx.workspaces)} workspace(s) detected "
+              f"({', '.join(str(w) for w in ctx.workspaces[:3])}) — validating "
+              f"the repository root only; per-workspace validation is not "
+              f"implemented")]
+
+
 MODULES = (
     ("artifacts", artifacts.check),
     ("detect", detect.check),
@@ -55,6 +90,7 @@ MODULES = (
     ("release", release.check),
     ("hygiene", hygiene.check),
     ("api", api.check),
+    ("workspaces", workspace_check),
 )
 
 
@@ -89,17 +125,22 @@ def run(repo, profile=DEV, only=None):
         return report
 
     ctx = build_ctx(repo, profile=profile)
+    report.summary = summary(ctx)   # built once; the scan is not cheap
     skips = skipped_checks(ctx)
     ctx.skipped = set(skips)
 
+    ctx.workspaces = _workspaces(ctx)
     for _, fn in MODULES:
         try:
             for finding in fn(ctx):
                 if finding.check in skips:
                     continue
                 report.findings.append(finding)
-        except Exception as exc:  # a broken check must not hide the others
-            report.findings.append(F.warn(
+        except Exception as exc:
+            # A broken checker must not hide the others — and must not pass
+            # for one either. Demoting this to a warn turns CI green on a
+            # module that never ran.
+            report.findings.append(F.error(
                 "internal", f"{fn.__module__} raised {type(exc).__name__}: {exc}"))
 
     for cid, why in sorted(skips.items()):

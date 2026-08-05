@@ -3,15 +3,15 @@
 Two hard-won rules:
 
   - The document format rule accepts what good documentation already looks
-    like. A table with the method and path in separate cells is the strongest
-    API doc in this fleet; an earlier rule demanding a literal adjacent
-    `GET /path` failed it and would have demanded a rewrite into a worse
+    like. A table with the method and path in separate cells is a common and
+    perfectly good form; an earlier rule demanding a literal adjacent
+    `GET /path` rejected it and would have demanded a rewrite into a worse
     format to satisfy a parser.
   - Enumeration comes from the framework, not from scraping decorators. A
     Flask route's path is relative to its blueprint, blueprints nest, and the
     real path is composed at registration across modules. Regex over
-    decorators produced 107 phantom routes against a document correctly
-    describing 55. Where enumeration cannot be resolved, we warn — a checker
+    decorators produces phantom routes by the dozen against a document that
+    is in fact correct. Where enumeration cannot be resolved, we warn — a checker
     that cannot enumerate says so rather than inventing findings.
 """
 
@@ -30,11 +30,17 @@ DOC_ROW = re.compile(
     re.M)
 
 NEXT_ROUTE = re.compile(r"^(?:src/)?(?:app|pages)/(?P<path>.*api/.*)/route\.[tj]sx?$")
+# Next.js route groups are organisational and never appear in a URL.
+ROUTE_GROUP = re.compile(r"/?\([^)]*\)")
 NEXT_PAGES_API = re.compile(r"^(?:src/)?pages/(?P<path>api/.+)\.[tj]sx?$")
 EXPORTED = r"export\s+(?:async\s+)?(?:function|const)\s+{m}\b"
+# `export const {{ GET, POST }} = handlers` (Auth.js v5) and `export {{ GET }} from`
+EXPORT_BRACE = re.compile(r"export\s+(?:const\s+)?\{([^}]*)\}")
 
 FLASK_SIGNS = re.compile(r"\bBlueprint\(|@\w+\.route\(")
 FASTAPI_SIGNS = re.compile(r"\bFastAPI\(|@\w+\.(?:get|post|put|patch|delete)\(")
+EXPRESS_SIGNS = re.compile(r"\b(?:app|server|router)\.(?:get|post|put|patch|delete)\(|"
+                           r"\b(?:app|server)\.listen\(")
 
 MANIFEST = "docs/api/routes.json"
 REFERENCE = "docs/API_REFERENCE.md"
@@ -42,7 +48,8 @@ REFERENCE = "docs/API_REFERENCE.md"
 
 def normalise(path):
     """Collapse parameter syntax so <int:id>, [id] and :id compare equal."""
-    p = re.sub(r"<[^>]*>|\[[^\]]*\]|:\w+", "{}", path or "")
+    p = ROUTE_GROUP.sub("", path or "")
+    p = re.sub(r"<[^>]*>|\[[^\]]*\]|\{[^}]*\}|:\w+", "{}", p)
     p = re.sub(r"/+", "/", p).rstrip("/")
     return p or "/"
 
@@ -85,9 +92,17 @@ def code_endpoints(repo, tracked):
         m = NEXT_ROUTE.match(rel)
         if m:
             src = _read(repo, rel)
+            exported = set()
             for meth in METHODS:
                 if re.search(EXPORTED.format(m=meth), src):
-                    eps.add((meth, normalise("/" + m.group("path"))))
+                    exported.add(meth)
+            for brace in EXPORT_BRACE.findall(src):
+                for name in re.split(r"[,\s]+", brace):
+                    name = name.split(" as ")[-1].strip().upper()
+                    if name in METHODS:
+                        exported.add(name)
+            for meth in sorted(exported):
+                eps.add((meth, normalise("/" + m.group("path"))))
             continue
         m = NEXT_PAGES_API.match(rel)
         if m:
@@ -96,13 +111,20 @@ def code_endpoints(repo, tracked):
 
     frameworks = set()
     for rel in tracked:
-        if not rel.endswith(".py") or "/test" in rel:
+        if "/test" in rel or rel.startswith(("scripts/", "tools/", "examples/")):
             continue
-        src = _read(repo, rel)
-        if FASTAPI_SIGNS.search(src):
-            frameworks.add("fastapi")
-        elif FLASK_SIGNS.search(src):
-            frameworks.add("flask")
+        if rel.endswith(".py"):
+            src = _read(repo, rel)
+            if FASTAPI_SIGNS.search(src):
+                frameworks.add("fastapi")
+            elif FLASK_SIGNS.search(src):
+                frameworks.add("flask")
+        elif rel.endswith((".ts", ".js", ".mjs")) and "node_modules" not in rel:
+            # Express routes are literals, but mounting composes prefixes the
+            # same way blueprints do — reporting it unresolved is honest, and
+            # far better than flagging every documented route as a phantom.
+            if EXPRESS_SIGNS.search(_read(repo, rel)):
+                frameworks.add("express")
     for fw in sorted(frameworks):
         unresolved.append(fw)
 

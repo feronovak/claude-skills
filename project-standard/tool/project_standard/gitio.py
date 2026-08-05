@@ -95,8 +95,8 @@ class Git:
     def tags(self):
         """Tags in creation order — never sorted by version.
 
-        pyramid-wordle carries v2.0.0-v2.2.0 from February above a current
-        v1.7.x line; sorting reads the wrong tag as latest.
+        A project that renumbers downward ends up with high tags older than
+        its current line; sorting then reads the wrong tag as latest.
         """
         out = self._run("for-each-ref", "--sort=creatordate",
                         "--format=%(refname:short)", "refs/tags")

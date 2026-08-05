@@ -11,8 +11,8 @@ or one that cannot run in CI.
 
 **Mechanical** — does the file exist, do its links resolve, is the endpoint
 documented, does the tag match the version, is a local-only path tracked.
-Decidable by string comparison; the same answer every run. 542 ms across eight
-repos, no model, no tokens. Runs from CI, a hook, cron, or a shell.
+Decidable by string comparison; the same answer every run. Well under a second
+per repository, no model, no tokens. Runs from CI, a hook, cron, or a shell.
 
 **Semantic** — does the contract describe *this* project or a generic framework,
 does the product map claim something the code no longer does, is a trust stamp
@@ -33,6 +33,16 @@ python3 -m project_standard.cli check --repo /path/to/your-repo
 To gate a repo's CI, vendor `tool/project_standard/` to
 `scripts/project-standard/` and add a job (see **CI** below).
 
+To install the authorship guards:
+
+```bash
+project-standard install-hooks            # this repository
+project-standard install-hooks --global   # every repository
+```
+
+This sets `core.hooksPath`, which **replaces** any other hooks directory — if
+you already have one, merge its hooks into the new location.
+
 ## Usage
 
 ```bash
@@ -43,6 +53,7 @@ project-standard check --fleet            # every git repo under the fleet root
 project-standard check --json             # machine-readable
 project-standard check --profile=ci       # skip what a runner cannot answer
 
+project-standard install-hooks            # install the authorship guards
 project-standard generate                 # write docs/DOCMAP.md
 project-standard routes --app app:create_app   # write docs/api/routes.json
 ```
@@ -129,7 +140,7 @@ cd tool
 PYTHONPATH=.:tests python3 -m unittest discover -s tests -t . -v
 ```
 
-124 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
+134 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
 repos in temp directories, with `core.hooksPath` pointed at an empty directory
 so the global hygiene guards never interfere — otherwise a test that
 deliberately commits a Claude trailer would be blocked by the very hook the
@@ -148,6 +159,7 @@ references/
   standard.md                artifacts, slots, taxonomy, baselines
   git-hygiene.md             the five attribution markers, the local-only set
   release-flow.md            version source, bump axis, tags, the three-way gate
+hooks/                       the authorship guards, installed by install-hooks
 templates/                   skeletons carrying TODO tokens, never plausible prose
 tool/project_standard/
   defaults.py                universal / common / house, and the overrides
@@ -168,7 +180,29 @@ tool/project_standard/
 Every checker module exports `check(ctx) -> list[Finding]` and imports nothing
 from its siblings. `gitio` is the only module that knows git exists.
 
+## Checks
+
+44 checks are implemented. Seven that the design describes are **not**, and are
+listed here rather than left to be discovered:
+
+| Not implemented | What it would do |
+|---|---|
+| 17 | vendored copy is behind the canonical version |
+| 21 | the repo restates global agent tiering instead of pointing at it |
+| 27 | a non-backlog document reads like an ordered backlog |
+| 31 | a direction concept is stated in more than one file |
+| 34 | a PRD marked shipped is not archived under that version |
+| 35 | a draft PRD has no matching backlog entry |
+| 39 | a major bump with no changelog entry describing a break |
+
+Checks 27 and 31 need judgement rather than pattern matching and belong to the
+skill's semantic half. The rest are mechanical and simply unwritten.
+
+Two checks exist beyond the design: `5b` (version sources disagree — split out
+because it needs no history and so must survive a shallow clone) and `8e` (an
+assistant generation notice in a commit message).
+
 ## Design
 
-Full design, all 47 checks, and a log of every defect with what found it:
-`docs/superpowers/specs/2026-08-04-project-standard-design.md`.
+The full design, the rationale for each rule, and a log of every defect found
+while building it live in the design document alongside this skill.

@@ -67,7 +67,14 @@ def check(ctx):
 
 
 def _tracked_local_only(ctx):
+    """Errors only for repos that opted in.
+
+    Some repositories track `logs/` on purpose. Telling a stranger their repo
+    is broken for a convention they never adopted is how a checker gets
+    switched off — so outside an opted-in repo this reports warns, not errors.
+    """
     out = []
+    severity = F.ERROR if opted_in(ctx) else F.WARN
     local_only = defaults.local_only_paths(ctx.contract)
     for rel in ctx.tracked:
         if any(rel.startswith(keep) for keep in defaults.ALWAYS_TRACKED):
@@ -75,9 +82,13 @@ def _tracked_local_only(ctx):
         for path in local_only:
             bare = path.rstrip("/")
             if rel == bare or rel.startswith(path):
-                out.append(F.error(
-                    "7", f"local-only path is tracked — un-track it "
-                         f"(history is not rewritten)", path=rel))
+                out.append(F.Finding(
+                    "7", severity,
+                    "local-only path is tracked — un-track it "
+                    "(history is not rewritten)"
+                    + ("" if severity == F.ERROR else
+                       "; this repo has not opted into the local-only rule"),
+                    path=rel))
                 break
         else:
             name = Path(rel).name
@@ -147,18 +158,27 @@ def _attribution(ctx):
 def _hooks(ctx):
     """Checks 11 / 11b — the guards are reachable.
 
-    A hook vendored into a repo's own .git/hooks never fires when
-    core.hooksPath is set, and it is set globally here. The check asks whether
-    the resolved directory actually holds both guards.
+    A hook placed in a repo's own .git/hooks never fires when core.hooksPath is
+    set elsewhere, so the question is whether the *resolved* directory holds
+    the guards.
+
+    Severity is advisory unless the repo opted in. Erroring by default would
+    fail a stranger's first run on a fully conformant repository, against a
+    check about their workstation that their repository cannot satisfy.
     """
     out = []
+    if defaults.attribution_policy(ctx.contract) == "allow":
+        return out  # the repo does not want the guards
+
+    severity = F.ERROR if opted_in(ctx) else F.WARN
     resolved = ctx.git.config("core.hooksPath")
     local = ctx.git.config("core.hooksPath", local_only=True)
 
     if not resolved:
-        out.append(F.error(
-            "11", "core.hooksPath is unset, so the git-hygiene guards are not "
-                  "installed anywhere"))
+        out.append(F.Finding(
+            "11", severity,
+            "core.hooksPath is unset, so the authorship guards are not "
+            "installed — run `project-standard install-hooks`"))
         return out
 
     hooks_dir = Path(resolved).expanduser()
@@ -168,8 +188,11 @@ def _hooks(ctx):
     missing = [n for n in ("pre-commit", "commit-msg")
                if not (hooks_dir / n).is_file()]
     if missing:
-        finding = F.error(
+        # A local override pointing somewhere without the guards silently
+        # disables every hook, which is worth an error even before opt-in.
+        finding = F.Finding(
             "11b" if local else "11",
+            F.ERROR if local else severity,
             f"core.hooksPath resolves to `{hooks_dir}`, which is missing "
             + ", ".join(missing)
             + (" — a local override pointing at a directory without the guards "

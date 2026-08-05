@@ -164,6 +164,9 @@ def _http_api(repo, tracked):
             continue
         if "node_modules" in f or "/test" in f:
             continue
+        # A dev utility that calls listen() is not the product's API surface.
+        if f.startswith(("scripts/", "tools/", "bin/", "examples/")):
+            continue
         text = _read(repo, f, limit=400_000)
         if not text:
             continue

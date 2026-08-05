@@ -1,9 +1,9 @@
 """Document checks: stamps, scaffolding tokens, links, duplicate documents.
 
 The carve-outs below are load-bearing. Without them the duplicate-backlog check
-fires on `.github/ISSUE_TEMPLATE/todo.md`, on archived version directories and
-on `docs/done/ROADMAP.md` — none of which is a second live roadmap, all of
-which the standard elsewhere blesses as legitimately tracked history.
+fires on issue templates, archived version directories and `docs/done/` — none
+of which is a second live roadmap, all of which the standard elsewhere blesses
+as legitimately tracked history.
 """
 
 import re
@@ -17,7 +17,7 @@ TODO_TOKEN = re.compile(r"<!--\s*TODO\(project-standard\)", re.I)
 STAMP = re.compile(r"\*\*Last reviewed:\*\*\s*(\d{4}-\d{2}-\d{2})", re.I)
 AS_OF = re.compile(r"\*\*As of:\*\*\s*v?(\d+\.\d+\.\d+)", re.I)
 SCAFFOLDED = re.compile(r"\*\*Status:\*\*\s*scaffolded", re.I)
-MD_LINK = re.compile(r"\[[^\]]*\]\(([^)#][^)]*)\)")
+MD_LINK = re.compile(r"\[[^\]]*\]\(\s*([^)\s]+)(?:\s+[\"\'][^)]*)?\)")
 
 # Directories that hold history, templates or archives. Excluded from every
 # duplicate-document check.
@@ -33,8 +33,10 @@ EXCLUDED = (
 
 BACKLOG_NAMES = ("ROADMAP.md", "TODO.md", "BACKLOG.md", "PLAN.md",
                  "IMPLEMENTATION_ROADMAP.md", "NEXT_STEPS.md")
+# The direction doc is *allowed* alongside the product map and owns direction —
+# listing NORTH_STAR here made a fully conformant repo warn forever.
 PRODUCT_TRUTH = ("FEATURE_MAP.md", "FEATURES.md", "CAPABILITIES.md",
-                 "NORTH_STAR.md", "PRODUCT.md")
+                 "PRODUCT.md")
 CANONICAL_BACKLOG = "docs/NEXT_STEPS.md"
 
 DONE_MARKERS = re.compile(r"^\s*[-*]\s*\[x\]|~~[^~]+~~|✅", re.M)
@@ -121,8 +123,8 @@ def _backticked_paths(text):
     out = []
     for m in re.finditer(r"`([A-Za-z0-9_./-]+/[A-Za-z0-9_./-]*)`", text or ""):
         cand = m.group(1)
-        if cand.startswith(("http", "//")) or " " in cand:
-            continue
+        if cand.startswith(("http", "//", "/")) or " " in cand:
+            continue  # a leading slash is a URL path, not a file path
         out.append(cand.rstrip("/"))
     return sorted(set(out))
 
@@ -139,6 +141,12 @@ def _links(ctx, tracked, required):
         for m in MD_LINK.finditer(text):
             target = m.group(1).strip()
             if target.startswith(("http://", "https://", "mailto:", "#")):
+                continue
+            if target.startswith("/"):
+                # Site-relative, not a file path. Joining it would resolve
+                # against the checker's filesystem root, so `/tmp` would
+                # "exist" and a real content route would not — link validation
+                # must not depend on the machine it runs on.
                 continue
             target = target.split("#")[0].strip()
             if not target:
@@ -174,10 +182,13 @@ def _duplicates(ctx, tracked):
                 "26", f"second backlog beside `{CANONICAL_BACKLOG}` — merge it in; "
                       f"two roadmaps disagreeing is worse than none", path=f))
     elif len(others) > 1:
-        for f in others[1:]:
+        incumbent = sorted(others)[0]
+        for f in sorted(others)[1:]:
             out.append(F.error(
-                "26", "more than one backlog document and no canonical "
-                      "`docs/NEXT_STEPS.md`", path=f))
+                "26", f"more than one backlog document and no canonical "
+                      f"`{CANONICAL_BACKLOG}`; treating `{incumbent}` as the "
+                      f"incumbent — merge this one into it, or rename the "
+                      f"incumbent", path=f))
 
     truth = [f for f in live if Path(f).name in PRODUCT_TRUTH]
     if len(truth) > 1:

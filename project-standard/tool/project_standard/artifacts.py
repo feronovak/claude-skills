@@ -96,9 +96,9 @@ def check(ctx):
 def _direction_declared(ctx):
     """`direction:` names the slot; `inherit` points at a parent product.
 
-    isitgood-auction-extension has no separate mission — demanding its own
-    vision statement would manufacture a second place where one product's
-    direction is stated.
+    A companion repo — a browser extension beside the web app it serves —
+    has no separate mission. Demanding its own vision statement would
+    manufacture a second place where one product's direction is stated.
     """
     declared = ctx.contract.direction
     if not declared:
@@ -122,7 +122,8 @@ def _contract_sections(ctx):
     if c.critical_paths is None:
         out.append(F.error(
             "2", "contract declares no `critical-paths` — it may be empty, "
-                 "but not absent; it is what arms the premium review",
+                 "but not absent; it marks where a wrong call ships a "
+                 "fabricated result",
             path=c.path))
     if not c.adopted:
         out.append(F.error(
@@ -136,9 +137,19 @@ def _contract_sections(ctx):
 
     body = (c.body or "").lower()
     for label, needles in (
-        ("how to run/test/build", ("## run", "npm run", "make ", "pytest",
-                                   "python3 -m", "docker compose")),
-        ("the git-hygiene rules", ("co-authored", "attribution", "local-only")),
+        # Broad on purpose: a tool that only recognises npm and python tells
+        # entire ecosystems their contract is wrong.
+        ("how to run/test/build", (
+            "## run", "## usage", "## development", "## getting started",
+            "npm run", "npm test", "yarn ", "pnpm ", "bun ",
+            "make ", "makefile", "just ",
+            "pytest", "python3 -m", "python -m", "tox", "poetry ", "uv run",
+            "cargo ", "go run", "go test", "go build",
+            "gradle", "mvn ", "bundle exec", "rake ", "mix ", "dotnet ",
+            "docker compose", "docker run", "./gradlew",
+        )),
+        ("the git-hygiene rules", ("co-authored", "attribution", "local-only",
+                                   "contributor")),
         ("a pointer to DOCMAP", ("docmap",)),
     ):
         if not any(n in body for n in needles):

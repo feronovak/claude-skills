@@ -48,7 +48,7 @@ class TestVersionSource(unittest.TestCase):
             r.write("package.json", '{"version": "5.0.0"}')
             r.commit()
             r.tag("v0.13.2")
-            found = by_check(release.check(ctx_for(r.dir)), "5")
+            found = by_check(release.check(ctx_for(r.dir)), "5b")
             self.assertTrue(any("disagree" in f.message for f in found))
 
 

@@ -73,6 +73,57 @@ class TestContractParser(unittest.TestCase):
         self.assertEqual(c.channels, ["web"])
 
 
+DOCUMENTED_EXAMPLE = """## project-standard
+
+```yaml
+adopted: 4f3a91c              # baseline commit; attribution errors start here
+profile: product              # omit unless overriding detection
+http-api: no                  # omit unless overriding detection
+  reason: app/api is Auth.js callbacks only, no public surface
+channels: [web, mobile]       # omit unless overriding detection
+direction: docs/NORTH_STAR.md # which file holds mission/vision/north star
+ai-attribution: allow         # this repo wants the trailers
+critical-paths:               # may be empty, may not be absent
+  - services/verdict/
+```
+"""
+
+
+class TestDocumentedGrammar(unittest.TestCase):
+    """The examples in the spec, SKILL.md and README all carry inline comments.
+
+    A parser that cannot read its own documentation is broken, and this one
+    failed silently rather than loudly: `http-api: no  # ...` produced a
+    non-empty string, which is truthy, inverting the declared value.
+    """
+
+    def test_the_documented_example_parses(self):
+        c = parse_contract(DOCUMENTED_EXAMPLE)
+        self.assertEqual(c.errors, [])
+        self.assertEqual(c.adopted, "4f3a91c")
+        self.assertEqual(c.profile, "product")
+        self.assertEqual(c.direction, "docs/NORTH_STAR.md")
+        self.assertEqual(c.critical_paths, ["services/verdict/"])
+
+    def test_a_commented_boolean_is_not_inverted(self):
+        c = parse_contract(DOCUMENTED_EXAMPLE)
+        self.assertIs(c.http_api, False)
+
+    def test_a_commented_inline_list_still_parses(self):
+        c = parse_contract(DOCUMENTED_EXAMPLE)
+        self.assertEqual(c.channels, ["web", "mobile"])
+
+    def test_a_commented_policy_value_is_recognised(self):
+        from project_standard.defaults import attribution_policy
+        self.assertEqual(attribution_policy(parse_contract(DOCUMENTED_EXAMPLE)),
+                         "allow")
+
+    def test_a_hash_inside_quotes_survives(self):
+        c = parse_contract('## project-standard\n\n```yaml\n'
+                           'direction: "docs/A#B.md"\n```\n')
+        self.assertEqual(c.direction, "docs/A#B.md")
+
+
 class TestContractDiscovery(unittest.TestCase):
     def test_either_filename_satisfies_the_slot(self):
         for name in ("CLAUDE.md", "AGENTS.md"):

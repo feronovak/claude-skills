@@ -152,7 +152,8 @@ A repo that declares `allow` is not in breach, and the checks stand down.
 - `references/standard.md` — every artifact, its slot, and what it asserts
 - `references/git-hygiene.md` — the five attribution markers and the local-only set
 - `references/release-flow.md` — the bump axis, the three-way gate, channels
-- Full design and the defect log: `docs/superpowers/specs/2026-08-04-project-standard-design.md`
+- `README.md` — the CLI surface, severity model, CI setup, and the list of
+  designed-but-unimplemented checks
 
 ## Two things the CLI cannot do
 
@@ -162,3 +163,10 @@ by eye when a PR is opened. Do not claim a guard that does not exist.
 
 **Anything in a repo with no git.** The checker refuses rather than reporting a
 repo as conformant on checks that never ran. Offer `git init`.
+
+## Seven checks the design describes and the code does not
+
+17, 21, 27, 31, 34, 35, 39 — listed in `README.md`. Do not report them as
+passing; they never ran. 27 and 31 are judgement calls, so cover them yourself
+when the repo warrants it: a document that reads like a second backlog, and a
+direction concept restated in more than one place.

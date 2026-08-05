@@ -95,13 +95,18 @@ class Contract:
 def find_contract(repo, tracked):
     """Return the agent contract path, preferring CLAUDE.md.
 
-    Both filenames satisfy the slot: llm-preflight and car-trip-automation use
-    AGENTS.md deliberately, and hardcoding CLAUDE.md would break repos that are
-    tool-neutral on purpose.
+    Both filenames satisfy the slot. Some projects use AGENTS.md deliberately
+    to stay neutral across assistants, and hardcoding CLAUDE.md would break
+    them.
     """
-    repo = Path(repo)
-    present = [n for n in CONTRACT_NAMES if n in tracked or (repo / n).is_file()]
-    return present[0] if present else None
+    tracked = set(tracked)
+    present = [n for n in CONTRACT_NAMES if n in tracked]
+    if present:
+        return present[0]
+    # Untracked but on disk: report it as absent, because every other check
+    # reads tracked files. Two checks disagreeing about whether the contract
+    # exists is worse than either answer.
+    return None
 
 
 def extract_block(text):
@@ -144,7 +149,7 @@ def parse_contract(text, path=None):
             if last_key is None:
                 c.errors.append(f"line {lineno}: reason before any key")
             else:
-                c.reasons[last_key] = m.group("value").strip()
+                c.reasons[last_key] = _strip_comment(m.group("value"))
             continue
 
         m = KEY.match(line)
@@ -164,13 +169,33 @@ def load(repo, tracked):
     name = find_contract(repo, tracked)
     if not name:
         c = Contract()
-        c.errors.append("no agent contract (CLAUDE.md or AGENTS.md)")
+        untracked = [n for n in CONTRACT_NAMES if (Path(repo) / n).is_file()]
+        if untracked:
+            c.errors.append(
+                f"`{untracked[0]}` exists but is not tracked — every check reads "
+                f"tracked files, so it cannot serve as the contract")
+        else:
+            c.errors.append("no agent contract (CLAUDE.md or AGENTS.md)")
         return c
     text = (Path(repo) / name).read_text(errors="ignore")
     return parse_contract(text, path=name)
 
 
+COMMENT = re.compile(r"""(?<!["'])\s+#.*$""")
+
+
+def _strip_comment(raw):
+    """Remove a trailing ` # ...` comment.
+
+    Every documented example in the spec, SKILL.md and README uses them. Without
+    this, `http-api: no  # ...` parses to a non-empty string, which is truthy —
+    silently inverting a declared `no` into a yes.
+    """
+    return COMMENT.sub("", raw or "").strip()
+
+
 def _value(raw):
+    raw = _strip_comment(raw)
     if raw.startswith("[") and raw.endswith("]"):
         inner = raw[1:-1].strip()
         return [_scalar(p) for p in inner.split(",") if p.strip()] if inner else []
@@ -178,7 +203,7 @@ def _value(raw):
 
 
 def _scalar(raw):
-    s = raw.strip().strip('"').strip("'")
+    s = _strip_comment(raw).strip('"').strip("'")
     low = s.lower()
     if low in BOOLS:
         return BOOLS[low]

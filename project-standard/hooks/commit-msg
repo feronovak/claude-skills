@@ -1,0 +1,34 @@
+#!/bin/bash
+# project-standard: keep an AI assistant out of the authorship record.
+#
+# Install with `project-standard install-hooks`, which points core.hooksPath at
+# the directory holding this file.
+#
+# This is a house rule with a default, not a universal truth. It is on by
+# default because assistant tooling appends these markers unless told
+# otherwise, so a silent repo gets the marker rather than its absence.
+# A repo that wants the attribution declares `ai-attribution: allow` in its
+# agent contract and should not install this hook.
+
+msg_file="$1"
+[ -f "$msg_file" ] || exit 0
+
+fail() {
+  echo "BLOCKED: $1"
+  echo "This repository does not record an AI assistant as a contributor."
+  exit 1
+}
+
+grep -qiE '^\s*co-authored-by:.*(claude|anthropic|copilot|cursor)' "$msg_file" \
+  && fail "commit message carries an assistant Co-Authored-By trailer."
+
+grep -qiE '^\s*(claude-session|assistant-session):|claude\.ai/code/session' "$msg_file" \
+  && fail "commit message carries an assistant session reference."
+
+grep -qiE '^\s*signed-off-by:.*(claude|anthropic)' "$msg_file" \
+  && fail "commit message signs off as an assistant."
+
+grep -qiE 'generated with \[?claude code|🤖 generated with' "$msg_file" \
+  && fail "commit message carries an assistant generation notice."
+
+exit 0

@@ -1,0 +1,24 @@
+#!/bin/bash
+# project-standard: authorship guard.
+#
+# The commit message is guarded in commit-msg; the author and committer
+# identity are invisible there, because commit-msg receives only the message
+# file. A commit authored as an assistant names it just as loudly as a trailer.
+#
+# Install with `project-standard install-hooks`.
+#
+# This hook deliberately does NOT scan for secrets. Secret scanning is a
+# separate concern with mature dedicated tools, and a half-hearted pattern list
+# here would give false confidence.
+
+for ident in "$(git var GIT_AUTHOR_IDENT 2>/dev/null)" \
+             "$(git var GIT_COMMITTER_IDENT 2>/dev/null)"; do
+  if echo "$ident" | grep -qiE 'claude|anthropic|copilot\[bot\]'; then
+    echo "BLOCKED: commit identity names an AI assistant:"
+    echo "  $ident"
+    echo "Set user.name and user.email to a human before committing."
+    exit 1
+  fi
+done
+
+exit 0

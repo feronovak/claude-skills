@@ -94,7 +94,7 @@ def check(ctx):
         others = [c for c in cands if c[0] != source]
         if any(c[1] != version for c in others):
             out.append(F.error(
-                "5", "more than one version source disagrees: "
+                "5b", "more than one version source disagrees: "
                      + ", ".join(f"{n}={v}" for n, v in cands)
                      + f" — `{source}` is corroborated by the tags; the others "
                        f"must be declared decorative or brought into line"))
