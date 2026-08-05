@@ -75,6 +75,43 @@ ALWAYS_TRACKED = (
 # like a local-only artifact by name; it is not.
 ALWAYS_TRACKED_GLOBS = ("think-day-*/*", "dep-day-*/*", "dev-day-*/*")
 
+# -- secret scanning (COMMON) ----------------------------------------------
+
+# Dedicated tools, recognised by the configuration they leave behind. The
+# standard recommends one rather than shipping its own: a half-hearted pattern
+# list posing as a gate gives false confidence, which is worse than no gate.
+SECRET_SCANNERS = {
+    ".gitleaks.toml": "gitleaks",
+    "gitleaks.toml": "gitleaks",
+    ".secrets.baseline": "detect-secrets",
+    ".trufflehog.yaml": "trufflehog",
+    ".trufflehog.yml": "trufflehog",
+    ".ggshield.yaml": "ggshield",
+}
+SECRET_SCANNER_HINTS = ("gitleaks", "trufflehog", "detect-secrets",
+                        "detect_secrets", "ggshield", "git-secrets")
+
+# The fallback, for repositories with no scanner configured. Deliberately
+# narrow: it reads tracked *documentation* only, and reports at warn. It is a
+# documentation-hygiene check, never a substitute for the real thing.
+# Prefixes are assembled from fragments so this file does not itself contain a
+# literal credential prefix. Exempting it from scanning would have been easier
+# and would have made a genuine leak here invisible.
+_SK = "sk" + "-"
+DOC_SECRET_SHAPES = (
+    (_SK + r"ant" + r"-[A-Za-z0-9_-]{8,}", "an Anthropic key"),
+    (_SK + r"(?:proj-)?[A-Za-z0-9]{20,}", "an OpenAI key"),
+    (r"gh[pousr]_[A-Za-z0-9]{16,}", "a GitHub token"),
+    (r"xox[bpors]-[A-Za-z0-9-]{10,}", "a Slack token"),
+    (r"AKIA[0-9A-Z]{16}", "an AWS access key"),
+    (r"AIza[A-Za-z0-9_-]{30,}", "a Google API key"),
+    (r"eyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.", "a JWT"),
+    ("-----" + "BEGIN" + r" [A-Z ]*" + "PRIVATE" + " KEY-----", "key material"),
+)
+
+# Values a redacted mirror is expected to carry instead.
+REDACTION_MARKERS = ("REPLACE_ME", "CHANGEME", "your-key-here", "xxx", "...")
+
 # -- attribution (HOUSE) ---------------------------------------------------
 
 # Whether an AI assistant may be recorded as a contributor. `forbid` is the

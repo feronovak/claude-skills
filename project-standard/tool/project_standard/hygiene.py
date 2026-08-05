@@ -63,11 +63,82 @@ def opted_in(ctx):
 
 def check(ctx):
     out = []
+    out += _secrets(ctx)
     out += _tracked_local_only(ctx)
     out += _gitignore(ctx)
     out += _attribution(ctx)
     out += _hooks(ctx)
     return out
+
+
+def _secrets(ctx):
+    """Checks 40 and 41.
+
+    40 asks whether a real secret scanner is configured, and recommends one if
+    not. 41 is the fallback for repositories without one — and it is a
+    documentation-hygiene check, not a scanner. It reads tracked documentation
+    only, and never claims a repository is clean.
+
+    The standard does not ship its own scanner on purpose. A partial pattern
+    list presented as a gate gives false confidence, and secret scanning has
+    mature dedicated tools that do it properly.
+    """
+    out = []
+    repo = Path(ctx.repo)
+    tracked = set(ctx.tracked)
+
+    configured = next((tool for name, tool in defaults.SECRET_SCANNERS.items()
+                       if name in tracked or (repo / name).is_file()), None)
+    if not configured:
+        for rel in tracked:
+            if rel.startswith(".github/") or rel.endswith((".yaml", ".yml")):
+                text = _read(repo, rel)
+                if any(h in text for h in defaults.SECRET_SCANNER_HINTS):
+                    configured = "a scanner in CI"
+                    break
+
+    if not configured:
+        out.append(F.warn(
+            "40", "no secret scanner is configured. This standard does not "
+                  "provide one — use a dedicated tool (gitleaks, detect-secrets, "
+                  "trufflehog) and commit its config. The check below is "
+                  "documentation hygiene only and is not a substitute."))
+
+    # 41 — secret-shaped strings in tracked documentation.
+    docs_and_contract = [r for r in tracked
+                         if r.endswith((".md", ".mdx"))
+                         or r in ("CLAUDE.md", "AGENTS.md")]
+    for rel in sorted(docs_and_contract):
+        text = _read(repo, rel)
+        if not text:
+            continue
+        for pattern, label in defaults.DOC_SECRET_SHAPES:
+            m = re.search(pattern, text)
+            if not m:
+                continue
+            window = text[max(0, m.start() - 60):m.start()]
+            if any(k.lower() in window.lower()
+                   for k in defaults.REDACTION_MARKERS):
+                continue
+            line = text[:m.start()].count("\n") + 1
+            out.append(F.warn(
+                "41", f"a tracked document contains something shaped like "
+                      f"{label}. Secret values never belong in documentation or "
+                      f"in the agent contract — keep the real file gitignored "
+                      f"and commit a redacted mirror whose values read "
+                      f"`REPLACE_ME`.", path=rel, line=line))
+            break
+    return out
+
+
+def _read(repo, rel, limit=400_000):
+    p = Path(repo) / rel
+    try:
+        if p.is_file() and p.stat().st_size <= limit:
+            return p.read_text(errors="ignore")
+    except OSError:
+        pass
+    return ""
 
 
 def _tracked_local_only(ctx):

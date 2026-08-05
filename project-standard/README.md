@@ -153,7 +153,7 @@ cd tool
 PYTHONPATH=.:tests python3 -m unittest discover -s tests -t . -v
 ```
 
-166 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
+186 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
 repos in temp directories, with `core.hooksPath` pointed at an empty directory
 so the global hygiene guards never interfere — otherwise a test that
 deliberately commits a Claude trailer would be blocked by the very hook the
@@ -197,7 +197,7 @@ from its siblings. `gitio` is the only module that knows git exists.
 
 ## Checks
 
-44 checks are implemented. Seven that the design describes are **not**, and are
+46 checks are implemented. Seven that the design describes are **not**, and are
 listed here rather than left to be discovered:
 
 | Not implemented | What it would do |
@@ -213,9 +213,26 @@ listed here rather than left to be discovered:
 Checks 27 and 31 need judgement rather than pattern matching and belong to the
 skill's semantic half. The rest are mechanical and simply unwritten.
 
-Two checks exist beyond the design: `5b` (version sources disagree — split out
-because it needs no history and so must survive a shallow clone) and `8e` (an
-assistant generation notice in a commit message).
+Four checks exist beyond the design: `5b` (version sources disagree — split out
+because it needs no history and so must survive a shallow clone), `8e` (an
+assistant generation notice in a commit message), `40` (no secret scanner
+configured) and `41` (a credential-shaped string in tracked documentation).
+
+## Secrets
+
+**This tool recommends a scanner and ships none.** A partial pattern list
+presented as a gate gives false confidence, which is worse than no gate. Use
+gitleaks, detect-secrets or trufflehog and commit its config — check 40 goes
+quiet once it sees one.
+
+What the standard does assert is that secret *values* never belong in the agent
+contract, a skill, a template or any tracked document; the machine-readable
+block holds paths and references. Keep the real file gitignored and commit a
+redacted mirror whose values read `REPLACE_ME`.
+
+Check 41 reads tracked documentation only and warns on credential-shaped
+strings. It is documentation hygiene, and it never reports a repository as
+clean.
 
 ## Design
 

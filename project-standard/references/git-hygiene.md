@@ -72,5 +72,27 @@ Tracked: `docs/superpowers/`, `think-day-*/`, `dev-day-*/`, `.claude/agents/`,
 A currently tracked local-only file is an error — un-tracking needs no rewrite.
 A marker in history before the `adopted` baseline is a warn. Rewriting history
 across the fleet to remove executive summaries is a large, disruptive operation
-in service of tidiness rather than a leak. Secrets are a different matter and
-belong to `secrets-audit`.
+in service of tidiness rather than a leak.
+
+## Secrets
+
+**This standard does not scan for secrets, on purpose.** A partial pattern list
+presented as a gate gives false confidence, which is worse than no gate, and
+secret scanning has mature dedicated tools. Configure one — gitleaks,
+detect-secrets, trufflehog — and commit its config; check 40 recommends one and
+goes quiet as soon as it sees any of them.
+
+What the standard does assert is where secret *values* may live:
+
+| | |
+|---|---|
+| never | the agent contract, a skill, a template, or any tracked document |
+| never | the machine-readable block — it holds paths and references, not values |
+| the pattern | keep the real file gitignored, commit a redacted mirror whose values read `REPLACE_ME` |
+
+Check 41 backs the first row and nothing more: it reads tracked documentation
+and warns when a string is shaped like a live credential. It is documentation
+hygiene, not a scan, and it never reports a repository as clean.
+
+Out of scope, stated rather than implied: assistant configuration and memory
+held outside the repository, and any file the checker cannot see.

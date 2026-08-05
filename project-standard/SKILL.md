@@ -178,6 +178,21 @@ A repo that declares `allow` is not in breach, and the checks stand down.
 - `README.md` — the CLI surface, severity model, CI setup, and the list of
   designed-but-unimplemented checks
 
+## Secrets
+
+The standard recommends a dedicated scanner and ships none — a partial pattern
+list posing as a gate gives false confidence. Check 40 warns when no scanner is
+configured and goes quiet once one is.
+
+What it does enforce is that secret *values* never appear in the agent
+contract, a skill, a template or any tracked document. The machine-readable
+block holds paths and references, never values. The pattern is a gitignored
+real file plus a redacted mirror whose values read `REPLACE_ME`.
+
+Check 41 reads tracked documentation only. When you report it, say what it is:
+documentation hygiene, not a scan, and never evidence that a repository is
+clean.
+
 ## Two things the CLI cannot do
 
 **Pull request bodies.** Git hooks never see them, so the

@@ -19,6 +19,20 @@ DIRECTION_NAMES = (
 )
 
 
+# Slots a public repository may legitimately keep out of git, and the contract
+# key that declares it. Internal prioritisation and release mechanics do not
+# belong in a published repository; the standard should not force them there.
+#
+# The agent contract is deliberately absent from this map. It is the machine
+# interface every check reads, a contributor cloning the repo needs it, and the
+# declaration saying "the contract is local" would otherwise have to live
+# inside the untracked contract nobody reads.
+LOCAL_ALLOWED = {
+    "roadmap": "next-steps",
+    "release flow": "release-flow",
+}
+
+
 @dataclass
 class Slot:
     name: str
@@ -26,6 +40,7 @@ class Slot:
     severity: str = F.ERROR
     describes: str = ""
     satisfied_by: str = None
+    local: bool = False
 
 
 def required_for(resolved, contract):
@@ -43,6 +58,11 @@ def required_for(resolved, contract):
     slots += [
         Slot("code map", ("docs/PROJECT_MAP.md",)),
         Slot("product map", ("docs/FEATURE_MAP.md",)),
+        # One canonical name, deliberately. `ROADMAP.md` and `TODO.md` are
+        # reconciled by renaming, not by widening this list: two conformant
+        # repositories with differently named roadmaps defeat the point of
+        # having a standard, and unlike CLAUDE.md/AGENTS.md there is no
+        # external constraint forcing the second spelling.
         Slot("roadmap", ("docs/NEXT_STEPS.md",)),
         Slot("release flow", ("docs/DEVELOPMENT_FLOW.md", "RELEASING.md",
                               "docs/RELEASING.md")),
@@ -62,7 +82,12 @@ def required_for(resolved, contract):
 
 
 def resolve_slots(ctx):
-    """Mark each slot satisfied or not. Tracked files only."""
+    """Mark each slot satisfied or not.
+
+    Tracked files only, except for the slots a repository has explicitly
+    declared local — those are satisfied by a file on disk, and reported as
+    local rather than passing silently.
+    """
     tracked = set(ctx.tracked)
     slots = required_for(ctx.resolved, ctx.contract)
     for slot in slots:
@@ -70,6 +95,15 @@ def resolve_slots(ctx):
             if cand in tracked:
                 slot.satisfied_by = cand
                 break
+        if slot.satisfied_by:
+            continue
+        key = LOCAL_ALLOWED.get(slot.name)
+        if key and str(ctx.contract.raw.get(key, "")).strip() == "local":
+            for cand in slot.candidates:
+                if (Path(ctx.repo) / cand).is_file():
+                    slot.satisfied_by = cand
+                    slot.local = True
+                    break
     return slots
 
 
@@ -79,6 +113,12 @@ def check(ctx):
 
     for slot in slots:
         if slot.satisfied_by:
+            if slot.local:
+                out.append(F.warn(
+                    "1", f"{slot.name} is declared local and satisfied by an "
+                         f"untracked `{slot.satisfied_by}` — deliberate, but "
+                         f"invisible to anyone who clones this repository",
+                    path=slot.satisfied_by))
             continue
         if slot.name == "direction" and _direction_declared(ctx):
             continue
@@ -122,6 +162,12 @@ def _contract_sections(ctx):
 
     for msg in c.errors:
         out.append(F.error("2", f"contract: {msg}", path=c.path))
+
+    if str(c.raw.get("agent-contract", "")).strip() == "local":
+        out.append(F.error(
+            "2", "the agent contract cannot be declared local: it is the "
+                 "interface every check reads, and the declaration saying so "
+                 "would live in the file nobody reads", path=c.path))
 
     if c.critical_paths is None:
         out.append(F.error(

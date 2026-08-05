@@ -162,3 +162,127 @@ class TestPackagingIsRunnable(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestLocalSlots(unittest.TestCase):
+    """A public repository may keep internal working documents out of git.
+
+    The spec blessed this and nothing implemented it — the third documented
+    mechanism with no readers, and the one the first real retrofit hit.
+    """
+
+    def _repo_with_local(self, filename, declaration):
+        r = TempRepo().__enter__()
+        r.standard_repo()
+        (r.dir / filename).unlink(missing_ok=True)
+        r.commit("chore: base")
+        contract = r.contract_block(adopted="HEAD", **{"critical-paths": []})
+        r.write("CLAUDE.md", contract.replace("critical-paths:",
+                                              f"{declaration}\ncritical-paths:"))
+        r.write(".gitignore", f"{filename}\n")
+        r.commit("chore: declare it local")
+        r.write(filename, "# kept out of git on purpose\n")
+        return r
+
+    def test_a_declared_local_roadmap_satisfies_the_slot(self):
+        r = self._repo_with_local("docs/NEXT_STEPS.md", "next-steps: local")
+        try:
+            findings = runner.run(r.dir).findings
+            missing = [f for f in findings
+                       if f.check == "1" and "missing roadmap" in f.message]
+            self.assertEqual(missing, [])
+            local = [f for f in findings
+                     if f.check == "1" and "declared local" in f.message]
+            self.assertTrue(local, "being local must still be reported")
+            self.assertEqual(local[0].severity, "warn")
+        finally:
+            r.__exit__()
+
+    def test_an_undeclared_untracked_file_does_not_satisfy_the_slot(self):
+        r = self._repo_with_local("docs/NEXT_STEPS.md", "prds: docs/prds/")
+        try:
+            missing = [f for f in runner.run(r.dir).errors
+                       if f.check == "1" and "missing roadmap" in f.message]
+            self.assertTrue(missing, "silence must not be inferred as consent")
+        finally:
+            r.__exit__()
+
+    def test_the_agent_contract_cannot_be_declared_local(self):
+        """The declaration would live in the file nobody reads."""
+        with TempRepo() as r:
+            r.standard_repo()
+            contract = r.contract_block(adopted="HEAD",
+                                        **{"critical-paths": []})
+            r.write("CLAUDE.md", contract.replace(
+                "critical-paths:", "agent-contract: local\ncritical-paths:"))
+            r.commit()
+            offenders = [f for f in runner.run(r.dir).errors
+                         if "cannot be declared local" in f.message]
+            self.assertTrue(offenders)
+
+
+class TestSecretPosture(unittest.TestCase):
+    """The standard recommends a real scanner and ships none.
+
+    A partial pattern list presented as a gate gives false confidence, which is
+    worse than no gate. What it does provide is documentation hygiene: a secret
+    value in a tracked document or in the agent contract is a different problem
+    from a secret in code, and it is one this tool can honestly speak to.
+    """
+
+    def test_a_repo_without_a_scanner_is_told_to_get_one(self):
+        with TempRepo() as r:
+            r.standard_repo()
+            r.commit()
+            found = by_check(runner.run(r.dir).findings, "40")
+            self.assertTrue(found)
+            self.assertEqual(found[0].severity, "warn")
+            self.assertIn("gitleaks", found[0].message)
+
+    def test_a_configured_scanner_silences_the_recommendation(self):
+        for config in (".gitleaks.toml", ".secrets.baseline"):
+            with self.subTest(config=config), TempRepo() as r:
+                r.standard_repo()
+                r.write(config, "{}\n")
+                r.commit()
+                self.assertEqual(by_check(runner.run(r.dir).findings, "40"), [])
+
+    def test_a_scanner_in_ci_counts(self):
+        with TempRepo() as r:
+            r.standard_repo()
+            r.write(".github/workflows/ci.yml",
+                    "jobs:\n  scan:\n    steps:\n"
+                    "      - uses: gitleaks/gitleaks-action@v2\n")
+            r.commit()
+            self.assertEqual(by_check(runner.run(r.dir).findings, "40"), [])
+
+    # Assembled at runtime: a literal example key in a tracked test file would
+    # be blocked by the authorship/secret guards, and rightly so.
+    FAKE_AWS = "AKIA" + "1234567890" + "ABCDEF"
+
+    def test_a_key_shaped_string_in_a_tracked_doc_is_reported(self):
+        with TempRepo() as r:
+            r.standard_repo()
+            r.write("docs/setup.md",
+                    f"# Setup\n\nExport the key: {self.FAKE_AWS}\n")
+            r.commit()
+            found = by_check(runner.run(r.dir).findings, "41")
+            self.assertTrue(found)
+            self.assertEqual(found[0].severity, "warn")
+            self.assertEqual(found[0].path, "docs/setup.md")
+
+    def test_a_redacted_example_is_not_reported(self):
+        """A redacted mirror is the recommended pattern, not a violation."""
+        with TempRepo() as r:
+            r.standard_repo()
+            r.write("docs/setup.md",
+                    f"# Setup\n\nSet `AWS_KEY=REPLACE_ME` — e.g. {self.FAKE_AWS}\n")
+            r.commit()
+            self.assertEqual(by_check(runner.run(r.dir).findings, "41"), [])
+
+    def test_a_clean_document_is_silent(self):
+        with TempRepo() as r:
+            r.standard_repo()
+            r.write("docs/setup.md", "# Setup\n\nRun `npm install`.\n")
+            r.commit()
+            self.assertEqual(by_check(runner.run(r.dir).findings, "41"), [])
