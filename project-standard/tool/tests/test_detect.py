@@ -104,9 +104,6 @@ class TestResolveAndOverride(unittest.TestCase):
             r.standard_repo()
             r.write("app/api/auth/route.ts", "export async function GET() {}\n")
             block = r.contract_block(**{"critical-paths": []})
-            block = block.replace("```\n", "http-api: no\n"
-                                  "  reason: auth callbacks only\n```\n", 1) \
-                if False else block
             r.write("CLAUDE.md", block.replace(
                 "critical-paths:\n", "http-api: no\n"
                 "  reason: auth callbacks only\ncritical-paths:\n"))

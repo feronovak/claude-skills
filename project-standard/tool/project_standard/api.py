@@ -208,13 +208,20 @@ def _freshness(ctx, tracked):
                 None)
     if not spec:
         return out
-    spec_at = ctx.git.file_committed_at(spec)
-    if not spec_at:
+    spec_commit = ctx.git.last_commit_for(spec)
+    if not spec_commit:
         return out
-    for rel in tracked:
+    for rel in sorted(tracked):
         if not (NEXT_ROUTE.match(rel) or NEXT_PAGES_API.match(rel)):
             continue
-        if ctx.git.file_committed_at(rel) > spec_at:
+        route_commit = ctx.git.last_commit_for(rel)
+        if not route_commit or route_commit == spec_commit:
+            continue
+        # Commit timestamps are second-resolution, so two commits made in quick
+        # succession compare equal and the check silently never fires.
+        # Ancestry is exact: the spec is stale when its commit is an ancestor
+        # of the route's.
+        if ctx.git.is_ancestor(spec_commit, route_commit):
             out.append(F.error(
                 "10c", f"`{spec}` was last committed before the routes it "
                        f"documents (e.g. `{rel}`)", path=spec))

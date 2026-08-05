@@ -53,6 +53,15 @@ class Git:
         out = self._run("ls-files")
         return out.splitlines() if out else []
 
+    def last_commit_for(self, path):
+        return self._run("log", "-1", "--format=%H", "--", str(path)) or None
+
+    def is_ancestor(self, older, newer) -> bool:
+        """True when `older` is strictly an ancestor of `newer`."""
+        if not older or not newer or older == newer:
+            return False
+        return self._run("merge-base", "--is-ancestor", older, newer) is not None
+
     def file_committed_at(self, path) -> int:
         out = self._run("log", "-1", "--format=%ct", "--", str(path))
         return int(out) if out else 0

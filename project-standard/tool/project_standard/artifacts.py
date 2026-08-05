@@ -114,7 +114,11 @@ def _contract_sections(ctx):
     out = []
     c = ctx.contract
     if not c.path:
-        return [F.error("2", "no agent contract to read")]
+        # Surface why, rather than the bare fact. "exists but is not tracked"
+        # is actionable; "no agent contract to read" beside a file the user can
+        # see on disk reads as a bug in the checker.
+        return [F.error("2", f"contract: {msg}") for msg in c.errors] or \
+            [F.error("2", "no agent contract to read")]
 
     for msg in c.errors:
         out.append(F.error("2", f"contract: {msg}", path=c.path))
