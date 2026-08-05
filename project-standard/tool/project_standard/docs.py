@@ -111,11 +111,22 @@ def _tokens_and_stamps(ctx, tracked, docs, required):
     # Check 24 — a code map that names paths which do not exist.
     if "docs/PROJECT_MAP.md" in required:
         text = _read(ctx, "docs/PROJECT_MAP.md")
-        for path in _backticked_paths(text):
-            if not (Path(ctx.repo) / path).exists():
-                out.append(F.error(
-                    "24", f"code map names `{path}`, which does not exist",
-                    path="docs/PROJECT_MAP.md"))
+        missing = [p for p in _backticked_paths(text)
+                   if not (Path(ctx.repo) / p).exists()]
+        if missing:
+            # A warn, not an error. Hand-auditing this check against a real code
+            # map found most hits were legitimate prose: a sentence asserting a
+            # directory does NOT exist, entries in an indented tree diagram
+            # whose real path is nested, a proposed future layout, and a
+            # deliberate cross-repository reference. Backtick position cannot
+            # distinguish those from a genuinely stale path.
+            out.append(F.warn(
+                "24", f"{len(missing)} path(s) named in the code map do not "
+                      f"resolve: " + ", ".join(f"`{p}`" for p in missing[:5])
+                      + (" …" if len(missing) > 5 else "")
+                      + " (prose and tree diagrams produce false hits — needs "
+                        "a human eye)",
+                path="docs/PROJECT_MAP.md"))
     return out
 
 

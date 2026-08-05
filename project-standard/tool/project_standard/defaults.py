@@ -38,17 +38,9 @@ LIBRARY_SIGNALS = {
 
 # -- capabilities (UNIVERSAL) ----------------------------------------------
 
-HTTP_SIGNS = {
-    "flask": r"\bFlask\(|\bBlueprint\(",
-    "fastapi": r"\bFastAPI\(",
-    "django": r"\burlpatterns\s*=",
-    "express": r"\b(?:app|server)\.listen\(",
-    "rails": r"Rails\.application\.routes",
-    "go-http": r"http\.HandleFunc\(|mux\.HandleFunc\(",
-}
-
+# Path fragments that mark a release channel. `detect._channels` reads these;
+# adding an entry here is all it takes to recognise another toolchain.
 CHANNEL_SIGNS = {
-    "extension": ("manifest.json",),          # with manifest_version
     "mobile": ("android-native/", "android/", "ios/", "capacitor.config",
                "pubspec.yaml"),
     "desktop": ("src-tauri/", "electron.config", "electron-builder.yml"),

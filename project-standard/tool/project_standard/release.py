@@ -93,11 +93,16 @@ def check(ctx):
         chosen = [c for c in cands if c[0] == source]
         others = [c for c in cands if c[0] != source]
         if any(c[1] != version for c in others):
+            tagged = {".".join(str(n) for n in p[1])
+                      for t in tags if (p := parse_tag(t))}
+            why = ("corroborated by the tags" if version in tagged
+                   else "chosen by ecosystem precedence — no tag corroborates "
+                        "any of them")
             out.append(F.error(
                 "5b", "more than one version source disagrees: "
                      + ", ".join(f"{n}={v}" for n, v in cands)
-                     + f" — `{source}` is corroborated by the tags; the others "
-                       f"must be declared decorative or brought into line"))
+                     + f" — `{source}` is {why}; the others must be brought "
+                       f"into line or declared decorative"))
 
     out += _release_gate(ctx, tags, source, version)
     out += _regressions(ctx, tags)

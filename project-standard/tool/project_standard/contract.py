@@ -149,7 +149,9 @@ def parse_contract(text, path=None):
             if last_key is None:
                 c.errors.append(f"line {lineno}: reason before any key")
             else:
-                c.reasons[last_key] = _strip_comment(m.group("value"))
+                # A reason is free prose to a human. Stripping a `#` from it
+                # truncates "see issue #42 for why" to "see issue".
+                c.reasons[last_key] = m.group("value").strip()
             continue
 
         m = KEY.match(line)
@@ -181,17 +183,29 @@ def load(repo, tracked):
     return parse_contract(text, path=name)
 
 
-COMMENT = re.compile(r"""(?<!["'])\s+#.*$""")
-
-
 def _strip_comment(raw):
-    """Remove a trailing ` # ...` comment.
+    """Remove a trailing ` # ...` comment, respecting quotes.
 
-    Every documented example in the spec, SKILL.md and README uses them. Without
-    this, `http-api: no  # ...` parses to a non-empty string, which is truthy —
-    silently inverting a declared `no` into a yes.
+    Every documented example annotates keys this way, and without stripping,
+    `http-api: no  # ...` parses to a non-empty string — which is truthy, so a
+    declared `no` silently became a yes.
+
+    A regex lookbehind cannot express "not inside a quoted span"; an earlier
+    attempt anchored on the whitespace instead and mangled both
+    `direction: "a b.md" # why` and `reason: see issue #42`. Scanning once with
+    a quote flag is the only correct way, and it is four lines.
     """
-    return COMMENT.sub("", raw or "").strip()
+    raw = raw or ""
+    quote = None
+    for i, ch in enumerate(raw):
+        if quote:
+            if ch == quote:
+                quote = None
+        elif ch in "\"'":
+            quote = ch
+        elif ch == "#" and (i == 0 or raw[i - 1].isspace()):
+            return raw[:i].strip()
+    return raw.strip()
 
 
 def _value(raw):

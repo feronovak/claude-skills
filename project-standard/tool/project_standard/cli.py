@@ -98,7 +98,6 @@ def main(argv=None):
     payload, worst = [], 0
     for repo in repos:
         report = runner.run(repo, profile=args.profile, only=args.only)
-        head = getattr(report, "summary", "")
         worst = max(worst, report.exit_code)
         if args.json:
             payload.append({"repo": str(repo),

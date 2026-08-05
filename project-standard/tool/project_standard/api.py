@@ -29,7 +29,10 @@ DOC_ROW = re.compile(
     rf"^\s*\|\s*\**((?:{_M})(?:\s*[·/,]\s*(?:{_M}))*)\**\s*\|\s*\**`?([^`|*]+?)`?\**\s*\|",
     re.M)
 
-NEXT_ROUTE = re.compile(r"^(?:src/)?(?:app|pages)/(?P<path>.*api/.*)/route\.[tj]sx?$")
+# Any App Router `route.ts` is an endpoint — webhooks and callbacks commonly
+# live outside `app/api/`, and missing them undercounts coverage while turning
+# a documented route into a phantom.
+NEXT_ROUTE = re.compile(r"^(?:src/)?app/(?P<path>.+)/route\.[tj]sx?$")
 # Next.js route groups are organisational and never appear in a URL.
 ROUTE_GROUP = re.compile(r"/?\([^)]*\)")
 NEXT_PAGES_API = re.compile(r"^(?:src/)?pages/(?P<path>api/.+)\.[tj]sx?$")
@@ -37,6 +40,7 @@ EXPORTED = r"export\s+(?:async\s+)?(?:function|const)\s+{m}\b"
 # `export const {{ GET, POST }} = handlers` (Auth.js v5) and `export {{ GET }} from`
 EXPORT_BRACE = re.compile(r"export\s+(?:const\s+)?\{([^}]*)\}")
 
+DJANGO_SIGNS = re.compile(r"\burlpatterns\s*=")
 FLASK_SIGNS = re.compile(r"\bBlueprint\(|@\w+\.route\(")
 FASTAPI_SIGNS = re.compile(r"\bFastAPI\(|@\w+\.(?:get|post|put|patch|delete)\(")
 EXPRESS_SIGNS = re.compile(r"\b(?:app|server|router)\.(?:get|post|put|patch|delete)\(|"
@@ -119,6 +123,8 @@ def code_endpoints(repo, tracked):
                 frameworks.add("fastapi")
             elif FLASK_SIGNS.search(src):
                 frameworks.add("flask")
+            elif DJANGO_SIGNS.search(src):
+                frameworks.add("django")
         elif rel.endswith((".ts", ".js", ".mjs")) and "node_modules" not in rel:
             # Express routes are literals, but mounting composes prefixes the
             # same way blueprints do — reporting it unresolved is honest, and
@@ -139,6 +145,17 @@ def check(ctx):
     tracked = set(ctx.tracked)
     docs = doc_endpoints(ctx.repo, tracked)
     code, unresolved = code_endpoints(ctx.repo, tracked)
+
+    if not code and not unresolved:
+        # Detection says this repo serves HTTP, but nothing here can enumerate
+        # its routes — a framework we do not read, or a declared override.
+        # Reporting "0 routes documented" would be nonsense, and diffing an
+        # empty set turns every documented route into a phantom.
+        out.append(F.warn(
+            "10d", "this repository serves HTTP, but no supported route table "
+                   "could be read. Write `docs/api/routes.json` (see "
+                   "`project-standard routes`) so coverage can be checked."))
+        return out
 
     if unresolved:
         out.append(F.warn(

@@ -56,6 +56,20 @@ class TestConformantRepo(unittest.TestCase):
             hook_errors = [f for f in report.errors if f.check in ("11", "11b")]
             self.assertEqual(hook_errors, [])
 
+    def test_a_conformant_repo_has_no_warns_it_cannot_fix(self):
+        """The direction doc and the product map are BOTH required slots, so
+        counting the direction doc as competing product truth made full
+        conformance permanently yellow. Asserting only 'no errors' let that
+        survive: re-adding NORTH_STAR to PRODUCT_TRUTH kept every test green."""
+        with TempRepo() as r:
+            conformant(r)
+            report = runner.run(r.dir)
+            for check_id in ("18", "26", "24", "16"):
+                offenders = [f.render() for f in report.findings
+                             if f.check == check_id]
+                self.assertEqual(offenders, [],
+                                 f"check {check_id} fires on a conformant repo")
+
     def test_no_internal_errors_on_a_conformant_repo(self):
         with TempRepo() as r:
             conformant(r)

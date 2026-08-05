@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Runnable without an install step, because the tool is vendored into
+# repositories that must gain no dependency.
+#
+# Put this directory on PATH, or symlink this file into one:
+#   ln -s "$PWD/bin/project-standard" ~/.local/bin/project-standard
+set -euo pipefail
+here="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+exec python3 -c 'import sys; sys.path.insert(0, sys.argv.pop(1)); from project_standard.cli import main; sys.exit(main())' "$here/../tool" "$@"

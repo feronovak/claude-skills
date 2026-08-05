@@ -910,7 +910,7 @@ Git hooks never see pull request bodies. It is a semantic check when the skill r
 a convention otherwise. Claiming a guard that does not exist would be the failure mode
 this whole standard is built against.
 
-### The guards are global and versioned, never vendored
+### The guards ship with the tool and are installed, never assumed
 
 An earlier draft vendored a `pre-commit` hook into each repo. That mechanism cannot fire
 here: `core.hooksPath` is set globally, and when it is set git ignores every repo's own
@@ -919,16 +919,22 @@ check that confirmed the file existed would have reported green.
 
 | | Where | Scope |
 |---|---|---|
-| `commit-msg` | `~/.claude/git-hooks/`, version controlled | every repo — attribution |
-| `pre-commit` | same | every repo — secrets; opted-in repos — local-only paths |
+| `commit-msg` | shipped in the tool, installed by `install-hooks` | attribution |
+| `pre-commit` | same | author and committer identity |
+
+**The guards do not scan for secrets.** Secret scanning is a separate concern
+with mature dedicated tools, and a half-hearted pattern list inside this hook
+would give false confidence. An earlier draft bundled one; shipping it would
+have implied a guarantee the tool cannot make.
 
 **Attribution must be `commit-msg`, not `pre-commit`.** The commit message does not exist
 when `pre-commit` runs, and the trailer lives in the message. A pre-commit implementation
 of this rule cannot work at all, regardless of where it is installed.
 
-The canonical copy is version controlled so an edit to the guard is diffable and
-revertible — it holds the secret scan, and previously existed as a single unversioned
-file with no backup and no test.
+The guards are version controlled with the tool, so an edit is diffable and
+revertible, and they are installed by an explicit command rather than assumed
+to exist. A check that demands guards a user has no way to obtain fails every
+first run.
 
 **A repo opts into the local-only guard**, by carrying `# project-standard: local-only`
 in its `.gitignore` or the vendored checker in `scripts/project-standard/`. The

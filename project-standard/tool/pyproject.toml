@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-standard"
+version = "0.1.0"
+description = "Validate a project's documentation, release flow and git hygiene"
+readme = "../README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = []
+classifiers = [
+  "Environment :: Console",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+]
+
+# Deliberately empty: the tool is vendored into repositories that must gain no
+# dependency, and runs on CI images with no install step.
+
+[project.scripts]
+project-standard = "project_standard.cli:main"
+
+[tool.setuptools]
+packages = ["project_standard"]

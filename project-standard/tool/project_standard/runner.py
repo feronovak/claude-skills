@@ -55,21 +55,47 @@ def build_ctx(repo, profile=DEV):
 def _workspaces(ctx):
     """Check 16 — a bounded scope that announces itself.
 
-    The spec promises this rather than passing a monorepo silently; without it
-    a workspace tree reads as fully covered when only the root was validated.
+    Every common monorepo declaration, not just npm's: a pnpm or Cargo tree
+    that produced no announcement would pass silently, which is the exact
+    failure this check exists to prevent.
     """
     import json
+    import re
+
+    found = []
+
     pkg = ctx.repo / "package.json"
-    if not pkg.is_file():
-        return []
-    try:
-        data = json.loads(pkg.read_text(errors="ignore"))
-    except ValueError:
-        return []
-    ws = data.get("workspaces")
-    if isinstance(ws, dict):
-        ws = ws.get("packages")
-    return list(ws) if isinstance(ws, list) else []
+    if pkg.is_file():
+        try:
+            data = json.loads(pkg.read_text(errors="ignore"))
+            ws = data.get("workspaces")
+            if isinstance(ws, dict):
+                ws = ws.get("packages")
+            if isinstance(ws, list):
+                found += [str(w) for w in ws]
+        except ValueError:
+            pass
+
+    pnpm = ctx.repo / "pnpm-workspace.yaml"
+    if pnpm.is_file():
+        found += re.findall(r"^\s*-\s*['\"]?([^'\"\n]+)",
+                            pnpm.read_text(errors="ignore"), re.M)
+
+    cargo = ctx.repo / "Cargo.toml"
+    if cargo.is_file():
+        text = cargo.read_text(errors="ignore")
+        m = re.search(r"\[workspace\][^\[]*?members\s*=\s*\[([^\]]*)\]",
+                      text, re.S)
+        if m:
+            found += [p.strip().strip('"\'') for p in m.group(1).split(",")
+                      if p.strip()]
+
+    gowork = ctx.repo / "go.work"
+    if gowork.is_file():
+        found += re.findall(r"^\s*\./(\S+)", gowork.read_text(errors="ignore"),
+                            re.M)
+
+    return [w for w in dict.fromkeys(found) if w]
 
 
 def workspace_check(ctx):

@@ -177,14 +177,17 @@ def _hooks(ctx):
     if not resolved:
         out.append(F.Finding(
             "11", severity,
-            "core.hooksPath is unset, so the authorship guards are not "
-            "installed — run `project-standard install-hooks`"))
+            "core.hooksPath is unset, so no hooks directory is wired up — "
+            "install the authorship guards with `install-hooks`"))
         return out
 
     hooks_dir = Path(resolved).expanduser()
     if not hooks_dir.is_absolute():
         hooks_dir = Path(ctx.repo) / hooks_dir
 
+    # Filenames only: this asks whether a hooks directory is wired up, not
+    # whether those particular hooks enforce anything. The history checks
+    # (8a-8e) are what actually verify the rule held.
     missing = [n for n in ("pre-commit", "commit-msg")
                if not (hooks_dir / n).is_file()]
     if missing:

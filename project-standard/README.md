@@ -24,14 +24,24 @@ as it has repos.
 
 ## Install
 
-The tool takes no dependencies and needs no install step. Run it from anywhere:
+No dependencies, no install step. Put `bin/` on your PATH, or symlink the
+wrapper:
 
 ```bash
-python3 -m project_standard.cli check --repo /path/to/your-repo
+ln -s "$PWD/bin/project-standard" ~/.local/bin/project-standard
+project-standard check --repo /path/to/your-repo
 ```
 
-To gate a repo's CI, vendor `tool/project_standard/` to
-`scripts/project-standard/` and add a job (see **CI** below).
+Or call the module directly, with `tool/` on the path:
+
+```bash
+PYTHONPATH=/path/to/project-standard/tool \
+  python3 -m project_standard.cli check --repo /path/to/your-repo
+```
+
+To gate a repo's CI, copy `tool/project_standard/` into the target repository
+as `scripts/project_standard/` — an importable package name, with an
+underscore — and add a job (see **CI** below).
 
 To install the authorship guards:
 
@@ -123,8 +133,11 @@ reports 150 failures on its first run does not survive the week.
 - uses: actions/checkout@v4
   with:
     fetch-depth: 0        # required: eight checks need history and tags
-- run: python3 -m project_standard.cli check --profile=ci
+- run: PYTHONPATH=scripts python3 -m project_standard.cli check --profile=ci
 ```
+
+`PYTHONPATH=scripts` is what makes the vendored copy importable — the package
+directory must be `scripts/project_standard/`, not a hyphenated name.
 
 `fetch-depth: 0` is not optional. GitHub Actions clones one commit with no tags
 by default, which makes every history-dependent check unanswerable — they are
@@ -140,7 +153,7 @@ cd tool
 PYTHONPATH=.:tests python3 -m unittest discover -s tests -t . -v
 ```
 
-134 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
+166 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
 repos in temp directories, with `core.hooksPath` pointed at an empty directory
 so the global hygiene guards never interfere — otherwise a test that
 deliberately commits a Claude trailer would be blocked by the very hook the
@@ -159,6 +172,7 @@ references/
   standard.md                artifacts, slots, taxonomy, baselines
   git-hygiene.md             the five attribution markers, the local-only set
   release-flow.md            version source, bump axis, tags, the three-way gate
+bin/project-standard         runnable wrapper — no install step
 hooks/                       the authorship guards, installed by install-hooks
 templates/                   skeletons carrying TODO tokens, never plausible prose
 tool/project_standard/
@@ -175,6 +189,7 @@ tool/project_standard/
   docmap.py                  the DOCMAP generator
   runner.py                  the registry, profiles, exit codes
   cli.py                     argument surface
+  routes.py                  writes docs/api/routes.json from a live app
 ```
 
 Every checker module exports `check(ctx) -> list[Finding]` and imports nothing

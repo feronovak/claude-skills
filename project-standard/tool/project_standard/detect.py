@@ -17,7 +17,7 @@ PRODUCT, LIBRARY, DOCS = "product", "library", "docs"
 
 SOURCE_SUFFIXES = (".py", ".ts", ".tsx", ".js", ".jsx", ".rs", ".go", ".rb")
 
-NEXT_ROUTE = re.compile(r"^(?:src/)?(?:app|pages)/.*api/.*route\.[tj]sx?$")
+NEXT_ROUTE = re.compile(r"^(?:src/)?app/.+/route\.[tj]sx?$")
 NEXT_PAGES_API = re.compile(r"^(?:src/)?pages/api/.+\.[tj]sx?$")
 FLASK_APP = re.compile(r"\bFlask\(|\bBlueprint\(")
 FASTAPI_APP = re.compile(r"\bFastAPI\(")
@@ -191,12 +191,10 @@ def _channels(repo, tracked):
                 channels.append("extension")
                 break
 
-    if any(f.startswith("android-native/") or "capacitor.config" in f
-           for f in tracked):
-        channels.append("mobile")
-    if any(f.startswith("src-tauri/") or "electron.config" in f or
-           f.endswith("electron-builder.yml") for f in tracked):
-        channels.append("desktop")
+    for channel in ("mobile", "desktop"):
+        signs = defaults.CHANNEL_SIGNS[channel]
+        if any(f.startswith(s) or s in f for f in tracked for s in signs):
+            channels.append(channel)
 
     # `extension` is exclusive: an extension's source tree looks exactly like a
     # web app's, and a phantom `web` channel arms a release gate that can never
