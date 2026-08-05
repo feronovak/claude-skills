@@ -11,7 +11,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from . import findings as F
+from . import defaults, findings as F
 
 PRODUCT, LIBRARY, DOCS = "product", "library", "docs"
 
@@ -106,19 +106,50 @@ def _json(repo, rel):
         return {}
 
 
-def _profile(repo, tracked):
-    pkg = _json(repo, "package.json")
-    if pkg.get("publishConfig") or pkg.get("bin"):
-        return LIBRARY
-    pyproject = _read(repo, "pyproject.toml")
-    if "[project.scripts]" in pyproject or "build-backend" in pyproject:
-        return LIBRARY
+def manifests(repo, tracked):
+    """Package manifests at the repository root."""
+    present = []
+    for name in defaults.PACKAGE_MANIFESTS:
+        if name.startswith("*"):
+            if any(f.endswith(name[1:]) and "/" not in f for f in tracked):
+                present.append(name)
+        elif (Path(repo) / name).is_file():
+            present.append(name)
+    return present
 
-    has_source = any(
-        f.endswith(SOURCE_SUFFIXES) and not f.startswith(("scripts/", "tool/"))
+
+def _profile(repo, tracked):
+    """product | library | docs, from packaging convention.
+
+    The discriminator is a package manifest or a conventional source root —
+    not the absence of code files and not a markdown ratio. An infrastructure
+    repo holds shell scripts, and a documentation-heavy product can be 41%
+    markdown; both break the naive tests.
+    """
+    found = manifests(repo, tracked)
+
+    for name in found:
+        signals = defaults.LIBRARY_SIGNALS.get(name)
+        if not signals:
+            continue
+        if name == "package.json":
+            pkg = _json(repo, name)
+            if any(k in pkg for k in signals) and not pkg.get("private"):
+                return LIBRARY
+        else:
+            text = _read(repo, name)
+            if any(s in text for s in signals):
+                return LIBRARY
+
+    if found:
+        return PRODUCT
+
+    has_entrypoint = any(
+        f.split("/", 1)[0] in defaults.ENTRYPOINT_DIRS
+        and f.endswith(SOURCE_SUFFIXES)
         for f in tracked
     )
-    return PRODUCT if has_source else DOCS
+    return PRODUCT if has_entrypoint else DOCS
 
 
 def _http_api(repo, tracked):

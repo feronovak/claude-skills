@@ -11,10 +11,8 @@ import sys
 from pathlib import Path
 
 from . import VERSION
-from . import docmap, routes as routes_mod, runner
+from . import defaults, docmap, routes as routes_mod, runner
 from .findings import ERROR, SKIPPED, WARN
-
-FLEET = Path.home() / "projects" / "apps"
 
 
 def build_parser():
@@ -27,11 +25,12 @@ def build_parser():
 
     c = sub.add_parser("check", help="validate a repo (default)")
     c.add_argument("--repo", action="append", default=[],
-                   help="repo path, or a name under ~/projects/apps")
+                   help="repo path, or a name under the fleet root")
     c.add_argument("--only", action="append", default=[],
                    help="narrow to one concern; repeatable")
     c.add_argument("--fleet", action="store_true",
-                   help="every git repo under ~/projects/apps")
+                   help="every git repo under the fleet root "
+                        "($PROJECT_STANDARD_FLEET, else the parent of this repo)")
     c.add_argument("--json", action="store_true", help="machine-readable")
     c.add_argument("--profile", choices=(runner.DEV, runner.CI),
                    default=runner.DEV,
@@ -48,16 +47,17 @@ def build_parser():
 
 
 def resolve_repos(args):
+    fleet = defaults.fleet_root()
     if getattr(args, "fleet", False):
-        if not FLEET.is_dir():
+        if not fleet.is_dir():
             return []
-        return sorted(p for p in FLEET.iterdir() if (p / ".git").exists())
+        return sorted(p for p in fleet.iterdir() if (p / ".git").exists())
     if args.repo:
         out = []
         for name in args.repo:
             path = Path(name)
-            if not path.exists() and (FLEET / name).exists():
-                path = FLEET / name
+            if not path.exists() and (fleet / name).exists():
+                path = fleet / name
             out.append(path)
         return out
     return [Path.cwd()]

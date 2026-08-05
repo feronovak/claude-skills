@@ -5,15 +5,15 @@ description: Use when validating or setting up a project's documentation, releas
 
 # project-standard
 
-One standard for how a project documents itself, releases, and keeps Claude out
-of its git history — with a CLI for what a machine can decide and this skill for
-what it cannot.
+One standard for how a project documents itself, releases, and records who
+wrote it — with a CLI for what a machine can decide and this skill for what it
+cannot.
 
 ## The split, and why it matters
 
 **Mechanical** — does the file exist, do its links resolve, is the endpoint
 documented, does the tag match the version, is a local-only path tracked. The
-CLI answers these in about half a second across eight repos, with no model
+CLI answers these in well under a second per repository, with no model
 involved. Never re-derive them by reading files yourself.
 
 **Semantic** — does the contract describe *this* project or a generic framework,
@@ -34,7 +34,7 @@ Always run the CLI first. Then judge only what it could not.
 
 ```bash
 python3 -m project_standard.cli check --repo <path>          # one repo
-python3 -m project_standard.cli check --fleet                # all of ~/projects/apps
+python3 -m project_standard.cli check --fleet                # every repo under the fleet root
 python3 -m project_standard.cli check --only version         # one concern everywhere
 python3 -m project_standard.cli check --json                 # machine-readable
 ```
@@ -128,6 +128,24 @@ never a list of claims, and work through them with the user.
 
 **Retrofitting a changelog does not invent history.** Where tags do not reach
 back far enough, the file starts at the current version and says so.
+
+## House rules are defaults, not universals
+
+This skill is meant to be pointed at other people's repositories. Before
+reporting a house rule as a violation, check whether the repo declared
+otherwise:
+
+```yaml
+local-only:            # extend the default set
+  - scratch/
+track-anyway:          # keep tracking something the default would flag
+  - logs/
+ai-attribution: allow  # this repo wants the Co-Authored-By trailers
+```
+
+`ai-attribution` defaults to `forbid` because the tooling appends those markers
+unless told otherwise — silence produces the marker rather than its absence.
+A repo that declares `allow` is not in breach, and the checks stand down.
 
 ## Reference
 

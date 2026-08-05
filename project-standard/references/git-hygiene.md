@@ -2,6 +2,11 @@
 
 ## Attribution — five markers, not one
 
+**This is a house rule with a default, not a universal truth.** It is on by
+default because the tooling appends these markers unless told otherwise, so a
+silent repo gets the marker rather than its absence. A repo that wants the
+attribution declares `ai-attribution: allow` and every check below stands down.
+
 The harness appends several independently. Guarding only the trailer leaves the
 rule half-enforced, and the session line is the one that actually got through:
 one repo carries three in its last 200 commits, in messages with no trailer.
@@ -41,6 +46,11 @@ would stop a legitimate commit, and a guard that does that gets disabled
 wholesale — taking the secret scan with it.
 
 ## The local-only set
+
+Split by how universal it is. `local-only:` in the contract extends the set,
+`local-only: [replace, ...]` swaps it, and `track-anyway:` keeps a default path
+tracked — some repos track `logs/` on purpose, and being told that is wrong is
+how a guard gets disabled wholesale.
 
 ```
 docs/exec-summaries/   session-notes/   logs/   test_results/

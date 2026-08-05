@@ -1,0 +1,129 @@
+"""Shareable defaults, and the seam where a house rule stops being universal.
+
+This tool is meant to be handed to someone else's repositories. Anything tuned
+to one person's setup belongs here, marked, and overridable — otherwise the
+standard smuggles one team's habits in as if they were best practice.
+
+Three levels:
+
+  UNIVERSAL   true in any repository, by convention
+  COMMON      true in most, and safe as a default
+  HOUSE       one team's choice; a default, but declarable in the contract
+"""
+
+import os
+from pathlib import Path
+
+# -- profile detection (UNIVERSAL) -----------------------------------------
+
+# A package manifest is the strongest signal that a tree is shipped software.
+PACKAGE_MANIFESTS = (
+    "package.json", "pyproject.toml", "setup.py", "Cargo.toml", "go.mod",
+    "composer.json", "Gemfile", "pom.xml", "build.gradle", "build.gradle.kts",
+    "mix.exs", "pubspec.yaml", "Package.swift", "*.csproj",
+)
+
+# Conventional source roots across ecosystems.
+ENTRYPOINT_DIRS = (
+    "src", "app", "lib", "cmd", "pages", "internal", "pkg", "server",
+)
+
+# Distribution signals — a manifest saying "others consume this".
+LIBRARY_SIGNALS = {
+    "package.json": ("publishConfig", "bin", "exports", "types"),
+    "pyproject.toml": ("[project.scripts]", "build-backend", "[tool.poetry]"),
+    "setup.py": ("entry_points", "console_scripts"),
+    "Cargo.toml": ("[lib]",),
+}
+
+# -- capabilities (UNIVERSAL) ----------------------------------------------
+
+HTTP_SIGNS = {
+    "flask": r"\bFlask\(|\bBlueprint\(",
+    "fastapi": r"\bFastAPI\(",
+    "django": r"\burlpatterns\s*=",
+    "express": r"\b(?:app|server)\.listen\(",
+    "rails": r"Rails\.application\.routes",
+    "go-http": r"http\.HandleFunc\(|mux\.HandleFunc\(",
+}
+
+CHANNEL_SIGNS = {
+    "extension": ("manifest.json",),          # with manifest_version
+    "mobile": ("android-native/", "android/", "ios/", "capacitor.config",
+               "pubspec.yaml"),
+    "desktop": ("src-tauri/", "electron.config", "electron-builder.yml"),
+}
+
+# -- local-only paths ------------------------------------------------------
+
+# COMMON — machine-local or tool-generated in most ecosystems.
+LOCAL_ONLY_COMMON = (
+    "logs/", "test_results/", "test-results/", "coverage/",
+    ".ruff_cache/", ".pytest_cache/", ".mypy_cache/",
+)
+
+# HOUSE — agent and editor scratch directories. Widely applicable, but a team
+# that deliberately tracks any of these should say so rather than be told it is
+# wrong. Extend or replace with `local-only:` in the contract.
+LOCAL_ONLY_HOUSE = (
+    "docs/exec-summaries/", "session-notes/",
+    ".agenthub/", ".playwright-mcp/", ".interface-design/", ".cursor/",
+    ".claude/settings.local.json", ".claude/worktrees/",
+    ".claude/scheduled_tasks.lock",
+)
+
+LOCAL_ONLY_PATTERNS = ("*EXEC*SUMMAR*", "*-exec-summary*", "*SESSION-NOTES*")
+
+# Tracked on purpose: project knowledge, and deliberate historical snapshots.
+ALWAYS_TRACKED = (
+    "docs/superpowers/", ".claude/agents/", ".claude/skills/",
+)
+
+# -- attribution (HOUSE) ---------------------------------------------------
+
+# Whether an AI assistant may be recorded as a contributor. `forbid` is the
+# default because the tooling appends these markers unless told otherwise, so
+# silence produces the marker rather than its absence — but a team that wants
+# the attribution can say `ai-attribution: allow` and the checks stand down.
+AI_ATTRIBUTION_DEFAULT = "forbid"
+
+
+def local_only_paths(contract=None):
+    """The effective local-only set for a repo."""
+    base = list(LOCAL_ONLY_COMMON) + list(LOCAL_ONLY_HOUSE)
+    if contract is not None:
+        declared = contract.raw.get("local-only")
+        if isinstance(declared, list) and declared:
+            if str(declared[0]).strip() == "replace":
+                return [str(p) for p in declared[1:]]
+            base = base + [str(p) for p in declared]
+        tracked_anyway = contract.raw.get("track-anyway")
+        if isinstance(tracked_anyway, list):
+            keep = {str(p).rstrip("/") for p in tracked_anyway}
+            base = [p for p in base if p.rstrip("/") not in keep]
+    return base
+
+
+def attribution_policy(contract=None):
+    if contract is not None:
+        declared = contract.raw.get("ai-attribution")
+        if declared in ("allow", "forbid"):
+            return declared
+    return AI_ATTRIBUTION_DEFAULT
+
+
+def fleet_root():
+    """Where `--fleet` looks.
+
+    Configurable, because a hardcoded path is the fastest way to make a tool
+    useless to anyone else. Falls back to the parent of the current repo, which
+    is the common "all my projects live side by side" layout.
+    """
+    env = os.environ.get("PROJECT_STANDARD_FLEET")
+    if env:
+        return Path(env).expanduser()
+    cwd = Path.cwd()
+    for parent in (cwd, *cwd.parents):
+        if (parent / ".git").exists():
+            return parent.parent
+    return cwd

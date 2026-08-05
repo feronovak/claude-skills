@@ -13,20 +13,17 @@ import re
 from fnmatch import fnmatch
 from pathlib import Path
 
-from . import findings as F
+from . import defaults, findings as F
 
-LOCAL_ONLY = (
-    "docs/exec-summaries/", "session-notes/", "logs/", "test_results/",
-    ".agenthub/", ".playwright-mcp/", ".interface-design/", ".cursor/",
-    ".ruff_cache/", ".claude/settings.local.json", ".claude/worktrees/",
-    ".claude/scheduled_tasks.lock",
-)
+# Kept as a module attribute for callers and tests; the effective set for a
+# given repo comes from defaults.local_only_paths(contract), which lets a repo
+# extend or replace it. A standard that hardcodes one team's tooling
+# directories smuggles that team's habits in as best practice.
+LOCAL_ONLY = tuple(defaults.LOCAL_ONLY_COMMON) + tuple(defaults.LOCAL_ONLY_HOUSE)
 
 # Exact paths catch the convention; a summary written outside it needs a
-# pattern. One repo tracks docs/EXECUTIVE-SUMMARY.md, matching no path above.
-LOCAL_ONLY_PATTERNS = (
-    "*EXEC*SUMMAR*", "*-exec-summary*", "*SESSION-NOTES*",
-)
+# pattern, and a filename is a hint rather than proof.
+LOCAL_ONLY_PATTERNS = defaults.LOCAL_ONLY_PATTERNS
 
 ATTRIBUTION = (
     ("8a", re.compile(r"^\s*co-authored-by:.*claude", re.I | re.M),
@@ -71,8 +68,11 @@ def check(ctx):
 
 def _tracked_local_only(ctx):
     out = []
+    local_only = defaults.local_only_paths(ctx.contract)
     for rel in ctx.tracked:
-        for path in LOCAL_ONLY:
+        if any(rel.startswith(keep) for keep in defaults.ALWAYS_TRACKED):
+            continue
+        for path in local_only:
             bare = path.rstrip("/")
             if rel == bare or rel.startswith(path):
                 out.append(F.error(
@@ -96,10 +96,11 @@ def _gitignore(ctx):
         return out
     gi = Path(ctx.repo) / ".gitignore"
     text = gi.read_text(errors="ignore") if gi.is_file() else ""
-    missing = [p for p in LOCAL_ONLY if p.rstrip("/") not in text]
+    local_only = defaults.local_only_paths(ctx.contract)
+    missing = [p for p in local_only if p.rstrip("/") not in text]
     if missing:
         out.append(F.error(
-            "9", f"gitignore is missing {len(missing)} of {len(LOCAL_ONLY)} "
+            "9", f"gitignore is missing {len(missing)} of {len(local_only)} "
                  f"local-only entries: " + ", ".join(missing[:4])
                  + (" …" if len(missing) > 4 else ""), path=".gitignore"))
     return out
@@ -107,6 +108,8 @@ def _gitignore(ctx):
 
 def _attribution(ctx):
     out = []
+    if defaults.attribution_policy(ctx.contract) == "allow":
+        return out  # the repo has declared it wants the attribution
     adopted = ctx.contract.adopted
     adopted_ok = bool(adopted) and ctx.git.commit_exists(adopted)
 

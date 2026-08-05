@@ -11,9 +11,13 @@ those are what this tool distrusts.
 
 | Profile | Detection |
 |---|---|
-| `product` | a source tree |
-| `library` | `publishConfig`/`bin` in package.json, or `[project.scripts]`/build backend in pyproject.toml |
-| `docs` | no source tree, predominantly markdown |
+| `library` | a manifest declaring distribution — `bin`/`exports`/`publishConfig`, `[project.scripts]`, `[lib]` |
+| `product` | any package manifest, or a conventional source root (`src`, `app`, `lib`, `cmd`, `pages`, …) |
+| `docs` | neither |
+
+By packaging convention, not by absence of code and not by a markdown ratio: an
+infrastructure repo holds shell scripts, and a documentation-heavy product can
+be 41% markdown.
 
 Capabilities: **`http-api`** (Flask/FastAPI/Django app object, `app/api/**/route.ts`,
 `pages/api/`, Express `listen`) and **`channels`** (`web` · `extension` ·
@@ -21,6 +25,11 @@ Capabilities: **`http-api`** (Flask/FastAPI/Django app object, `app/api/**/route
 
 `extension` is exclusive — an extension's source looks exactly like a web app's,
 and a phantom `web` channel arms a release gate that can never pass.
+
+House rules — the local-only set and whether AI attribution is forbidden — are
+defaults, not universals. `local-only:` extends the set, `local-only: [replace,
+…]` swaps it, `track-anyway:` keeps a default path tracked, and
+`ai-attribution: allow` stands the attribution checks down.
 
 An override in the contract must state a `reason:`. An escape hatch that costs
 nothing becomes the default.
