@@ -11,9 +11,11 @@
 # separate concern with mature dedicated tools, and a half-hearted pattern list
 # here would give false confidence.
 
+ASSISTANTS='claude|anthropic|codex|copilot|cursor|aider|gemini|windsurf'
+
 for ident in "$(git var GIT_AUTHOR_IDENT 2>/dev/null)" \
              "$(git var GIT_COMMITTER_IDENT 2>/dev/null)"; do
-  if echo "$ident" | grep -qiE 'claude|anthropic|copilot\[bot\]'; then
+  if echo "$ident" | grep -qiE "$ASSISTANTS"; then
     echo "BLOCKED: commit identity names an AI assistant:"
     echo "  $ident"
     echo "Set user.name and user.email to a human before committing."

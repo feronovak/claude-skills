@@ -54,21 +54,37 @@ LOCAL_ONLY_COMMON = (
     ".ruff_cache/", ".pytest_cache/", ".mypy_cache/",
 )
 
+# Assistants this standard knows about. Naming only one would make a
+# single-vendor tool: a repository written with a different assistant has the
+# same needs, and its markers must be caught by the same rules.
+ASSISTANTS = ("claude", "anthropic", "codex", "copilot", "cursor", "aider",
+              "gemini", "windsurf")
+
+# Per-assistant scratch that is machine-local wherever it appears.
+ASSISTANT_LOCAL = (
+    ".claude/settings.local.json", ".claude/worktrees/",
+    ".claude/scheduled_tasks.lock",
+    ".codex/cache/", ".cursor/cache/", ".aider.chat.history.md",
+    ".aider.input.history", ".windsurf/cache/",
+)
+
 # HOUSE — agent and editor scratch directories. Widely applicable, but a team
 # that deliberately tracks any of these should say so rather than be told it is
 # wrong. Extend or replace with `local-only:` in the contract.
 LOCAL_ONLY_HOUSE = (
     "docs/exec-summaries/", "session-notes/",
-    ".agenthub/", ".playwright-mcp/", ".interface-design/", ".cursor/",
-    ".claude/settings.local.json", ".claude/worktrees/",
-    ".claude/scheduled_tasks.lock",
-)
+    ".agenthub/", ".playwright-mcp/", ".interface-design/",
+) + ASSISTANT_LOCAL
 
 LOCAL_ONLY_PATTERNS = ("*EXEC*SUMMAR*", "*-exec-summary*", "*SESSION-NOTES*")
 
 # Tracked on purpose: project knowledge, and deliberate historical snapshots.
+# Shared assistant knowledge — instructions a collaborator benefits from, as
+# opposed to one machine's state. Tracked on purpose, for any assistant.
 ALWAYS_TRACKED = (
-    "docs/superpowers/", ".claude/agents/", ".claude/skills/",
+    "docs/superpowers/",
+    ".claude/agents/", ".claude/skills/",
+    ".codex/", ".agents/", ".cursor/rules/", ".github/copilot-instructions.md",
 )
 
 # Dated snapshot directories are deliberate history. A file inside one may look

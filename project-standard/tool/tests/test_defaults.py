@@ -86,7 +86,22 @@ class TestLocalOnlyIsOverridable(unittest.TestCase):
     def test_default_set_combines_common_and_house(self):
         paths = defaults.local_only_paths(None)
         self.assertIn("logs/", paths)
-        self.assertIn(".cursor/", paths)
+        self.assertIn(".claude/settings.local.json", paths)
+
+    def test_assistant_state_is_local_but_assistant_knowledge_is_not(self):
+        """`.cursor/rules/` and `.claude/skills/` are instructions a
+        collaborator benefits from; only the caches are one machine's state."""
+        paths = defaults.local_only_paths(None)
+        self.assertIn(".cursor/cache/", paths)
+        self.assertNotIn(".cursor/", paths)
+        for shared in (".claude/skills/", ".cursor/rules/", ".codex/",
+                       ".agents/"):
+            self.assertIn(shared, defaults.ALWAYS_TRACKED)
+
+    def test_more_than_one_assistant_is_recognised(self):
+        """Naming only one vendor would make this a single-vendor tool."""
+        for name in ("claude", "codex", "copilot", "cursor", "aider"):
+            self.assertIn(name, defaults.ASSISTANTS)
 
     def test_a_repo_can_extend_the_set(self):
         c = parse_contract("## project-standard\n\n```yaml\n"

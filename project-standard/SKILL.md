@@ -1,6 +1,6 @@
 ---
 name: project-standard
-description: Use when validating or setting up a project's documentation, release flow and git hygiene — checking whether CLAUDE.md/AGENTS.md actually describes the project, whether the code map and product map are current, whether every endpoint is documented, whether releases agree with their tags and changelog, whether local-only files leaked into git, or whether Claude was marked as a contributor. Also use when starting a new repo that should follow the standard from commit 1, when retrofitting an existing repo, or when the user asks "is this project set up right", "check my docs", "scaffold the docs", or "make this repo consistent with the others".
+description: Use when validating or setting up a project's documentation, release flow and git hygiene — checking whether CLAUDE.md/AGENTS.md actually describes the project, whether the code map and product map are current, whether every endpoint is documented, whether releases agree with their tags and changelog, whether local-only files leaked into git, or whether an AI assistant was marked as a contributor. Also use when starting a new repo that should follow the standard from commit 1, when retrofitting an existing repo, or when the user asks "is this project set up right", "check my docs", "scaffold the docs", or "make this repo consistent with the others".
 ---
 
 # project-standard
@@ -73,6 +73,14 @@ the disease this skill treats, arrived at from the other direction.
 | `PRDs/`, `docs/prd/` | `docs/prds/` |
 
 Rename or merge. Only create when no incumbent exists. Ask when it is ambiguous.
+
+**Never introduce a file named for an assistant the project does not use.**
+Read the repository first: an existing `AGENTS.md`, a `.codex/`, `.agents/`,
+`.cursor/rules/` or `.github/copilot-instructions.md` all say which assistant
+this project is written with. Extend what is there and match it. Creating a
+`CLAUDE.md` in a repository built with something else is a foreign artifact,
+and in a public repository it reads as one vendor planting a flag. When nothing
+indicates a preference, `AGENTS.md` is the neutral choice.
 
 **Then generate the index.** `docs/DOCMAP.md` is a required slot with no
 template, and only the generator produces one the freshness check accepts:
@@ -196,7 +204,7 @@ clean.
 ## Two things the CLI cannot do
 
 **Pull request bodies.** Git hooks never see them, so the
-`🤖 Generated with Claude Code` rule has no mechanical guard anywhere. Check it
+assistant generation notice in a PR body has no mechanical guard anywhere. Check it
 by eye when a PR is opened. Do not claim a guard that does not exist.
 
 **Anything in a repo with no git.** The checker refuses rather than reporting a

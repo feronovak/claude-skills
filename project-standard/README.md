@@ -86,7 +86,7 @@ tuned to one setup is declarable in the contract rather than baked in.
 |---|---|---|
 | universal | a package manifest means shipped software | no |
 | common | `logs/`, `coverage/`, `.pytest_cache/` are machine-local | yes |
-| house | agent and editor scratch dirs; forbidding AI attribution | yes |
+| house | assistant scratch dirs; forbidding AI attribution | yes |
 
 ```yaml
 local-only:            # extend the default set
@@ -156,7 +156,7 @@ PYTHONPATH=.:tests python3 -m unittest discover -s tests -t . -v
 186 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
 repos in temp directories, with `core.hooksPath` pointed at an empty directory
 so the global hygiene guards never interfere — otherwise a test that
-deliberately commits a Claude trailer would be blocked by the very hook the
+deliberately commits an assistant trailer would be blocked by the very hook the
 checker is being tested for.
 
 `test_fleet_smoke.py` runs against whatever real repositories are present and

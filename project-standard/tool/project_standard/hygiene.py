@@ -25,18 +25,22 @@ LOCAL_ONLY = tuple(defaults.LOCAL_ONLY_COMMON) + tuple(defaults.LOCAL_ONLY_HOUSE
 # pattern, and a filename is a hint rather than proof.
 LOCAL_ONLY_PATTERNS = defaults.LOCAL_ONLY_PATTERNS
 
+_A = "|".join(defaults.ASSISTANTS)
+
 ATTRIBUTION = (
-    ("8a", re.compile(r"^\s*co-authored-by:.*claude", re.I | re.M),
-     "Co-Authored-By trailer naming Claude"),
-    ("8b", re.compile(r"^\s*claude-session:|claude\.ai/code/session", re.I | re.M),
-     "Claude session reference"),
-    ("8c", re.compile(r"^\s*signed-off-by:.*(claude|anthropic)", re.I | re.M),
-     "Signed-off-by naming Claude or Anthropic"),
-    ("8e", re.compile(r"generated with \[?claude code|🤖 generated with", re.I),
-     "Claude Code generation notice"),
+    ("8a", re.compile(rf"^\s*co-authored-by:.*({_A})", re.I | re.M),
+     "a Co-Authored-By trailer naming an AI assistant"),
+    ("8b", re.compile(rf"^\s*({_A})-session:|"
+                      r"(?:claude\.ai|chatgpt\.com|cursor\.com)/\S*session",
+                      re.I | re.M),
+     "an assistant session reference"),
+    ("8c", re.compile(rf"^\s*signed-off-by:.*({_A})", re.I | re.M),
+     "a Signed-off-by naming an AI assistant"),
+    ("8e", re.compile(rf"generated (?:with|by) \[?({_A})|🤖 generated with", re.I),
+     "an assistant generation notice"),
 )
 
-IDENTITY = re.compile(r"claude|anthropic", re.I)
+IDENTITY = re.compile(rf"({_A})", re.I)
 
 MARKER_LINE = "# project-standard: local-only"
 

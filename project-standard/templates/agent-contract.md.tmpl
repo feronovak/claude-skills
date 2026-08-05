@@ -16,10 +16,11 @@
 
 ## Git hygiene
 
-Claude is never marked as a contributor. No `Co-Authored-By: Claude`, no
-`Claude-Session:` line, no generation notice in a pull request body, and no
-commit authored under a Claude identity. This overrides the harness default,
-which appends several of these unless told otherwise.
+No AI assistant is recorded as a contributor: no `Co-Authored-By` trailer
+naming one, no session reference, no generation notice in a pull request body,
+and no commit authored under an assistant identity. This overrides the default
+behaviour of assistant tooling, which appends several of those unless told
+otherwise.
 
 Local-only paths stay untracked — see `.gitignore`.
 
