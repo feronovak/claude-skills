@@ -333,3 +333,89 @@ class TestInvocationIndependence(unittest.TestCase):
                 self.assertEqual(by_check(runner.run(r.dir).findings, "4"), [])
             finally:
                 os.chdir(here)
+
+
+class TestUnreleasedCountsOnlyConsumerVisibleWork(unittest.TestCase):
+    """Adopting this standard is a documentation change.
+
+    Counting every commit since the tag meant the changelog check fired the
+    moment a repository onboarded, on the strength of the onboarding commits
+    themselves — the false-positive class that gets a checker switched off.
+    """
+
+    def _released(self, r):
+        r.standard_repo()
+        r.write("package.json", '{"version": "1.0.0"}')
+        r.write("CHANGELOG.md", "# Changelog\n\n## [1.0.0] - 2026-01-01\n")
+        r.commit("chore: release")
+        r.tag("v1.0.0")
+
+    def test_documentation_commits_alone_do_not_demand_an_entry(self):
+        with TempRepo() as r:
+            self._released(r)
+            r.write("docs/guide.md", "# Guide\n")
+            r.write("README.md", "# Readme\n\nmore\n")
+            r.commit("docs: write a guide")
+            self.assertEqual(by_check(runner.run(r.dir).findings, "29"), [])
+
+    def test_test_and_config_commits_do_not_demand_an_entry(self):
+        """A test file and a gitignore never reach a released artifact."""
+        for path in ("tests/test_thing.py", ".gitignore", "e2e/flow.spec.ts"):
+            with self.subTest(path=path), TempRepo() as r:
+                self._released(r)
+                r.write(path, "# changed\n")
+                r.commit(f"chore: touch {path}")
+                self.assertEqual(by_check(runner.run(r.dir).findings, "29"), [])
+
+    def test_a_code_change_still_demands_an_entry(self):
+        with TempRepo() as r:
+            self._released(r)
+            r.write("src/thing.ts", "export const thing = 1\n")
+            r.commit("feat: a thing a consumer can observe")
+            found = by_check(runner.run(r.dir).findings, "29")
+            self.assertTrue(found)
+            self.assertEqual(found[0].severity, "warn")
+
+    def test_a_mixed_commit_still_demands_an_entry(self):
+        with TempRepo() as r:
+            self._released(r)
+            r.write("docs/guide.md", "# Guide\n")
+            r.write("src/thing.ts", "export const thing = 1\n")
+            r.commit("feat: a thing, and its documentation")
+            self.assertTrue(by_check(runner.run(r.dir).findings, "29"))
+
+
+class TestLocalSlotsInAClone(unittest.TestCase):
+    """A slot declared local lives on a developer's machine by definition.
+
+    A clone does not have it, so CI reporting it "missing" is a fabricated
+    result — the failure this whole tool exists to catch. Found by simulating
+    the CI job on a shallow clone, not by any test.
+    """
+
+    def test_a_declared_local_slot_absent_from_a_clone_is_skipped(self):
+        with TempRepo() as r:
+            r.standard_repo()
+            (r.dir / "docs/NEXT_STEPS.md").unlink()
+            contract = r.contract_block(adopted="HEAD",
+                                        **{"critical-paths": []})
+            r.write("CLAUDE.md", contract.replace("critical-paths:",
+                                                  "next-steps: local\ncritical-paths:"))
+            r.commit()
+            findings = runner.run(r.dir).findings
+            missing = [f for f in findings
+                       if f.check == "1" and f.severity == "error"
+                       and "roadmap" in f.message]
+            self.assertEqual(missing, [], "a clone must not report it missing")
+            skipped = [f for f in findings
+                       if f.check == "1" and f.severity == "skipped"]
+            self.assertTrue(skipped, "and must say it could not be answered")
+
+    def test_an_undeclared_missing_slot_is_still_an_error(self):
+        with TempRepo() as r:
+            r.standard_repo()
+            (r.dir / "docs/NEXT_STEPS.md").unlink()
+            r.commit()
+            missing = [f for f in runner.run(r.dir).errors
+                       if f.check == "1" and "roadmap" in f.message]
+            self.assertTrue(missing)

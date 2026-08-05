@@ -22,6 +22,17 @@ UNRELEASED = re.compile(r"^##\s*\[?unreleased\]?", re.I | re.M)
 BUMP_WORDS = ("major", "minor", "patch")
 BREAKING = re.compile(r"breaking|\bbreak(s|ing)?\b|removed|incompatible", re.I)
 
+# Paths that cannot reach a released artifact. A changelog records what changed
+# for whoever consumes the release; a commit touching only these changed
+# nothing for them, and demanding an entry for it trains people to ignore the
+# check. Adopting this standard is itself such a commit.
+NOT_SHIPPED = (
+    "docs/**", "*.md", "LICENSE", ".github/**",
+    "tests/**", "test/**", "spec/**", "e2e/**",
+    ".gitignore", ".gitattributes", ".editorconfig",
+    "*.tmpl", "examples/**",
+)
+
 
 def candidates(repo):
     """Every manifest that states a version, with its value."""
@@ -190,7 +201,13 @@ def _unreleased(ctx, tags):
     latest = ctx.git.describe()
     if not latest:
         return out
-    count = ctx.git._run("rev-list", "--count", f"{latest}..HEAD")
+    # Only commits that change something a consumer could observe. Counting
+    # every commit means this fires the moment anyone edits a document — and
+    # adopting this standard *is* a documentation change, so it would nag every
+    # repository immediately after onboarding. A changelog records what changed
+    # for the reader, and a docs-only run of commits changed nothing for them.
+    count = ctx.git._run("rev-list", "--count", f"{latest}..HEAD", "--",
+                         ".", *(f":(exclude){p}" for p in NOT_SHIPPED))
     if not count or int(count) == 0:
         return out
     text = (Path(ctx.repo) / chlog).read_text(errors="ignore")
