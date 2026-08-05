@@ -33,11 +33,14 @@ Always run the CLI first. Then judge only what it could not.
 ## validate
 
 ```bash
-python3 -m project_standard.cli check --repo <path>          # one repo
-python3 -m project_standard.cli check --fleet                # every repo under the fleet root
-python3 -m project_standard.cli check --only version         # one concern everywhere
-python3 -m project_standard.cli check --json                 # machine-readable
+project-standard check --repo <path>     # one repo
+project-standard check --fleet           # every repo under the fleet root
+project-standard check --only version    # one concern everywhere
+project-standard check --json            # machine-readable
 ```
+
+If `project-standard` is not on PATH, the wrapper is `bin/project-standard`
+inside this skill directory; it needs no install.
 
 Then apply the five semantic checks below, and report findings ranked
 most-severe first, closing with an "I do now / you do" split and an ordering —
@@ -71,14 +74,30 @@ the disease this skill treats, arrived at from the other direction.
 
 Rename or merge. Only create when no incumbent exists. Ask when it is ambiguous.
 
+**Then generate the index.** `docs/DOCMAP.md` is a required slot with no
+template, and only the generator produces one the freshness check accepts:
+
+```bash
+project-standard generate --repo <path>   # writes docs/DOCMAP.md
+```
+
+Run it, commit, then run it once more — the map indexes itself, so the first
+output is stale the moment it is tracked. Hand-writing this file instead leaves
+the repo permanently failing its own freshness check.
+
 **Then set the baselines.** Adoption is what makes a red repo green without
 anyone pretending the work is done:
 
 ```yaml
-adopted: <the current commit>       # attribution errors start here
-api-coverage: 12/61                 # documented today; below this is a regression
-scaffold: 4                         # required docs still holding TODO tokens
+adopted: <the current commit>   # attribution errors start here
+api-coverage: 12                # endpoints documented today; fewer is a regression
+scaffold: 7                     # required docs still holding TODO tokens
 ```
+
+**Count `scaffold` honestly and set it exactly.** It is the number of required
+documents that still carry a `TODO(project-standard)` token right now. At or
+under it, an unwritten document is reported as debt; above it, as an error.
+Setting it high to buy silence defeats the mechanism.
 
 A baseline only ever ratchets down. This is what lets a repo with 61
 undocumented endpoints adopt the standard today and pay the debt down over
@@ -98,7 +117,11 @@ Detection needs code to read, and a new repo has none. So ask:
 
 Record the answers as declarations in the contract block; later runs verify them
 against the code as it appears, and a declaration the code contradicts becomes a
-finding like any other. Then scaffold from `templates/`.
+finding like any other. A declaration that merely agrees with detection is not
+an override and costs nothing.
+
+Then scaffold from `templates/`, and finish as setup does: run
+`project-standard generate`, commit, generate again.
 
 Greenfield is where this standard costs least and pays most: the gitignore and
 the hygiene rules are in place at commit 1, so the expensive retrofit step —

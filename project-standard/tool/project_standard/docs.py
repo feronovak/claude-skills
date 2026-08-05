@@ -93,14 +93,34 @@ def _tokens_and_stamps(ctx, tracked, docs, required):
                 "13", f"unverified since v{m.group(1)} (current {ctx.version})",
                 path=rel))
 
+    # Check 23. The `scaffold` baseline records how many required documents
+    # were still skeletons at adoption; at or under it, an unwritten document
+    # is debt rather than a regression. Without this the baseline is a
+    # documented mechanism that nothing reads, and a freshly scaffolded repo
+    # exits 1 with no way to absorb it — the exact failure it exists to prevent.
+    scaffolded = []
     for rel in sorted(required):
+        if rel == "docs/DOCMAP.md":
+            continue  # generated; its tokens come from the documents it indexes
         text = _read(ctx, rel)
         hit = TODO_TOKEN.search(text)
         if hit:
-            line = text[:hit.start()].count("\n") + 1
+            scaffolded.append((rel, text[:hit.start()].count("\n") + 1))
+
+    baseline = _scaffold_baseline(ctx)
+    for rel, line in scaffolded:
+        if baseline is not None and len(scaffolded) <= baseline:
+            out.append(F.warn(
+                "23", f"still scaffolded — within the declared baseline of "
+                      f"{baseline}, so this is debt rather than a regression",
+                path=rel, line=line))
+        else:
             out.append(F.error(
                 "23", "required document still carries an unresolved "
-                      "TODO(project-standard) token — scaffolded, not written",
+                      "TODO(project-standard) token — scaffolded, not written"
+                      + (f"; {len(scaffolded)} scaffolded documents exceeds the "
+                         f"declared baseline of {baseline}"
+                         if baseline is not None else ""),
                 path=rel, line=line))
 
     if docs:
@@ -128,6 +148,16 @@ def _tokens_and_stamps(ctx, tracked, docs, required):
                         "a human eye)",
                 path="docs/PROJECT_MAP.md"))
     return out
+
+
+def _scaffold_baseline(ctx):
+    raw = ctx.contract.raw.get("scaffold")
+    if raw is None:
+        return None
+    try:
+        return int(str(raw).split("/")[0])
+    except (TypeError, ValueError):
+        return None
 
 
 def _backticked_paths(text):

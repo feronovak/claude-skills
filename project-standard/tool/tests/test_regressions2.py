@@ -114,6 +114,38 @@ class TestCodeMapSeverity(unittest.TestCase):
             self.assertEqual(found[0].severity, "warn")
 
 
+class TestThirdRoundNits(unittest.TestCase):
+    def test_an_apostrophe_does_not_swallow_a_comment(self):
+        c = parse_contract('## project-standard\n\n```yaml\n'
+                           "direction: it's-doc.md # which file\n```\n")
+        self.assertEqual(c.direction, "it's-doc.md")
+
+    def test_a_root_app_router_handler_is_an_endpoint(self):
+        with TempRepo() as r:
+            r.write("app/route.ts", "export async function GET() {}\n")
+            r.commit()
+            eps, _ = api.code_endpoints(r.dir, Git(r.dir).ls_files())
+            self.assertEqual(eps, {("GET", "/")})
+
+    def test_a_dated_snapshot_dir_is_not_a_local_only_artifact(self):
+        from project_standard import hygiene
+        with TempRepo() as r:
+            r.standard_repo()
+            r.write("docs/think-day-2026-01-01/exec-summary.md", "# notes\n")
+            r.commit()
+            self.assertEqual(by_check(hygiene.check(ctx_for(r.dir)), "7"), [])
+
+    def test_unresolvable_stacks_are_not_told_to_run_an_unhelpful_command(self):
+        with TempRepo() as r:
+            r.standard_repo()
+            r.write("app/urls.py", "urlpatterns = []\n")
+            r.write("docs/API_REFERENCE.md", "# API\n")
+            r.commit()
+            msg = by_check(api.check(ctx_for(r.dir)), "10d")[0].message
+            self.assertIn("by hand", msg)
+            self.assertIn("only loads Flask and FastAPI", msg)
+
+
 class TestPackagingIsRunnable(unittest.TestCase):
     def test_the_documented_command_exists_and_runs(self):
         """The README, the skill and the tool's own finding text all tell the

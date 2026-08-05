@@ -32,7 +32,7 @@ DOC_ROW = re.compile(
 # Any App Router `route.ts` is an endpoint — webhooks and callbacks commonly
 # live outside `app/api/`, and missing them undercounts coverage while turning
 # a documented route into a phantom.
-NEXT_ROUTE = re.compile(r"^(?:src/)?app/(?P<path>.+)/route\.[tj]sx?$")
+NEXT_ROUTE = re.compile(r"^(?:src/)?app/(?:(?P<path>.+)/)?route\.[tj]sx?$")
 # Next.js route groups are organisational and never appear in a URL.
 ROUTE_GROUP = re.compile(r"/?\([^)]*\)")
 NEXT_PAGES_API = re.compile(r"^(?:src/)?pages/(?P<path>api/.+)\.[tj]sx?$")
@@ -106,7 +106,7 @@ def code_endpoints(repo, tracked):
                     if name in METHODS:
                         exported.add(name)
             for meth in sorted(exported):
-                eps.add((meth, normalise("/" + m.group("path"))))
+                eps.add((meth, normalise("/" + (m.group("path") or ""))))
             continue
         m = NEXT_PAGES_API.match(rel)
         if m:
@@ -158,10 +158,14 @@ def check(ctx):
         return out
 
     if unresolved:
+        automatable = {"flask", "fastapi"}
+        how = (f"run `project-standard routes` to write {MANIFEST}"
+               if set(unresolved) & automatable
+               else f"write {MANIFEST} by hand — `project-standard routes` "
+                    f"only loads Flask and FastAPI applications")
         out.append(F.warn(
             "10d", "route enumeration needs the framework's own route table for "
-                   + ", ".join(unresolved)
-                   + f"; run `project-standard routes` to write {MANIFEST}. "
+                   + ", ".join(unresolved) + f"; {how}. "
                    + (f"The reference documents {len(docs)} endpoint(s), "
                       f"not diffed." if docs else
                       "No API reference to compare against.")))

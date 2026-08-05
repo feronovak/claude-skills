@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "project-standard"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Validate a project's documentation, release flow and git hygiene"
 readme = "../README.md"
 requires-python = ">=3.10"
@@ -24,3 +24,6 @@ project-standard = "project_standard.cli:main"
 
 [tool.setuptools]
 packages = ["project_standard"]
+
+[tool.setuptools.dynamic]
+version = {attr = "project_standard.VERSION"}

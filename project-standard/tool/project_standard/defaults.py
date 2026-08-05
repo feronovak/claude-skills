@@ -71,6 +71,10 @@ ALWAYS_TRACKED = (
     "docs/superpowers/", ".claude/agents/", ".claude/skills/",
 )
 
+# Dated snapshot directories are deliberate history. A file inside one may look
+# like a local-only artifact by name; it is not.
+ALWAYS_TRACKED_GLOBS = ("think-day-*/*", "dep-day-*/*", "dev-day-*/*")
+
 # -- attribution (HOUSE) ---------------------------------------------------
 
 # Whether an AI assistant may be recorded as a contributor. `forbid` is the

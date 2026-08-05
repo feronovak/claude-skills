@@ -9,6 +9,7 @@ against the code at a version), `unstamped` (nobody has), and `scaffolded`
 (the tool wrote a skeleton and nothing more).
 """
 
+import re
 from pathlib import Path
 
 from . import VERSION, findings as F
@@ -26,10 +27,22 @@ def state_of(text):
     return "unstamped"
 
 
+HTML_COMMENT = re.compile(r"<!--.*?-->", re.S)
+
+
 def title_of(text, rel):
+    """The document's own H1, with any HTML comment removed.
+
+    A scaffolded file's heading is `# <!-- TODO(project-standard): … -->`.
+    Copying that verbatim put an unresolved token inside a generated file whose
+    own header says "do not edit by hand", and the token check then flagged it.
+    """
     for line in (text or "").splitlines():
         if line.startswith("# "):
-            return line[2:].strip()
+            title = HTML_COMMENT.sub("", line[2:]).strip()
+            if title:
+                return title
+            break
     return Path(rel).stem.replace("_", " ").replace("-", " ")
 
 

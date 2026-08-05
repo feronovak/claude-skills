@@ -43,7 +43,7 @@ accident when a repository is renamed or moved.
 | Local-only paths stay untracked | only repos that opted in | `logs/` and `test_results/` are legitimately tracked in some repos, including employer work |
 
 A repo opts in by carrying `# project-standard: local-only` in `.gitignore` or
-the vendored checker in `scripts/project-standard/`. Blocking `logs/` everywhere
+the vendored checker in `scripts/project_standard/`. Blocking `logs/` everywhere
 would stop a legitimate commit, and a guard that does that gets disabled
 wholesale — taking the secret scan with it.
 

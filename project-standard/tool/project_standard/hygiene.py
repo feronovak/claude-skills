@@ -49,8 +49,12 @@ def opted_in(ctx):
     rule with it.
     """
     repo = Path(ctx.repo)
-    if (repo / "scripts" / "project-standard").is_dir():
-        return True
+    # Both spellings: the importable package directory the README tells people
+    # to vendor (underscore) and the hyphenated form. A repo that adopted via
+    # the documented path must not silently miss enforcement.
+    for name in ("project_standard", "project-standard"):
+        if (repo / "scripts" / name).is_dir():
+            return True
     gi = repo / ".gitignore"
     if gi.is_file() and MARKER_LINE in gi.read_text(errors="ignore"):
         return True
@@ -78,6 +82,9 @@ def _tracked_local_only(ctx):
     local_only = defaults.local_only_paths(ctx.contract)
     for rel in ctx.tracked:
         if any(rel.startswith(keep) for keep in defaults.ALWAYS_TRACKED):
+            continue
+        if any(fnmatch(rel, g) or fnmatch(rel, "*/" + g)
+               for g in defaults.ALWAYS_TRACKED_GLOBS):
             continue
         for path in local_only:
             bare = path.rstrip("/")

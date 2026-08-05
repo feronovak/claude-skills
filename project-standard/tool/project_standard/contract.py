@@ -201,7 +201,9 @@ def _strip_comment(raw):
         if quote:
             if ch == quote:
                 quote = None
-        elif ch in "\"'":
+        elif ch == '"':
+            # Only double quotes open a span. Treating an apostrophe as a quote
+            # made `it's-doc.md # why` swallow the comment.
             quote = ch
         elif ch == "#" and (i == 0 or raw[i - 1].isspace()):
             return raw[:i].strip()

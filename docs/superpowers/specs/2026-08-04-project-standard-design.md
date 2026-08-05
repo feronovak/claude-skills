@@ -1106,7 +1106,7 @@ checks must agree.
 | 21 | The repo restates the global model tiering instead of pointing at it | warn |
 | 22 | `.claude/agents/` or `.claude/skills/` present but untracked | warn |
 | 23 | A required document still contains a `TODO(project-standard)` token | error |
-| 24 | `PROJECT_MAP.md` names a path that does not resolve | error |
+| 24 | `PROJECT_MAP.md` names a path that does not resolve | warn |
 | 25 | A document carries both `Status: scaffolded` and a trust stamp | error |
 | 26 | A second backlog file exists beside `NEXT_STEPS.md` (by filename) | error |
 | 27 | A non-backlog doc reads like an ordered open backlog | warn |

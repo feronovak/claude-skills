@@ -135,9 +135,13 @@ def _contract_sections(ctx):
                  "attribution rules cannot distinguish new commits from history",
             path=c.path))
     elif not ctx.git.commit_exists(c.adopted):
-        out.append(F.error(
-            "2", f"`adopted: {c.adopted}` is not a commit in this repo",
-            path=c.path))
+        # A shallow clone genuinely does not contain the commit, and saying it
+        # "is not a commit in this repo" is a fabricated result — the failure
+        # this whole tool is built against. The skip machinery exists for this.
+        if not (ctx.profile == "ci" and not ctx.git.has_history()):
+            out.append(F.error(
+                "2", f"`adopted: {c.adopted}` is not a commit in this repo",
+                path=c.path))
 
     body = (c.body or "").lower()
     for label, needles in (
@@ -160,9 +164,16 @@ def _contract_sections(ctx):
             out.append(F.error(
                 "2", f"contract does not state {label}", path=c.path))
 
+    # Only a declaration that actually contradicts detection is an override.
+    # Firing on mere key presence made `init` — which is told to record its
+    # answers as declarations — report three errors on a conformant repo, with
+    # a message that was simply false: nothing had been overridden.
+    overridden = {key for key, _, _ in ctx.resolved.overridden}
     for key in c.missing_reasons:
-        out.append(F.error(
-            "2", f"`{key}` overrides detection without a `reason:`", path=c.path))
+        if key in overridden:
+            out.append(F.error(
+                "2", f"`{key}` contradicts what detection found, with no "
+                     f"`reason:` given", path=c.path))
 
     if c.critical_paths:
         for p in c.critical_paths:

@@ -78,14 +78,21 @@ def _workspaces(ctx):
 
     pnpm = ctx.repo / "pnpm-workspace.yaml"
     if pnpm.is_file():
-        found += re.findall(r"^\s*-\s*['\"]?([^'\"\n]+)",
-                            pnpm.read_text(errors="ignore"), re.M)
+        # Only the `packages:` block — a pnpm workspace file also carries
+        # unrelated list keys, and counting those invents workspaces.
+        block = re.search(r"^packages:\s*$(.*?)(?=^\S|\Z)",
+                          pnpm.read_text(errors="ignore"), re.M | re.S)
+        if block:
+            found += re.findall(r"^\s+-\s*['\"]?([^'\"\n]+)",
+                                block.group(1), re.M)
 
     cargo = ctx.repo / "Cargo.toml"
     if cargo.is_file():
         text = cargo.read_text(errors="ignore")
-        m = re.search(r"\[workspace\][^\[]*?members\s*=\s*\[([^\]]*)\]",
-                      text, re.S)
+        section = re.search(r"^\[workspace\]\s*$(.*?)(?=^\[|\Z)",
+                            text, re.M | re.S)
+        m = re.search(r"members\s*=\s*\[([^\]]*)\]",
+                      section.group(1)) if section else None
         if m:
             found += [p.strip().strip('"\'') for p in m.group(1).split(",")
                       if p.strip()]
