@@ -1,0 +1,30 @@
+# Development flow — how work becomes a release
+
+**Status:** scaffolded
+
+## Versioning
+
+Single source of truth: <!-- TODO(project-standard): package.json, pyproject.toml or VERSION -->
+
+**This product's consumer is <!-- TODO(project-standard): who breaks when we
+break something — importing code, API callers, or the user -->.**
+
+| Bump | When |
+|---|---|
+| **major** | <!-- TODO(project-standard): what forces that consumer to adapt --> |
+| **minor** | New capability, or a change to what the consumer is told, that does not require them to adapt |
+| **patch** | Fixes and internals the consumer cannot observe |
+
+Below 1.0, minor absorbs breaking changes. 1.0 is a quality milestone, declared
+once and not spent early to make a launch sound larger.
+
+## Channels
+
+<!-- TODO(project-standard): one line per release channel. Multi-channel repos
+     tag `<channel>/v<semver>`; single-channel repos tag `v<semver>`. -->
+
+## Cutting a release
+
+1. Move `## [Unreleased]` in the changelog to the new version
+2. Set the version source
+3. Tag, annotated, on the merge commit
