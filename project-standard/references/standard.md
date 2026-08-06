@@ -4,6 +4,16 @@ Every artifact is a **slot** — a question the repo must answer. Several
 filenames may answer it. Mandating one filename is how a standard tells its best
 incumbent to rewrite itself for a parser's convenience.
 
+## Contents
+
+- [Profile and capabilities](#profile-and-capabilities)
+- [Required slots](#required-slots)
+- [The document taxonomy](#the-document-taxonomy)
+- [The API surface](#the-api-surface)
+- [Enumerable units — how each document must be written](#enumerable-units--how-each-document-must-be-written)
+- [Trust stamps](#trust-stamps)
+- [Baselines](#baselines)
+
 ## Profile and capabilities
 
 Detected from code, because a declaration is a hand-maintained assertion and
