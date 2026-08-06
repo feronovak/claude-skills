@@ -3,3 +3,7 @@
 *.swo
 .idea/
 .vscode/
+
+# Skills that live in this working tree but are not published. This repository
+# is public; an untracked directory is one `git add -A` away from being so too.
+free-dev-day/

@@ -13,6 +13,7 @@ from pathlib import Path
 from . import VERSION
 from . import defaults, docmap, routes as routes_mod, runner
 from .findings import ERROR, SKIPPED, WARN
+from .gitio import repo_root
 
 
 def build_parser():
@@ -65,9 +66,11 @@ def resolve_repos(args):
             path = Path(name)
             if not path.exists() and (fleet / name).exists():
                 path = fleet / name
-            out.append(path)
+            out.append(repo_root(path))
         return out
-    return [Path.cwd()]
+    # An omitted `--repo` means "the repo I am standing in", not "this exact
+    # directory" — the caller's shell must not change the verdict.
+    return [repo_root(Path.cwd())]
 
 
 def main(argv=None):
@@ -135,15 +138,16 @@ def _install_hooks(args):
         print(f"hook sources not found at {source}", file=sys.stderr)
         return 2
 
+    repo = repo_root(Path(args.repo)).resolve()
     target = Path.home() / ".config" / "git" / "project-standard-hooks" \
-        if args.globally else Path(args.repo).resolve() / ".githooks"
+        if args.globally else repo / ".githooks"
     target.mkdir(parents=True, exist_ok=True)
     for name in ("pre-commit", "commit-msg"):
         dest = target / name
         shutil.copy2(source / name, dest)
         dest.chmod(0o755)
 
-    scope = ["--global"] if args.globally else ["-C", str(Path(args.repo))]
+    scope = ["--global"] if args.globally else ["-C", str(repo)]
     cmd = ["git", *scope, "config", "core.hooksPath", str(target)]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     if proc.returncode != 0:
@@ -158,13 +162,14 @@ def _install_hooks(args):
 
 
 def _generate(args):
-    repo = Path(args.repo)
-    ctx = runner.build_ctx(repo)
+    ctx = runner.build_ctx(Path(args.repo))
     text = docmap.render(ctx)
     if args.stdout:
         print(text)
         return 0
-    target = repo / docmap.HEADER
+    # `ctx.repo`, not `args.repo` — the index belongs at the repository root
+    # even when `generate` was run from a subdirectory.
+    target = ctx.repo / docmap.HEADER
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(text)
     print(f"wrote {target}")

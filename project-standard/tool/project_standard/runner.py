@@ -9,10 +9,11 @@ silently passed. A check that did not run must never read as one that did.
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from . import api, artifacts, contract as contract_mod, detect, docmap, docs
+from . import api, artifacts, baselines, contract as contract_mod, detect
+from . import docmap, docs
 from . import findings as F
 from . import hygiene, release
-from .gitio import Git
+from .gitio import Git, repo_root
 
 DEV, CI = "dev", "ci"
 
@@ -22,7 +23,7 @@ HOOK_CHECKS = ("11", "11b")
 # Checks that genuinely need history or tags. `5b` (version sources disagree)
 # reads only files and must stay live on a shallow clone.
 HISTORY_CHECKS = ("5", "8a", "8b", "8c", "8d", "8e", "10c", "13", "14", "15",
-                  "29", "38")
+                  "29", "38", "42")
 
 
 @dataclass
@@ -39,7 +40,10 @@ class Ctx:
 
 
 def build_ctx(repo, profile=DEV):
-    repo = Path(repo)
+    # Anchor on the repository root before reading anything. Called with a
+    # subdirectory — which is what an omitted `--repo` produces — every path
+    # below would be resolved against the wrong base.
+    repo = repo_root(repo)
     git = Git(repo)
     tracked = git.ls_files()
     c = contract_mod.load(repo, tracked)
@@ -123,6 +127,7 @@ MODULES = (
     ("release", release.check),
     ("hygiene", hygiene.check),
     ("api", api.check),
+    ("baselines", baselines.check),
     ("workspaces", workspace_check),
 )
 

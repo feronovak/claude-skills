@@ -153,7 +153,7 @@ cd tool
 PYTHONPATH=.:tests python3 -m unittest discover -s tests -t . -v
 ```
 
-186 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
+220 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
 repos in temp directories, with `core.hooksPath` pointed at an empty directory
 so the global hygiene guards never interfere — otherwise a test that
 deliberately commits an assistant trailer would be blocked by the very hook the
@@ -186,6 +186,7 @@ tool/project_standard/
   release.py                 version source, tags, changelog
   hygiene.py                 local-only paths, attribution, hooks
   api.py                     route enumeration and endpoint coverage
+  baselines.py               the declared baselines, against what history recorded
   docmap.py                  the DOCMAP generator
   runner.py                  the registry, profiles, exit codes
   cli.py                     argument surface
@@ -197,7 +198,7 @@ from its siblings. `gitio` is the only module that knows git exists.
 
 ## Checks
 
-46 checks are implemented. Seven that the design describes are **not**, and are
+47 checks are implemented. Seven that the design describes are **not**, and are
 listed here rather than left to be discovered:
 
 | Not implemented | What it would do |
@@ -213,10 +214,22 @@ listed here rather than left to be discovered:
 Checks 27 and 31 need judgement rather than pattern matching and belong to the
 skill's semantic half. The rest are mechanical and simply unwritten.
 
-Four checks exist beyond the design: `5b` (version sources disagree — split out
+Five checks exist beyond the design: `5b` (version sources disagree — split out
 because it needs no history and so must survive a shallow clone), `8e` (an
 assistant generation notice in a commit message), `40` (no secret scanner
-configured) and `41` (a credential-shaped string in tracked documentation).
+configured), `41` (a credential-shaped string in tracked documentation) and
+`42` (a baseline was loosened).
+
+Check 42 is what makes the baselines mean anything. The design states that a
+baseline may never rise, but a baseline compared only against today's contract
+enforces nothing: the commit that removes the documentation can edit the number
+that would have caught it. So `42` compares each declared baseline against the
+extreme the repository already recorded across the contract's own history —
+the highest `api-coverage`, the lowest `scaffold`, the first resolvable
+`adopted`. Moving `adopted` forward is an error because it grandfathers in
+every attribution breach it steps over; moving it back is not, because that is
+strictly stricter. It needs history, so a shallow clone reports it skipped
+rather than passed.
 
 ## Secrets
 

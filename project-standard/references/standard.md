@@ -106,7 +106,10 @@ would be switched off within a day.
 ## Baselines
 
 Adoption is gated by baselines, not by finishing the work. Declared in the
-contract, they only ever ratchet down.
+contract, they only ever ratchet down — and check 42 enforces that against
+what the repository already recorded, not against the value sitting in the
+contract today. A baseline that could be edited in the same commit as the
+regression it excuses would gate nothing.
 
 | Baseline | Effect |
 |---|---|

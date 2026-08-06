@@ -13,12 +13,13 @@ from pathlib import Path
 
 from . import defaults, findings as F
 
+# One definition, shared with enumeration in api.py — see defaults.
+NEXT_ROUTE = defaults.NEXT_ROUTE
+NEXT_PAGES_API = defaults.NEXT_PAGES_API
+
 PRODUCT, LIBRARY, DOCS = "product", "library", "docs"
 
 SOURCE_SUFFIXES = (".py", ".ts", ".tsx", ".js", ".jsx", ".rs", ".go", ".rb")
-
-NEXT_ROUTE = re.compile(r"^(?:src/)?app/.+/route\.[tj]sx?$")
-NEXT_PAGES_API = re.compile(r"^(?:src/)?pages/api/.+\.[tj]sx?$")
 FLASK_APP = re.compile(r"\bFlask\(|\bBlueprint\(")
 FASTAPI_APP = re.compile(r"\bFastAPI\(")
 DJANGO_URLS = re.compile(r"\burlpatterns\s*=")
