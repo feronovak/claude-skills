@@ -35,7 +35,9 @@ This is why design tokens exist. Tokens ARE repetition encoded as system.
 
 **How to check:** Count unique values. If there are 47 different font sizes, 23 different spacing values, and 15 colors that aren't in any palette - repetition has failed.
 
-**FAIL if:** Design token compliance below 70%. More than 12 distinct colors. Font sizes not on a modular scale.
+**FAIL if:** More than 4 distinct off-scale spacing values (see design-tokens.md
+— judge the distinct values, not a compliance percentage). More than 12 distinct
+colors. Font sizes not on a modular scale.
 
 ### Alignment
 

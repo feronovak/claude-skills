@@ -4,7 +4,10 @@ Any match = automatic FAIL. No exceptions.
 
 ## Design System Violations
 
-- Spacing scale compliance below 70% (see design-tokens.md for measurement)
+- More than 4 distinct off-scale spacing values (probe: `spacing.offScaleValues`).
+  Report the distinct values, not every element that uses them — "23, 13, 21, 9px
+  are off the 4px scale" is one fixable problem; the same thing listed 27 times
+  is noise that buries everything else in the report.
 - Font size not matching any step in type scale (5% tolerance)
 - Color not in defined palette (deltaEOK > 0.05 from nearest palette color)
 - One-off `box-shadow` not from shadow scale
@@ -22,7 +25,9 @@ Any match = automatic FAIL. No exceptions.
 
 - More than 5 distinct hues on a single screen
 - More than 12 distinct colors on a single screen (count structural roles + brand accent only; semantic/category colors are separate - see color.md)
-- APCA Lc below 75 for 16px/400 body text
+- APCA `|Lc|` below the **floor** for its size and weight (see color.md; the
+  probe reports `floor` next to every measurement). Text between floor and
+  target is a note, never a failure.
 - APCA Lc below 45 for non-text UI elements (icons, borders)
 - Accent color exceeds 15% pixel coverage
 - Pure white (#fff) body text in dark mode
@@ -32,6 +37,11 @@ Any match = automatic FAIL. No exceptions.
 - Horizontal scrollbar at any viewport
 - Content exceeding viewport width
 - Text overflowing its container
+- **Text occluded by another element** — anything sitting on top of a label,
+  heading or button text (probe: `occluded`). A button whose own word is
+  covered is broken, not styled.
+- **Text clipped without an ellipsis or a title** — content silently cut
+  mid-word (probe: `clipped`). The reader cannot tell there was more.
 - Touch targets below 44x44px on mobile
 - Page margins below 16px on mobile
 - Max content width exceeding 1600px

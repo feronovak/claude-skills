@@ -12,10 +12,18 @@ All margin, padding, and gap values must be from a 4px-base scale.
 - All other spacing must be multiples of 4px.
 - Each step should increase by ~25%+ from previous (no linear scales like 4, 8, 12, 16, 20, 24, 28...).
 
-**Measurement:** Extract all computed margin, padding, gap values via Playwright. Calculate compliance:
-- **> 90% on scale** = PASS
-- **70-90%** = FAIL (needs cleanup)
-- **< 70%** = FAIL (no consistent scale)
+**Measurement:** `scripts/probe.js` reports `spacing.offScaleValues` (the distinct
+off-scale values) and `spacing.compliance` (a percentage).
+
+**Judge on the distinct values, not the percentage.** More than 4 distinct
+off-scale values = FAIL (one DEFECT line listing them). The percentage is
+context, not a threshold — it is dominated by whichever element happens to
+repeat most, so a page with one bad value used ninety times scores far worse
+than a page with nine different bad values, though the second is the messier
+system and the harder fix.
+
+Report it as one line naming the values. The developer fixes a set of numbers,
+not a list of elements.
 
 ## Type Scale
 
