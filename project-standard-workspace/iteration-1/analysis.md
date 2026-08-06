@@ -80,6 +80,55 @@ losing to it on judgement is a weaker result than it first appears. The untested
 claim — the one that would actually justify the semantic half — is whether the
 skill finds the right target from a vague prompt.
 
+## The follow-up experiment, and what it refuted
+
+The conclusion above — "instruction defect, therefore fixable" — was tested and is
+wrong. Three more arms were run on `feature-map-honesty`, scored by recall against
+the answer key: the four rows commit `8e3edc3a` corrected.
+
+| Arm | buyer-verdict | confidence | authenticity | VISION flag | recall |
+|---|:-:|:-:|:-:|:-:|:-:|
+| Sonnet + skill | ✅ | — | ✅ | ✅ | 3/4 |
+| Sonnet control | — | — | ✅ | ✅ | 2/4 |
+| Opus + skill | — | ✅ | ✅ | — | 2/4 |
+| Opus control | ✅ | — | ✅ | ✅ | 3/4 |
+| Sonnet + revised check 2 | — | — | — | — | **0/4** |
+
+**Not a model-capability problem.** Opus did not beat Sonnet — 2/4 against 3/4 with
+the skill, and the best score belongs to a control. No arm reached 4/4, and each
+found a *different* subset.
+
+**Not an instruction problem either.** The revised wording — "for every claim that
+names factors, read the function's parameters; a commit message is not evidence" —
+scored worst of all five. Worse than the score, it produced this opening line:
+
+> every claim-bearing row of `docs/FEATURE_MAP.md` (292 lines, ~150 claims across 7
+> blocks) was checked against the implementation it names
+
+while never mentioning the confidence row, the vision row, or authenticity anywhere
+in the output. **The instruction bought a stronger claim of coverage without the
+coverage.** In a tool whose entire premise is honesty about what was verified, that
+is a regression, not a fix.
+
+**The actual diagnosis is coverage.** The document carries ~40 badged rows. Every
+run spot-checks a subset and reports what it happened to look at. Which of the four
+false rows lands in that subset is close to chance — which is exactly the pattern
+five arms produced. Recall is a function of sample size, and no amount of
+exhortation raises it.
+
+Caveat: one run per cell. The individual differences are within noise — that is the
+point. The signal is that no arm exceeded 3/4 and the ranking is uncorrelated with
+both model tier and instruction strength.
+
+**What would actually work is mechanical enumeration.** The CLI already parses
+table rows to extract endpoints for `API_REFERENCE.md`. The same parse over
+`FEATURE_MAP.md` would yield the claim-bearing rows as a worklist with a
+denominator, so the semantic pass has a checklist rather than a document, and rows
+that were not checked are *reported as unchecked*. The skill already holds this
+principle for its mechanical half — "a check that did not run must never read as one
+that passed" — and does not apply it to its own semantic half, which currently
+reports a spot-check in the same voice as an audit.
+
 ## What to change before iteration 2
 
 1. Rewrite semantic check 2 to require verification against the implementation —
