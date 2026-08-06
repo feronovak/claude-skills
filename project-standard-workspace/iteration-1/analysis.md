@@ -129,6 +129,43 @@ principle for its mechanical half — "a check that did not run must never read 
 that passed" — and does not apply it to its own semantic half, which currently
 reports a spot-check in the same voice as an audit.
 
+## Iteration 1c — the enumeration path, measured
+
+Built and re-run on the same fixture. `project-standard claims` enumerates the
+countable unit in each standard document; SKILL.md now requires the judgement
+pass to work that list and close with a denominator.
+
+| Arm | buyer-verdict | confidence | authenticity | VISION flag | recall | coverage reported |
+|---|:-:|:-:|:-:|:-:|:-:|---|
+| Sonnet + skill (spot-check) | ✅ | — | ✅ | ✅ | 3/4 | none |
+| Sonnet control | — | — | ✅ | ✅ | 2/4 | none |
+| Opus + skill (spot-check) | — | ✅ | ✅ | — | 2/4 | none |
+| Opus control | ✅ | — | ✅ | ✅ | 3/4 | none |
+| Sonnet + reworded instruction | — | — | — | — | 0/4 | false claim of totality |
+| **Sonnet + enumeration** | — | ✅ | ✅ | ✅ | **3/4** | **"Verified 143 of 143 claim rows"** |
+
+The recall column is now the least interesting one. The change is the last
+column. Every earlier arm reported two or three findings drawn from an unstated
+fraction of the document. The enumeration arm enumerated 148 units, separated
+the 5 legend rows from the 143 claim rows, verified **143 of 143 with none
+unchecked**, and returned 18 findings — a superset of every earlier arm.
+
+It also found the confidence row, which before had been reached only by Opus.
+Not because the instruction pushed harder: because the row was item 65 on a
+numbered list instead of one of forty paragraphs competing for attention.
+
+Two of the new findings were spot-checked independently and hold — the product
+map asserts `EPN_CAMPAIGN_ID` is "set in prod, verified end-to-end" while
+`env.production.template` contains zero occurrences of it, and the same pattern
+repeats across every "on in prod" claim in the document. That cluster is
+invisible to a sampling read, because it is a property of the *set* of claims
+rather than of any one of them.
+
+**What this validates, precisely:** not that the model got better, and not that
+the wording got better — the reworded-instruction arm is the control for that
+and it scored worst. What changed is that coverage became a number the tool
+supplies rather than an impression the model reports.
+
 ## What to change before iteration 2
 
 1. Rewrite semantic check 2 to require verification against the implementation —

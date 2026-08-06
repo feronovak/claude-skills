@@ -73,6 +73,7 @@ project-standard check --profile=ci       # skip what a runner cannot answer
 
 project-standard install-hooks            # install the authorship guards
 project-standard vendor                   # copy the checker in for CI
+project-standard claims                   # the judgement worklist, with line numbers
 project-standard generate                 # write docs/DOCMAP.md
 project-standard routes --app app:create_app   # write docs/api/routes.json
 ```
@@ -165,7 +166,7 @@ cd tool
 PYTHONPATH=.:tests python3 -m unittest discover -s tests -t . -v
 ```
 
-235 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
+250 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
 repos in temp directories, with `core.hooksPath` pointed at an empty directory
 so the global hygiene guards never interfere — otherwise a test that
 deliberately commits an assistant trailer would be blocked by the very hook the
@@ -199,6 +200,7 @@ tool/project_standard/
   hygiene.py                 local-only paths, attribution, hooks
   api.py                     route enumeration and endpoint coverage
   baselines.py               the declared baselines, against what history recorded
+  claims.py                  the enumerable unit in each document
   docmap.py                  the DOCMAP generator
   vendored.py                a vendored copy against the canonical tool
   runner.py                  the registry, profiles, exit codes

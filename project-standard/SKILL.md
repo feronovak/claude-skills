@@ -42,20 +42,53 @@ project-standard check --json            # machine-readable
 If `project-standard` is not on PATH, the wrapper is `bin/project-standard`
 inside this skill directory; it needs no install.
 
-Then apply the five semantic checks below, and report findings ranked
-most-severe first, closing with an "I do now / you do" split and an ordering —
-never a bare list.
+Then get the worklist, and work it:
+
+```bash
+project-standard claims --repo <path>          # every unit, with line numbers
+project-standard claims --doc docs/FEATURE_MAP.md   # one document
+```
+
+**Do not read a document and report what you noticed.** That is a spot-check,
+and its recall is proportional to how much of the document you happened to
+sample. Measured across five runs over one 40-row product map: each verified a
+different subset, none found every false row, and the run told most forcefully
+to be thorough scored worst — while opening with a claim that it had checked
+every row. Working from the enumerated list is what makes the difference; being
+told to try harder is not.
+
+For each unit: verify it, or mark it unchecked. Then report both.
 
 ### The five semantic checks
 
 1. **Does the agent contract describe this project?** Real modules, real
    commands — or boilerplate that would fit any repo of the same framework?
-2. **Does `FEATURE_MAP.md` claim anything the code no longer does?** Spot-check
-   claims against source. This is the check with the highest hit rate.
-3. **Does `PROJECT_MAP.md` match the actual tree?** The CLI verifies the paths
-   resolve; you verify the responsibilities are true.
+2. **Is every `claim` unit true of the code today?** Open the implementation
+   the row names — the function, its inputs, its call site. A commit message,
+   a test name and a sibling document are all evidence about what someone
+   believed, not about what the code does. Highest hit rate of the five.
+3. **Does every `mapping` unit hold?** The CLI verifies the paths resolve; you
+   verify the responsibility described is what lives there.
 4. **Is a profile or capability override genuine**, or a way to dodge a check?
 5. **Is a trust stamp plausible** given what has landed since it was applied?
+
+`prd-header` and `prd-section` units are never checked against the code — a
+PRD is intent, and a proposal already true of the code would not need writing.
+Check that it is owned, linked and decided.
+
+### Report coverage, always
+
+Close every judgement pass with the denominator:
+
+```
+Verified 34 of 41 units in docs/FEATURE_MAP.md.
+Not checked: lines 88, 91, 104-108 (admin sub-panels — needs a running instance).
+```
+
+A pass that names no denominator reads as an audit while being a sample. That
+is the same dishonesty the trust stamps exist to prevent, and the mechanical
+half already refuses it by reporting a check as skipped rather than passed.
+Where you cannot verify a unit, say which and why — never let it go silent.
 
 ## setup — retrofitting
 
