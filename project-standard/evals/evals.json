@@ -1,0 +1,49 @@
+{
+  "skill_name": "project-standard",
+  "notes": "These exercise the semantic half only — the five judgement checks in SKILL.md. The mechanical half is covered by the 235-test suite in tool/tests. Each fixture is a local clone of a real repository, pinned so the ground truth is stable. An assertion that every model passes teaches nothing, so each eval names the failure mode it is discriminating against.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "feature-map-honesty",
+      "prompt": "Run project-standard against this repo and tell me whether docs/FEATURE_MAP.md is honest about what the code does today.",
+      "fixture": "isitgood-auction pinned at d4570c59, the parent of 8e3edc3a (\"docs(feature-map): correct four claims that were not true of the code\"). That commit touches only the document, so the code was already right and the doc was wrong — the corrections it makes are the ground truth.",
+      "expected_output": "Names the false claims in FEATURE_MAP.md, each cited against the source that contradicts it.",
+      "failure_mode": "Accepting a clean mechanical `check` run as sufficient and never opening the source. This is semantic check 2, the one SKILL.md calls the highest hit rate; a model that stops at the CLI has skipped the half the skill exists for. A fabricated finding fails equally.",
+      "expectations": [
+        "Runs the mechanical check first, then reads source files rather than stopping at the CLI output",
+        "Flags the confidence-scoring row: it claims the rating derives partly from price availability, but the scoring function reads no comp or price inputs",
+        "Flags the authenticity row: the vision read is marked unconditionally live when it executes but has never been scored against a listing that should fail",
+        "Cites specific document lines against specific source lines",
+        "Reports no claim as false that is in fact true of the code"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "trust-stamp-plausibility",
+      "prompt": "Is this repo's documentation trustworthy right now? Check docs/PROJECT_MAP.md specifically.",
+      "fixture": "isitgood-auction at HEAD. docs/PROJECT_MAP.md is stamped `As of: v0.13.2`; docs/FEATURE_MAP.md is stamped `As of: v0.16.0`; the repo's latest tag is v0.16.2. Two stamps in one repo, several releases apart.",
+      "expected_output": "Flags the PROJECT_MAP stamp as stale against the repo's actual version, and separately assesses whether the body is still accurate.",
+      "failure_mode": "Two opposite errors. Treating the presence of a stamp as proof of freshness — conflating stamped with current — or condemning the whole document as wrong without checking whether its content still holds. Staleness and inaccuracy are independent findings.",
+      "expectations": [
+        "Notices the stamp lags the repo's current version and flags it as stale or unverified",
+        "Establishes the repo's actual version from tags rather than assuming",
+        "Notices that FEATURE_MAP.md in the same repo carries a much fresher stamp",
+        "Treats stamp staleness and body accuracy as two separate findings rather than inferring one from the other"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "override-genuineness",
+      "prompt": "Check whether this repo's project-standard contract overrides are legitimate or dodging something.",
+      "fixture": "llm-preflight at HEAD. AGENTS.md declares next-steps, release-flow and prds as `local` with a stated policy, and leaves `critical-paths:` empty with the inline reason \"nothing here fabricates a result a user acts on\" — while llm_preflight/pricing.py carries a per-model USD pricing table and --baseline/--ci fail a build on threshold regressions.",
+      "expected_output": "Clears the three local declarations and engages with the tension in the empty critical-paths, rather than issuing one verdict for the whole block.",
+      "failure_mode": "Single-bucket verdicts in either direction. Flagging all four as dodges without reading the source under-credits three well-justified declarations; accepting all four because a reason appears nearby means the stated reason was never tested against what the code actually does.",
+      "expectations": [
+        "Judges each declaration separately rather than issuing one verdict for the contract block",
+        "Clears next-steps, release-flow and prds as legitimate, citing the stated policy",
+        "Reads pricing.py or the CI-gating flags rather than reasoning only from the contract text",
+        "Engages with whether the empty critical-paths is consistent with a tool that computes prices and fails builds on thresholds, instead of accepting the inline comment at face value"
+      ]
+    }
+  ]
+}
