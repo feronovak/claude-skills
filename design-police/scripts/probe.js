@@ -130,7 +130,10 @@
       sizes.set(fs, (sizes.get(fs) || 0) + 1);
       if (fs < 14) out.typeScale.belowFloor.push(`${id} ${cs.fontSize}`);
 
-      if (cs.textTransform === 'uppercase' && parseFloat(cs.letterSpacing || '0') <= 0)
+      // letter-spacing computes to the keyword "normal" when unset, and
+      // parseFloat('normal') is NaN — which silently passes every comparison.
+      const tracking = cs.letterSpacing === 'normal' ? 0 : parseFloat(cs.letterSpacing) || 0;
+      if (cs.textTransform === 'uppercase' && tracking <= 0)
         out.uppercaseNoTracking.push(`${id} ${cs.fontSize}`);
 
       // ---- contrast ----
