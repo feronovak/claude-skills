@@ -4,6 +4,23 @@ One standard for how a project documents itself, releases, and records who
 wrote it — plus a stdlib-only checker that enforces the half a machine can
 decide.
 
+## Contents
+
+- [Why it is split](#why-it-is-split)
+- [Install](#install)
+- [Usage](#usage)
+- [What is universal, and what is a house rule](#what-is-universal-and-what-is-a-house-rule)
+- [Declining a slot](#declining-a-slot)
+- [The judgement worklist](#the-judgement-worklist)
+- [Profile detection](#profile-detection)
+- [Severity](#severity)
+- [CI](#ci)
+- [Development](#development)
+- [Layout](#layout)
+- [Checks](#checks)
+- [Secrets](#secrets)
+- [Design](#design)
+
 ## Why it is split
 
 Checks fall into two kinds, and conflating them produces either a slow validator
@@ -110,6 +127,51 @@ ai-attribution: allow  # this repo wants the Co-Authored-By trailers
 to `forbid` because the tooling appends those markers unless told otherwise —
 silence produces the marker rather than its absence — but a team that wants the
 attribution says so and the checks stand down.
+
+## Declining a slot
+
+Policy is the repository's; structure is the standard's. Which paths are
+local-only, whether AI attribution is forbidden, whether a given slot applies —
+the repo decides, in its contract. Which documents exist and what they are
+called does not vary per repo, because two conformant repositories that look
+nothing alike mean the standard bought nothing.
+
+A waivable slot is declined in the contract, and never silently:
+
+```yaml
+decisions: waived
+  reason: a single script; there is no architecture to decide
+```
+
+`waived` with no `reason:` is an error. Same gate the profile overrides use,
+for the same purpose — an escape hatch that costs nothing becomes the default.
+
+## The judgement worklist
+
+The mechanical half decides what a string comparison can. The other half needs
+a model, and a model reading a document reports what it happened to notice.
+
+Measured: five runs over one 40-row product map each verified a different
+subset, none found every false row, and the run whose instruction demanded
+thoroughness most forcefully scored worst — while opening with a claim that it
+had checked every row. Recall follows sample size, not effort.
+
+So `claims` prints the denominator:
+
+```bash
+project-standard claims                          # every unit, with line numbers
+project-standard claims --doc docs/FEATURE_MAP.md
+project-standard claims --json
+```
+
+Every document in the taxonomy has a countable unit, and what verifying one
+means differs by slot — a product-map row is checked against the code, a PRD
+never is, because a proposal already true of the implementation would not need
+writing. A document with no countable unit is reported as having none, with the
+reason, rather than going missing.
+
+Working from the list is what raises coverage. Being told to try harder does
+not, and measurably made it worse.
 
 ## Profile detection
 
