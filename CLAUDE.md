@@ -53,7 +53,7 @@ Every document in this repository is indexed in
 ## project-standard
 
 ```yaml
-adopted: bb2581040c83686f57889babcf38690215d1a95c
+adopted: f97c337c280e83f3c5c323b177d63dfbfc068806
 profile: docs
   reason: a collection of skills, not a shipped application
 critical-paths:
