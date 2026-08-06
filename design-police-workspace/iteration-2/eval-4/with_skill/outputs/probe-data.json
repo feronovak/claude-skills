@@ -1,0 +1,45 @@
+{
+  "note": "design-police probe.js output — identical at 1440px and 768px (fixed 720px max-width shell, no responsive breakpoints). Mobile (375px) differs only in touchTargets.enforced flipping to true.",
+  "1440_and_768": {
+    "contrast": [
+      { "el": "span.value", "color": "rgb(154,161,173)", "bg": "rgb(255,255,255)", "px": 14, "weight": 400, "Lc": 50.8, "floor": 75, "target": 90 },
+      { "el": "div.danger", "color": "rgb(217,45,32)", "bg": "rgb(247,248,250)", "px": 13, "weight": 400, "Lc": 67.5, "floor": 75, "target": 90 }
+    ],
+    "contrastBelowTarget": [
+      { "el": "h2", "Lc": 73.6, "floor": 70, "target": 85 },
+      { "el": "button.save", "Lc": -79.9, "floor": 75, "target": 90 },
+      { "el": "span.badge", "Lc": 73.6, "floor": 70, "target": 85 }
+    ],
+    "spacing": {
+      "offScaleValues": [1, 3, 5, 6, 7, 9, 13, 14, 21, 23, 26],
+      "compliance": 4
+    },
+    "typeScale": {
+      "sizes": ["11px x1", "13px x4", "14px x8", "15px x3", "22px x1"],
+      "belowFloor": ["button.icon-btn 13px x3", "span.badge 11px", "div.danger 13px"]
+    },
+    "touchTargets_1440_768_enforced": false,
+    "lineLength": [],
+    "clipped": [
+      { "el": "span.value", "textWidth": 339, "boxWidth": 140, "text": "frantisek.novak.longaddress@ringier-slovakia.sk" },
+      { "el": "span.value", "textWidth": 273, "boxWidth": 140, "text": "Ringier Slovakia Production Workspace" }
+    ],
+    "occluded": [
+      { "el": "button.save", "coveredBy": "span.badge", "coverage": "40%", "text": "Save changes" }
+    ],
+    "brokenImages": ["/avatars/fnovak.png"],
+    "imgMissingDims": ["/avatars/fnovak.png"],
+    "placeholders": [],
+    "horizontalScroll": false
+  },
+  "375_mobile": {
+    "touchTargets_enforced": [
+      { "el": "button.icon-btn", "w": 28, "h": 28, "text": "on" },
+      { "el": "button.icon-btn", "w": 28, "h": 28, "text": "on" },
+      { "el": "button.icon-btn", "w": 28, "h": 28, "text": "off" },
+      { "el": "button.save", "w": 147, "h": 41, "text": "Save changes" },
+      { "el": "div.danger", "w": 214, "h": 25, "text": "Delete this account permanentl" }
+    ],
+    "pageMarginLeftRight": "13px (.shell padding, no media query — below the 16px mobile floor)"
+  }
+}

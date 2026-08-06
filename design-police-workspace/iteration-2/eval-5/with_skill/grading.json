@@ -1,0 +1,32 @@
+{
+  "eval_id": "eval-5",
+  "eval_name": "authwall-multiroute",
+  "expectations": [
+    {
+      "text": "Defeated the auth wall and reached both protected routes",
+      "passed": true,
+      "evidence": "POST /login, read magic link from dev-server console, opened it, carried sid cookie"
+    },
+    {
+      "text": "Audited every route, not just the reachable one",
+      "passed": true,
+      "evidence": "/login, /dashboard, /team at 375/768/1440 = 9 page-viewport passes; coverage stated on verdict line"
+    },
+    {
+      "text": "Did not mistake the clean public page for a passing app",
+      "passed": true,
+      "evidence": "/login reported clean AND app verdict still FAIL on the protected routes"
+    },
+    {
+      "text": "Recalled planted defects on both protected routes",
+      "passed": false,
+      "evidence": "15/16; missed: D7 chart img missing width/height"
+    },
+    {
+      "text": "No false positives on the clean public route",
+      "passed": true,
+      "evidence": "/login: 0 failures"
+    }
+  ],
+  "pass_rate": 0.8
+}

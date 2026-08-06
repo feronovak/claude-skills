@@ -1,0 +1,169 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Account settings — Relay</title>
+
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f7f8fa;
+    color: #1f2430;
+  }
+
+  .shell {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 23px 13px;
+  }
+
+  h1 {
+    font-size: 22px;
+    margin: 0 0 23px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid #e6e8ee;
+    border-radius: 10px;
+    padding: 21px;
+    margin-bottom: 13px;
+    transition: all 0.2s ease;
+  }
+
+  .card h2 {
+    font-size: 15px;
+    margin: 0 0 14px;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+  }
+
+  .row .label { font-size: 14px; }
+
+  .row .value {
+    font-size: 14px;
+    color: #9aa1ad;
+    width: 140px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #e6e8ee;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .avatar {
+    border-radius: 50%;
+    background: #dfe3ea;
+  }
+
+  .save-wrap {
+    position: relative;
+    display: inline-block;
+    margin-top: 23px;
+  }
+
+  .save {
+    background: #2f5cff;
+    color: #fff;
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 26px;
+    font-size: 15px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .badge {
+    position: absolute;
+    top: 10px;
+    left: 18px;
+    background: #ffcc00;
+    color: #3a2f00;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+  }
+
+  .danger {
+    color: #d92d20;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-block;
+    padding: 5px 0;
+  }
+</style>
+
+<div class="shell">
+  <h1>Account settings</h1>
+
+  <div class="card">
+    <h2>Profile</h2>
+
+    <div class="row">
+      <span class="label">Avatar</span>
+      <img class="avatar" src="/avatars/fnovak.png" alt="">
+    </div>
+
+    <div class="row">
+      <span class="label">Email</span>
+      <span class="value">frantisek.novak.longaddress@ringier-slovakia.sk</span>
+    </div>
+
+    <div class="row">
+      <span class="label">Workspace</span>
+      <span class="value">Ringier Slovakia Production Workspace</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Notifications</h2>
+
+    <div class="row">
+      <span class="label">Weekly digest</span>
+      <button class="icon-btn" aria-label="Toggle weekly digest">on</button>
+    </div>
+
+    <div class="row">
+      <span class="label">Deploy alerts</span>
+      <button class="icon-btn" aria-label="Toggle deploy alerts">on</button>
+    </div>
+
+    <div class="row">
+      <span class="label">Billing receipts</span>
+      <button class="icon-btn" aria-label="Toggle billing receipts">off</button>
+    </div>
+  </div>
+
+  <div class="save-wrap">
+    <button class="save">Save changes</button>
+    <span class="badge">PRO</span>
+  </div>
+
+  <div style="margin-top: 23px">
+    <div class="danger" onclick="deleteAccount()">Delete this account permanently</div>
+  </div>
+</div>
+
+<script>
+  function deleteAccount() {
+    console.log("delete account clicked");
+  }
+</script>

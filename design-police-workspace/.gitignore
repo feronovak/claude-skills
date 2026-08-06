@@ -1,0 +1,5 @@
+# Run screenshots — 1.7 MB and regenerable by re-running an eval. The reports
+# and grading files carry the findings; the pixels are not evidence anyone
+# re-reads. Fixture images are NOT ignored: `fixtures/clean/shot.png` is part
+# of the control page and the audit fails without it.
+iteration-*/**/*.png

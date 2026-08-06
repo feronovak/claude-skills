@@ -1,0 +1,27 @@
+{
+  "eval_id": "eval-4",
+  "eval_name": "no-server-must-start-it",
+  "expectations": [
+    {
+      "text": "Performed a live browser audit (did not stop at source-only)",
+      "passed": true,
+      "evidence": "navigated and screenshotted at 3 viewports"
+    },
+    {
+      "text": "Verdict matches ground truth",
+      "passed": true,
+      "evidence": "expected FAIL, got FAIL"
+    },
+    {
+      "text": "Recalled all planted defects",
+      "passed": true,
+      "evidence": "13/13 found"
+    },
+    {
+      "text": "No false positives",
+      "passed": false,
+      "evidence": "quoted 'requires Lc >= 100' for 14px/400"
+    }
+  ],
+  "pass_rate": 0.75
+}

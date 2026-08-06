@@ -1,0 +1,11 @@
+{
+  "eval_id": "eval-4",
+  "eval_name": "no-server-must-start-it",
+  "prompt": "see evals/evals.json",
+  "assertions": [
+    "Performed a live browser audit (did not stop at source-only)",
+    "Verdict matches ground truth",
+    "Recalled all planted defects",
+    "No false positives"
+  ]
+}

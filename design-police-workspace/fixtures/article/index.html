@@ -1,0 +1,135 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Quiet Case for Boring Infrastructure — Field Notes</title>
+
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --meta: #b4b4b4;
+    --rule: #e8e8e8;
+  }
+
+  body {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    color: var(--ink);
+    background: #ffffff;
+    line-height: 1.5;
+  }
+
+  .wrap {
+    padding: 40px 24px;
+  }
+
+  header nav {
+    display: flex;
+    gap: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+    font-family: system-ui, sans-serif;
+  }
+
+  header nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 15px;
+    padding: 4px 0;
+  }
+
+  .hero {
+    display: block;
+    width: 100%;
+    margin: 32px 0 24px;
+    background: #f4f4f4;
+  }
+
+  h1 {
+    font-size: 21px;
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+
+  h2 {
+    font-size: 19px;
+    font-weight: 600;
+    margin: 28px 0 10px;
+  }
+
+  p {
+    font-size: 18px;
+    margin: 0 0 18px;
+  }
+
+  .byline {
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    color: var(--meta);
+    margin-bottom: 8px;
+  }
+
+  .tag {
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--meta);
+  }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    color: var(--meta);
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/archive">Archive</a>
+      <a href="/about">About</a>
+      <a href="https://example.com/feed" target="_blank">RSS</a>
+    </nav>
+  </header>
+
+  <article>
+    <img class="hero" src="/img/hero-datacenter.jpg" alt="Racks in a data centre">
+
+    <p class="byline">Fero Novak &middot; 6 August 2026 &middot; 9 min read</p>
+
+    <h1>The Quiet Case for Boring Infrastructure</h1>
+
+    <p>Every team eventually meets the moment where the interesting choice and the correct
+      choice point in opposite directions. The interesting choice has a conference talk
+      attached to it. The correct choice has a decade of uneventful uptime attached to it,
+      which is a much harder thing to put on a slide, and so it tends to lose the argument
+      in rooms where the loudest person has recently read a blog post.</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+      incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+      exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+      dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+
+    <h2>What boring actually buys you</h2>
+
+    <p>Boring buys you the ability to be woken at three in the morning and still understand
+      the system you are looking at. It buys you a hiring pool that does not need a six-week
+      onboarding to make a one-line change. It buys you the option of leaving the thing alone
+      for two years, which is the single most underrated feature any piece of infrastructure
+      can offer, and the one nobody writes benchmarks for.</p>
+
+    <h2>The cost nobody prices in</h2>
+
+    <p>The cost of novelty is not the learning curve. The learning curve is fine; engineers
+      like learning curves. The cost is that every novel component is a component whose
+      failure modes are not yet folklore, and folklore is the only documentation that
+      survives a team turning over twice.</p>
+
+    <p class="tag">TODO: add author bio + newsletter CTA here before publish</p>
+  </article>
+
+  <footer>
+    <p>&copy; 2026 Field Notes. All rights reserved.</p>
+  </footer>
+</div>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deployments — Orbit</title>
+
+<style>
+  :root { --ink: #15171c; --rule: #dee2ea; --accent: #1a44d6; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, sans-serif;
+    font-size: 16px; line-height: 1.6; color: var(--ink); background: #f6f7fa;
+  }
+  .top {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #fff; border-bottom: 1px solid var(--rule); padding: 12px 24px;
+  }
+  .top nav { display: flex; gap: 8px; }
+  .top nav a {
+    color: #3e4552; text-decoration: none; padding: 12px 8px; font-size: 16px;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+  h1 { font-size: 31px; line-height: 1.2; margin: 0 0 24px; }
+
+  .metrics { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
+  .metric {
+    flex: 1 1 200px; background: #fff; border: 1px solid var(--rule);
+    border-radius: 8px; padding: 16px;
+    transition: all 0.2s ease;
+  }
+  .metric .label { font-size: 14px; color: #b9bfca; }
+  .metric .num { font-size: 25px; font-weight: 600; }
+
+  .chart {
+    display: block; width: 100%; background: #fff;
+    border: 1px solid var(--rule); border-radius: 8px; margin-bottom: 32px;
+  }
+
+  .deploy-wrap { position: relative; display: inline-block; }
+  .deploy {
+    background: var(--accent); color: #fff; border: 0; border-radius: 8px;
+    padding: 12px 24px; font: inherit; font-weight: 500; cursor: pointer;
+  }
+  .pill {
+    position: absolute; top: 12px; left: 20px;
+    background: #ff5a1f; color: #fff; font-size: 12px; font-weight: 700;
+    padding: 4px 8px; border-radius: 12px;
+  }
+
+  .env-switch {
+    width: 32px; height: 32px; border: 1px solid var(--rule);
+    border-radius: 8px; background: #fff; cursor: pointer; font-size: 14px;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<header class="top">
+  <strong>Orbit</strong>
+  <nav>
+    <a href="/dashboard">Deployments</a>
+    <a href="/team">Team</a>
+    <a href="/logout">Sign out</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <h1>Deployments</h1>
+
+  <section class="metrics">
+    <div class="metric"><div class="label">Uptime, 30 days</div><div class="num">99.94%</div></div>
+    <div class="metric"><div class="label">Median deploy</div><div class="num">3m 40s</div></div>
+    <div class="metric"><div class="label">Failed this week</div><div class="num">2</div></div>
+    <div class="metric"><div class="label">Open incidents</div><div class="num">0</div></div>
+  </section>
+
+  <img class="chart" src="/charts/uptime-30d.png" alt="Uptime over the last 30 days">
+
+  <div class="deploy-wrap">
+    <button class="deploy">Deploy to production</button>
+    <span class="pill">3 NEW</span>
+  </div>
+
+  <button class="env-switch" aria-label="Switch environment">⇄</button>
+</main>
+</html>

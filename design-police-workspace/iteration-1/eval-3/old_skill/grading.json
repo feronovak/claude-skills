@@ -1,0 +1,27 @@
+{
+  "eval_id": "eval-3",
+  "eval_name": "clean-control-false-positives",
+  "expectations": [
+    {
+      "text": "Performed a live browser audit (did not stop at source-only)",
+      "passed": true,
+      "evidence": "navigated and screenshotted at 3 viewports"
+    },
+    {
+      "text": "Verdict matches ground truth",
+      "passed": true,
+      "evidence": "expected PASS, got PASS"
+    },
+    {
+      "text": "Recalled all planted defects",
+      "passed": true,
+      "evidence": "0/0 found"
+    },
+    {
+      "text": "No false positives",
+      "passed": true,
+      "evidence": "none"
+    }
+  ],
+  "pass_rate": 1.0
+}

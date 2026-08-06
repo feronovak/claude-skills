@@ -1,0 +1,27 @@
+{
+  "eval_id": "eval-2",
+  "eval_name": "app-settings-overlap-and-clipping",
+  "expectations": [
+    {
+      "text": "Performed a live browser audit (did not stop at source-only)",
+      "passed": true,
+      "evidence": "navigated and screenshotted at 3 viewports"
+    },
+    {
+      "text": "Verdict matches ground truth",
+      "passed": true,
+      "evidence": "expected FAIL, got FAIL"
+    },
+    {
+      "text": "Recalled all planted defects",
+      "passed": false,
+      "evidence": "12/13 found; missed: B9 maximum-scale=1 in viewport meta (blocks pinch zoom)"
+    },
+    {
+      "text": "No false positives",
+      "passed": false,
+      "evidence": "failed the white-on-blue primary CTA at |Lc| 79.9 against an invented 'min 95'; failed .badge and .card h2 at Lc 73.6 using the Lc-100 table rather than the 75 floor; claimed on/off toggles are visually identical \u2014 their labels differ"
+    }
+  ],
+  "pass_rate": 0.5
+}

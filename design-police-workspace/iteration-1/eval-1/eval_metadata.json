@@ -1,0 +1,11 @@
+{
+  "eval_id": "eval-1",
+  "eval_name": "editorial-article-visual-defects",
+  "prompt": "see evals/evals.json",
+  "assertions": [
+    "Performed a live browser audit (did not stop at source-only)",
+    "Verdict matches ground truth",
+    "Recalled all planted defects",
+    "No false positives"
+  ]
+}

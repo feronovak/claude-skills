@@ -1,0 +1,11 @@
+{
+  "eval_id": "eval-2",
+  "eval_name": "app-settings-overlap-and-clipping",
+  "prompt": "see evals/evals.json",
+  "assertions": [
+    "Performed a live browser audit (did not stop at source-only)",
+    "Verdict matches ground truth",
+    "Recalled all planted defects",
+    "No false positives"
+  ]
+}

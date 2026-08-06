@@ -1,0 +1,31 @@
+{
+  "skill_name": "design-police",
+  "configurations": [
+    {
+      "name": "with_skill (iteration-2)",
+      "recall_found": 34,
+      "recall_total": 34,
+      "recall_pct": 100.0,
+      "false_positives": 1,
+      "verdicts_correct": 4,
+      "live_audits": 4,
+      "mean_tokens": 135835,
+      "mean_seconds": 365.1,
+      "items_reported": 42,
+      "severity_banded": true
+    },
+    {
+      "name": "old_skill (iteration-1 baseline)",
+      "recall_found": 33,
+      "recall_total": 34,
+      "recall_pct": 97.1,
+      "false_positives": 6,
+      "verdicts_correct": 4,
+      "live_audits": 4,
+      "mean_tokens": 121746,
+      "mean_seconds": 369.5,
+      "items_reported": 71,
+      "severity_banded": false
+    }
+  ]
+}

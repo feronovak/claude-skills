@@ -1,0 +1,27 @@
+{
+  "eval_id": "eval-1",
+  "eval_name": "editorial-article-visual-defects",
+  "expectations": [
+    {
+      "text": "Performed a live browser audit (did not stop at source-only)",
+      "passed": true,
+      "evidence": "navigated and screenshotted at 3 viewports"
+    },
+    {
+      "text": "Verdict matches ground truth",
+      "passed": true,
+      "evidence": "expected FAIL, got FAIL"
+    },
+    {
+      "text": "Recalled all planted defects",
+      "passed": true,
+      "evidence": "8/8 found"
+    },
+    {
+      "text": "No false positives",
+      "passed": false,
+      "evidence": "rel=noopener demanded on target=_blank (modern browsers imply noopener); quoted 'required Lc >= 100' \u2014 skill's own instant-fail floor is 75"
+    }
+  ],
+  "pass_rate": 0.75
+}

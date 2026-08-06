@@ -1,0 +1,27 @@
+{
+  "skill_name": "design-police",
+  "notes": "Fixtures served from fixtures/ at http://127.0.0.1:8811/. Ground truth in ground-truth.md. Prompts deliberately do NOT mention Playwright, screenshots or viewports — whether the run performs a live audit is one of the things being measured.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "editorial-article-visual-defects",
+      "prompt": "I've finished the article template for the Ghost theme. It's running at http://127.0.0.1:8811/article/ and the source is /home/fnovak/projects/claude-skills/design-police-workspace/fixtures/article/index.html. Run design police on it.",
+      "expected_output": "FAIL verdict naming the broken hero image, the Lorem ipsum paragraph, the TODO placeholder, the runaway line length, the low-contrast byline, the flat type hierarchy, and the missing img dimensions.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "app-settings-overlap-and-clipping",
+      "prompt": "Check the design on the account settings screen before I merge it — http://127.0.0.1:8811/app/, source at /home/fnovak/projects/claude-skills/design-police-workspace/fixtures/app/index.html",
+      "expected_output": "FAIL verdict naming the PRO badge covering the Save button label, the clipped email/workspace text, the broken avatar, 28x28 touch targets, off-scale spacing, and the div-with-onclick delete action.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "clean-control-false-positives",
+      "prompt": "Does the landing page look good? http://127.0.0.1:8811/clean/ — source is /home/fnovak/projects/claude-skills/design-police-workspace/fixtures/clean/index.html",
+      "expected_output": "PASS verdict. This page has no planted defects; any FAIL is a false positive.",
+      "files": []
+    }
+  ]
+}

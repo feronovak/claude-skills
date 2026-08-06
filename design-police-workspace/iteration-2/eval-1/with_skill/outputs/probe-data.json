@@ -1,0 +1,69 @@
+{
+  "route": "/article/",
+  "note": "Screenshots were captured and visually reviewed inline during the audit (Playwright MCP returns image data directly to the model) but could not be copied to disk — the Playwright MCP browser tool runs in a sandbox that does not share a filesystem with this session's Bash/Read tools, confirmed by both a full-filesystem search for the saved PNGs and a failed Read attempt on the path the tool itself reported. All visual (craft-pass) findings in report.md were made directly from those inline screenshots at each viewport.",
+  "viewports": {
+    "1440x900": {
+      "contrast_failures": [
+        { "el": "p.byline", "color": "rgb(180,180,180)", "bg": "rgb(255,255,255)", "px": 14, "weight": 400, "Lc": 40.5, "floor": 75, "target": 90 },
+        { "el": "p.tag", "color": "rgb(180,180,180)", "bg": "rgb(255,255,255)", "px": 13, "weight": 400, "Lc": 40.5, "floor": 75, "target": 90 },
+        { "el": "p (footer copyright line, inherits --meta + generic p font-size)", "color": "rgb(180,180,180)", "bg": "rgb(255,255,255)", "px": 18, "weight": 400, "Lc": 40.5, "floor": 60, "target": 75 }
+      ],
+      "spacing": { "compliance": 65, "offScaleValues": [10, 14, 18], "offScale": ["nav paddingBottom=14px", "nav rowGap=18px", "nav columnGap=18px", "p marginBottom=18px", "h2 marginBottom=10px", "p.tag marginBottom=18px"] },
+      "typeScale": { "sizes": ["13px x1", "14px x1", "15px x4", "18px x5", "19px x2", "21px x1"], "belowFloor": ["p.tag 13px"] },
+      "lineLength": [
+        { "el": "p", "ch": 168, "px": 1387, "fontSize": 18 },
+        { "el": "p", "ch": 168, "px": 1389, "fontSize": 18 },
+        { "el": "p", "ch": 167, "px": 1384, "fontSize": 18 },
+        { "el": "p", "ch": 166, "px": 1375, "fontSize": 18 }
+      ],
+      "clipped": [],
+      "occluded": [],
+      "brokenImages": ["/img/hero-datacenter.jpg"],
+      "imgMissingDims": ["/img/hero-datacenter.jpg"],
+      "placeholders": [
+        "p: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmo",
+        "p.tag: TODO: add author bio + newsletter CTA here before publish"
+      ],
+      "horizontalScroll": false,
+      "touchTargets": [
+        { "el": "a", "w": 44, "h": 31, "enforced": false, "text": "Home" },
+        { "el": "a", "w": 56, "h": 31, "enforced": false, "text": "Archive" },
+        { "el": "a", "w": 44, "h": 31, "enforced": false, "text": "About" },
+        { "el": "a", "w": 29, "h": 31, "enforced": false, "text": "RSS" }
+      ]
+    },
+    "768x1024": {
+      "contrast_failures": "identical to 1440 (same computed colors/sizes, layout is single-column at both widths)",
+      "spacing": { "compliance": 65, "offScaleValues": [10, 14, 18] },
+      "lineLength": [
+        { "el": "p", "ch": 87, "px": 720, "fontSize": 18 },
+        { "el": "p", "ch": 87, "px": 719, "fontSize": 18 },
+        { "el": "p", "ch": 87, "px": 716, "fontSize": 18 },
+        { "el": "p", "ch": 83, "px": 686, "fontSize": 18 }
+      ],
+      "brokenImages": ["/img/hero-datacenter.jpg"],
+      "placeholders": ["p: Lorem ipsum...", "p.tag: TODO..."],
+      "horizontalScroll": false,
+      "touchTargets": "same 4 nav links, still 31px tall; enforced=true would require <768 viewport, this is exactly 768 so not counted as mobile-enforced by the probe's own threshold"
+    },
+    "375x812": {
+      "contrast_failures": "identical to 1440",
+      "spacing": { "compliance": 65, "offScaleValues": [10, 14, 18] },
+      "lineLength": [],
+      "brokenImages": ["/img/hero-datacenter.jpg"],
+      "placeholders": ["p: Lorem ipsum...", "p.tag: TODO..."],
+      "horizontalScroll": false,
+      "touchTargets": [
+        { "el": "a", "w": 44, "h": 31, "enforced": true, "text": "Home" },
+        { "el": "a", "w": 56, "h": 31, "enforced": true, "text": "Archive" },
+        { "el": "a", "w": 44, "h": 31, "enforced": true, "text": "About" },
+        { "el": "a", "w": 29, "h": 31, "enforced": true, "text": "RSS" }
+      ]
+    }
+  },
+  "server_check": {
+    "http_status_article_page": 200,
+    "http_status_hero_image": 404,
+    "live_html_matches_source_file": true
+  }
+}
