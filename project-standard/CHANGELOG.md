@@ -8,6 +8,46 @@ they never collide with the skill collection's own `vX.Y.Z` tags.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+Documentation fixes only — no behaviour change. Every item came from retrofitting
+one real repository (a React/TypeScript product with 35 living docs) and hitting
+the guidance where it was wrong or silent.
+
+### Fixed
+
+- **The incumbent table contradicted check 30.** It listed `NORTH_STAR.md` /
+  `MISSION.md` / `VISION.md` as "leave it, name it in the contract", which reads
+  as though the direction slot accepts any path. Check 30 matches the *filename*.
+  Following the table, a retrofit merged three direction docs into `STRATEGY.md`,
+  passed its own review, and then failed the check — costing a rename and eleven
+  files of link repointing after the work was done.
+- **`git-hygiene.md` contradicted itself on attribution.** The opening said a repo
+  may declare `ai-attribution: allow`; the scope table said the rule holds
+  "every repo, unconditionally". The override is implemented, so the table was
+  the wrong half.
+
+### Added
+
+- **The hook and the checker disagree by design, and now say so.** `check` reads
+  the contract and honours `ai-attribution: allow`; the `commit-msg` hook greps
+  flat and never parses a contract, so it blocks the trailer in a repo that
+  declared `allow`. A repo that wants the attribution must both declare it and
+  stop installing the hook, or commits fail with no finding to explain why.
+- **The checker reads tracked files.** A `LICENSE` written but not `git add`ed
+  stays invisible and its broken-link finding persists. This is also the reason
+  behind the `generate` → commit → `generate` order.
+- **Trust stamps must be bold.** Check 12 matches `**Last reviewed:**` and counts
+  nothing else; a plain `Last reviewed:` is reported as absent rather than
+  malformed, so a repo stamping every document the wrong way reads as one
+  stamping none.
+- **Repointing inbound links is not a string replacement.** Warned in setup, with
+  the failure seen: a blind substitution put the same entry twice in a golden path
+  and left an index row labelled with the merged document's old name.
+- **Rewriting commit history needs a clean tree**, and `git stash` is blocked
+  outright on setups carrying a destructive-git guard. The file-copy plus
+  `git show HEAD:<path>` workaround is documented.
+
 ## [0.2.0] - 2026-08-06
 
 The first release with a version anyone can act on. Every defect below was

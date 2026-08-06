@@ -22,6 +22,13 @@ one repo carries three in its last 200 commits, in messages with no trailer.
 The last row has no mechanical enforcement anywhere. It is checked by eye. A
 guard that does not exist is never claimed to.
 
+**The hook and the checker do not agree, on purpose — know which one you are
+fighting.** `check` reads the contract and honours `ai-attribution: allow`. The
+`commit-msg` hook greps the message flat and never parses a contract, so it
+blocks the trailer even in a repo that declared `allow`. If a repo genuinely
+wants the attribution, declaring it silences the checker and you must also stop
+installing the hook there — otherwise commits fail with no finding to explain why.
+
 ## Where the guards live
 
 Install them with `project-standard install-hooks`, which copies both guards
@@ -39,7 +46,7 @@ accident when a repository is renamed or moved.
 
 | Rule | Scope | Why |
 |---|---|---|
-| No Claude attribution | every repo, unconditionally | personal policy, true everywhere |
+| No Claude attribution | every repo **by default**; overridable with `ai-attribution: allow` | personal policy, and the tooling appends the markers unless told otherwise |
 | Local-only paths stay untracked | only repos that opted in | `logs/` and `test_results/` are legitimately tracked in some repos, including employer work |
 
 A repo opts in by carrying `# project-standard: local-only` in `.gitignore` or

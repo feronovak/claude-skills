@@ -102,13 +102,27 @@ the disease this skill treats, arrived at from the other direction.
 | Incumbent | Slot |
 |---|---|
 | `ROADMAP.md`, `TODO.md`, `IMPLEMENTATION_ROADMAP.md` | `docs/NEXT_STEPS.md` |
-| `NORTH_STAR.md`, `MISSION.md`, `VISION.md` | direction — leave it, name it in the contract |
+| `NORTH_STAR.md` | direction — already the slot; leave it where it is |
+| `MISSION.md`, `VISION.md`, `STRATEGY.md` | direction — **rename to `NORTH_STAR.md`**; check 30 matches the filename, not a contract pointer |
 | `RELEASING.md` | release flow — satisfies the slot, do not add a second |
 | `API_REFERENCE.md` in prose | api reference — diff it against the routes, do not replace it |
 | `PRDs/`, `docs/prd/` | `docs/prds/` |
 | `ADR/`, `docs/adr/`, `docs/decisions/`, `ARCHITECTURE_DECISIONS.md` | decisions — a directory of records satisfies the slot, leave it |
 
 Rename or merge. Only create when no incumbent exists. Ask when it is ambiguous.
+
+**Repointing inbound links is not a string replacement.** A merged doc is usually
+referenced from an index, where the link text and the surrounding row carry meaning
+a blind substitution destroys — a golden-path list ends up with the same entry
+twice, or a row still labelled with the old document's name pointing at the new one.
+Grep the inbound references first, rewrite them, then **re-read every index that
+changed** and fix its structure by hand.
+
+**Rewriting commit history needs a clean working tree.** `git filter-branch` and
+friends refuse to run with unstaged changes, and the obvious escape — `git stash` —
+is blocked outright on some setups by a destructive-git guard. Copy the dirty files
+aside, restore the committed content with `git show HEAD:<path> > <path>`, rewrite,
+then copy back. No git state is destroyed and no guard fires.
 
 **Never introduce a file named for an assistant the project does not use.**
 Read the repository first: an existing `AGENTS.md`, a `.codex/`, `.agents/`,
