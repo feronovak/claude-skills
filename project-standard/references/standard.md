@@ -169,6 +169,32 @@ written as prose yields no items. Where the shape does not match the slot, the
 worklist says the unit count is zero and names the document, so the gap is
 visible rather than silent.
 
+## The index
+
+`docs/DOCMAP.md` is generated, and check 3 answers whether it is current in one
+of two ways.
+
+By default it regenerates and compares byte for byte, which is exact — and only
+works when this tool wrote the file. A repository that already generates its own
+index, in its own format, would fail that comparison forever however current the
+index actually is, and the only escapes are abandoning a working generator or
+switching the check off. Both are worse than the check.
+
+So a repository may declare it:
+
+```yaml
+docmap: own      # this repository generates its own index
+```
+
+Freshness is then answered by ancestry: the index's last commit must not be an
+ancestor of any indexed document's last commit. Same technique check 10c uses
+for a route manifest. It needs no knowledge of the format, and it executes
+nothing the repository declares — a checker that ran a command out of a
+markdown file would be a different kind of tool.
+
+**Declaring it does not stand the check down.** A stale foreign index is still
+an error; only the method of asking changes.
+
 ## Trust stamps
 
 `**Last reviewed:** YYYY-MM-DD · **As of:** vX.Y.Z`
