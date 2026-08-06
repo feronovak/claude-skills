@@ -49,10 +49,12 @@ nothing becomes the default.
 | direction | ✅ | warn | — | `NORTH_STAR.md` / `MISSION.md` / `VISION.md`, or `direction: inherit` |
 | api reference | if `http-api` | if `http-api` | — | `docs/API_REFERENCE.md` |
 | contribution surface | — | ✅ | — | `CONTRIBUTING.md`, `SECURITY.md` |
+| decisions | warn | warn | warn | `docs/DECISIONS.md`, or `docs/adr/**` |
 
 ## The document taxonomy
 
-Five documents, five questions, five tenses. No overlap.
+Six documents, six questions. Five partition by tense; the sixth answers a
+question none of the others can.
 
 | Document | Answers | Tense |
 |---|---|---|
@@ -61,6 +63,25 @@ Five documents, five questions, five tenses. No overlap.
 | `docs/prds/<feature>.md` | what one future feature must do, in depth | future, one per feature |
 | `FEATURE_MAP.md` | what the product does today | present |
 | `CHANGELOG.md` | what shipped, and when | past |
+| `DECISIONS.md` | why this and not the obvious alternative | at the moment of choosing |
+
+**The decision log is not a sixth tense, and that is the point.** The other five
+split cleanly on time; a decision is fixed to the moment it was made and stays
+true afterwards even when the code moves on. Direction says where the product
+is going, the product map what it does today, the changelog what shipped, a PRD
+what is proposed — none of them records a choice or what it cost. A project
+without this document relitigates the same argument every time somebody new
+reads the code.
+
+**A decision is superseded, never edited.** Editing an entry destroys the
+record of what was believed when the choice was made, which is the only thing
+the document is for. A decision that no longer holds gets a later entry saying
+so, linking back.
+
+**The slot is waivable, with a written reason.** Not every repository has
+architecture to decide. `decisions: waived` plus a `reason:` declines it; the
+same reason gate the profile overrides use, for the same purpose — an escape
+hatch that costs nothing becomes the default.
 
 A backlog line graduates into a PRD when someone starts designing it. A PRD
 never graduates into the product map — the map is written from the code that
@@ -114,6 +135,7 @@ effort. So the standard makes the sample enumerable.
 | PRD | a header and a section | `**Status:**` / `**Backlog:**` / `**Owner:**`, then `##` sections | it is decided, linked and owned — **never** whether it is true of the code |
 | `CHANGELOG.md` | a release | `## [x.y.z] - date` | a tag exists, and the entry describes what shipped |
 | release flow | a bump rule | one table row per bump | it names a real consumer and a real consequence |
+| decisions | a decision | one `##` entry per choice, newest first | it still governs the code — if not, supersede it |
 | direction doc | — | prose | nothing to count; direction is judgement |
 
 `project-standard claims` prints this worklist. `--doc` narrows it to one file,

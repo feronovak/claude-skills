@@ -104,6 +104,7 @@ the disease this skill treats, arrived at from the other direction.
 | `RELEASING.md` | release flow — satisfies the slot, do not add a second |
 | `API_REFERENCE.md` in prose | api reference — diff it against the routes, do not replace it |
 | `PRDs/`, `docs/prd/` | `docs/prds/` |
+| `ADR/`, `docs/adr/`, `docs/decisions/`, `ARCHITECTURE_DECISIONS.md` | decisions — a directory of records satisfies the slot, leave it |
 
 Rename or merge. Only create when no incumbent exists. Ask when it is ambiguous.
 
@@ -186,6 +187,7 @@ by DOCMAP is worse than a missing file.
 | `NEXT_STEPS.md` | merged from existing backlogs; direction is not asked here | merge only |
 | **`FEATURE_MAP.md`** | **what the product does today** | **no** |
 | **direction doc** | **mission, vision, north star** | **no — ask, never draft** |
+| **`DECISIONS.md`** | **why a choice was made, and what it cost** | **no — the reasoning was in someone's head, not the diff** |
 
 For the two marked no: scaffold a list of *candidates* marked `unverified`,
 never a list of claims, and work through them with the user.
@@ -205,7 +207,16 @@ local-only:            # extend the default set
 track-anyway:          # keep tracking something the default would flag
   - logs/
 ai-attribution: allow  # this repo wants the Co-Authored-By trailers
+decisions: waived      # this repo owes no decision log
+  reason: a single script; there is no architecture to decide
 ```
+
+**A slot may be waived, never silently.** `decisions: waived` with no `reason:`
+is an error. Policy is the repo's — which paths are local-only, whether
+attribution is forbidden, whether a slot applies. Structure is the standard's:
+which documents exist and what they are called does not vary per repo, or two
+conformant repositories look nothing alike and the standard has bought
+nothing.
 
 `ai-attribution` defaults to `forbid` because the tooling appends those markers
 unless told otherwise — silence produces the marker rather than its absence.
