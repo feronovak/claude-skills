@@ -129,6 +129,12 @@ Run it, commit, then run it once more — the map indexes itself, so the first
 output is stale the moment it is tracked. Hand-writing this file instead leaves
 the repo permanently failing its own freshness check.
 
+**If the repo already generates its own index, do not run `generate`** — it
+would overwrite a working repo-native file with this tool's format. Declare
+`docmap: own` in the contract instead. Check 3 then answers freshness by
+ancestry rather than by byte comparison, so the check still runs and the repo
+keeps its generator.
+
 **Then set the baselines.** Adoption is what makes a red repo green without
 anyone pretending the work is done:
 

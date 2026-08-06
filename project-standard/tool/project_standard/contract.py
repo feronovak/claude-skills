@@ -47,7 +47,7 @@ KNOWN_KEYS = (
     "adopted", "profile", "http-api", "channels", "direction", "prds",
     "critical-paths", "api-coverage", "scaffold", "local-only",
     "track-anyway", "ai-attribution", "agent-contract",
-    "next-steps", "release-flow", "decisions",
+    "next-steps", "release-flow", "decisions", "docmap",
 )
 
 
