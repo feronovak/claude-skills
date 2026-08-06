@@ -5,40 +5,84 @@ description: Use when reviewing any web UI for quality - after building web page
 
 # Design Police
 
-Binary pass/fail audit of web interfaces. Reads source files AND inspects live pages via Playwright (computed styles, screenshots). Any anti-pattern is a failure.
+Binary pass/fail audit of web interfaces. Reads source files AND inspects live
+pages via Playwright (computed styles, screenshots). Any anti-pattern is a
+failure.
 
 ## How to Run
 
 ### 1. Determine Scope
 
-`$ARGUMENTS` = files, directories, or URLs to review. If empty, review all files changed in current branch vs main.
+`$ARGUMENTS` = files, directories, or URLs to review. If empty, review all files
+changed in the current branch vs main.
 
-### 2. Code Audit
+Then decide **which routes** you are auditing, before you audit anything. A
+verdict on "the app" derived from one page is a false statement about every
+other page — and it is the failure mode that makes this audit untrustworthy on
+real projects.
 
-Read each source file. Check against code-level rules. Every violation is a FAIL item.
+- List the routes in scope (router files, `pages/`/`app/` dirs, nav links, the
+  README).
+- If there are more than ~6, pick a covering set — one per distinct layout, plus
+  every route the change actually touched — and **name the ones you skipped.**
+- Record what you audited. The verdict header states coverage explicitly.
 
-### 3. Live Audit (Playwright)
+### 2. Get the page running
 
-For each distinct page/route, at 3 viewports (375px, 768px, 1440px):
+The live audit is the point. Source alone cannot see a badge covering a button,
+text clipped mid-word, or a 404'd image — those only exist once rendered. Do not
+skip to a code-only verdict because nothing happened to be running.
 
-**A. Extract computed styles** via `page.evaluate()`:
-- All margin, padding, gap values (check spacing scale compliance)
-- All font sizes, line heights, font weights (check type scale)
-- All text element widths in characters (check line length)
-- All colors: text color + background color pairs (check APCA contrast)
-- All interactive element dimensions (check touch targets)
+In order:
+1. Already-running dev server? Use it.
+2. Otherwise start it — `npm run dev` / `pnpm dev` / the README's command — in
+   the background, wait for the port, and stop it when you're done.
+3. Static site with a build step: build, then serve the output.
 
-**Measurement pitfalls (avoid these):**
-- **Line length:** Do NOT use `element.offsetWidth / (fontSize * 0.5)` — this measures the container, not the text, and overestimates by 20-40%. Use `Range.getClientRects()` to measure actual rendered line widths. See `rules/typography.md` for the correct snippet.
-- **Touch targets:** Use `Math.round(rect.width)` and `Math.round(rect.height)` before comparing to 44px. Subpixel rendering produces values like 43.99 for elements that are actually 44px. Elements at exactly 44px PASS.
-- **Text colors:** Count structural roles (primary, secondary, muted per surface context) + brand accent. Semantic/category colors (niche tags, error/success states) are separate and don't count against the limit. Report the breakdown, not just the raw count. See `rules/color.md`.
+**If the route is behind auth**, get in. This is normal and expected on real
+apps, and giving up here is what turns a real audit into a source-only
+rubber-stamp:
+- a test/seed account in `.env.example`, fixtures, or the E2E setup
+- the project's own Playwright `storageState` / auth helper (check `tests/`)
+- a dev-only login route or magic-link printed to the dev-server console
+- setting the session cookie directly
 
-**B. Take screenshots** for visual checks that can't be computed:
-- Overall visual hierarchy and balance
-- Broken images, placeholder content
-- Layout breakage, overlapping elements
+**If you genuinely cannot reach a route, that route is UNAUDITED, not passing.**
+Say so in the verdict, name the route, and say what blocked you. Never let an
+unreachable page be silently counted as clean.
 
-### 4. Verdict
+### 3. Code Audit
+
+Read each source file. Check against the code-level rules. Every violation is a
+FAIL item.
+
+### 4. Live Audit
+
+For each route in scope, at 375px, 768px, and 1440px:
+
+**A. Run the probe.** Pass the entire contents of `scripts/probe.js` as the
+`function` argument to Playwright's `browser_evaluate`. It returns one JSON
+object with contrast (correct APCA, both polarities, with the floor for each
+element), spacing, type scale, touch targets, real rendered line lengths,
+clipped text, occluded text, broken images, and placeholder copy.
+
+Use it rather than writing your own extraction. Not for convenience — for
+correctness and comparability. Hand-rolled APCA drops the polarity branch or the
+soft-clamp and quietly mis-scores every light-on-dark button; a line-length
+estimate of `offsetWidth / (fontSize * 0.5)` measures the container rather than
+the text and overshoots by 20–40%. Two runs of this audit should produce the
+same numbers for the same page, and they only will if the measurement is the
+same code every time.
+
+Read the probe's own thresholds before overriding one. In particular `floor` vs
+`target` on contrast: **fail on `floor`, note on `target`** (see color.md).
+
+**B. Take screenshots** at each viewport, then run the **craft pass** in
+`rules/craft.md`. This is where "passed every rule but still looks bad" gets
+caught — the numbers cannot see a missing focal point, an inverted hierarchy, or
+a grid with one orphaned card.
+
+### 5. Verdict
 
 ```
 PASS - 0 failures found
@@ -47,11 +91,37 @@ FAIL - N failures found
 
 No warnings. No suggestions. Pass or fail.
 
-**If Playwright is unavailable:** Run code-audit only. Note in the verdict that COMPUTED and VISUAL checks were skipped due to no browser access.
+State coverage on the verdict line: which routes were audited, which were
+skipped, which were unreachable.
 
-### 5. Post-Verdict Gate
+**Order failures by severity.** A flat list of 27 items where "Lorem ipsum is
+live on the page" sits below "margin is 18px not 16px" is unreadable, and the
+developer fixes the wrong things first. Three bands:
 
-After the verdict, present BOTH a numbered list (for terminal users) AND a `jarvis-gate` block (Discord buttons in JARVIS; hidden noise in terminal).
+| band | meaning |
+|---|---|
+| **BLOCKER** | users are hurt or misled now — text unreadable below floor, controls occluded or clipped, broken images, placeholder copy shipped, destructive action not keyboard-reachable, horizontal scroll, touch targets below 44px on mobile |
+| **DEFECT** | real and wrong, not stopping anyone today — off-scale spacing values, missing image dimensions, `transition: all`, uppercase without tracking, line length over 80ch |
+| **POLISH** | taste, restraint, below-target contrast — never affects the verdict |
+
+Craft findings are BLOCKER or POLISH only, never DEFECT — see craft.md. An
+uneven last row in a responsive grid is arithmetic, not a defect.
+
+BLOCKER and DEFECT both count toward the FAIL total. POLISH never does.
+
+Collapse repeats. One line reading "9 distinct off-scale spacing values: 3, 5,
+6, 7, 9, 13, 21, 23, 26px" beats 27 lines naming each element — it is the same
+information and it is one fix.
+
+**If Playwright is genuinely unavailable** (no browser in the environment, not
+merely "no server was running"): run the code audit only, and put
+`LIVE AUDIT NOT RUN` in the verdict header. A source-only pass is not a PASS —
+say which checks did not happen.
+
+### 6. Post-Verdict Gate
+
+After the verdict, present BOTH a numbered list (for terminal users) AND a
+`jarvis-gate` block (Discord buttons in JARVIS; hidden noise in terminal).
 
 **On PASS:**
 
@@ -73,11 +143,11 @@ Then append the gate block:
 ```
 ````
 
-**On FAIL:** prioritize fixing. Default option is to fix critical anti-patterns inline.
+**On FAIL:** prioritize fixing. Default option is to fix blockers inline.
 
 ```
 **What now?**
-1. 🔧 Fix critical now
+1. 🔧 Fix blockers now
 2. 🎯 Fix specific items (cite line numbers or rule tags)
 3. 🔁 Re-audit the same scope
 4. 📝 Note for later (write to docs/design-debt.md)
@@ -90,7 +160,7 @@ Then append the gate block:
 ````
 ```jarvis-gate
 {"options":[
-  {"id":"fix_critical","label":"🔧 Fix critical now","style":"success","response":"fix all critical anti-pattern failures from the verdict above; leave moderate/cosmetic items for later"},
+  {"id":"fix_critical","label":"🔧 Fix blockers now","style":"success","response":"fix every BLOCKER from the verdict above; leave DEFECT and POLISH items for later"},
   {"id":"fix_specific","label":"🎯 Fix specific items","ask":"Which specific failures should we fix? (cite line numbers or rule tags)"},
   {"id":"reaudit","label":"🔁 Re-audit","response":"re-run the audit on the same scope and produce a new verdict"},
   {"id":"defer","label":"📝 Note for later","response":"note all failures in docs/design-debt.md (create if missing) and continue without fixing now"},
@@ -99,56 +169,73 @@ Then append the gate block:
 ```
 ````
 
-Terminal users reply with the number or free text. Discord users tap a button or type a reply.
+Terminal users reply with the number or free text. Discord users tap a button or
+type a reply.
 
 ## Output Format
 
 ```
-## VERDICT: FAIL (7 failures)
+## VERDICT: FAIL (9 failures)
+Coverage: /, /settings, /billing audited. /admin/* skipped (same layout as /settings).
+          /invoices/:id UNAUDITED — needs a seeded invoice, no fixture found.
 
-## src/pages/index.astro (CODE)
+### BLOCKER
 
-FAIL src/pages/index.astro:42 - img missing width/height
-FAIL src/pages/index.astro:55 - heading jumps h1 to h3
+FAIL [Proximity] /settings 375px - "Save changes" is 40% covered by the PRO badge; the button reads " changes"
+FAIL [Contrast] /settings - .value email + workspace: #9aa1ad on #fff, 14px/400, Lc 50.8 (floor 75) - unreadable
+FAIL [Alignment] /settings - email clipped mid-word: 339px of text in a 140px box, no ellipsis
+FAIL / - hero image 404s (/img/hero-datacenter.jpg)
+FAIL / - Lorem ipsum paragraph and a "TODO: add author bio" line are live on the page
+FAIL src/settings.tsx:161 - destructive "Delete account" is a <div onclick>, not keyboard reachable
 
-## / at 375px (COMPUTED)
+### DEFECT
 
-FAIL [Repetition] body line-length 94 chars (max 75)
-FAIL [Repetition] spacing: 23px margin not on 4px scale
-FAIL [Proximity] nav link touch target 32x28px (min 44x44)
+FAIL [Repetition] /settings - 9 distinct off-scale spacing values: 3, 5, 6, 7, 9, 13, 21, 23, 26px
+FAIL [Repetition] / 1440px - body line length 168ch (max 80); no max-width on the text container
+FAIL src/settings.tsx:32 - transition: all (must list properties)
 
-## / at 1440px (COMPUTED)
+### POLISH (not counted)
 
-FAIL [Repetition] type scale: h2 is 28px, expected 30px (scale: 16 * 1.25^4 = 30.5)
-FAIL [Contrast] APCA: #888 on #fff = Lc 63 (min 75 for 14px/400)
-
-## / at 375px (VISUAL)
-
-FAIL [Alignment] horizontal scrollbar visible - content breaks grid
-
-## / at 1440px (VISUAL)
-
-PASS
+- [Craft] The three feature cards use 24px internal padding but 12px between them, so they read as one block rather than three
+- .card h2 at Lc 73.6 clears its floor of 70 but sits under the 85 target
+- Art director's note: every surface is the same white; one tinted band would give the page a spine
 ```
 
-Principle tags: `[Contrast]`, `[Repetition]`, `[Alignment]`, `[Proximity]`. These tell the developer which fundamental principle is violated, not just which threshold was missed.
+Principle tags: `[Contrast]`, `[Repetition]`, `[Alignment]`, `[Proximity]`,
+`[Craft]`. These tell the developer which fundamental principle is violated, not
+just which threshold was missed.
 
 ## Rules
 
-Load all rule files for every audit:
+Load `principles.md` and `anti-patterns.md` every time. Load the others when the
+page has the thing they govern — there is no value in reading the dark-mode
+rules for a page with no dark mode.
+
 - `rules/principles.md` - **READ FIRST.** CRAP + Gestalt - the WHY behind every rule. Use this to explain failures.
+- `rules/anti-patterns.md` - Instant-fail patterns (the blocklist)
+- `rules/craft.md` - The visual judgement pass: focal point, hierarchy, grouping, orphans. Catches what thresholds cannot.
 - `rules/design-tokens.md` - Spacing scale, type scale, color palette, shadows (THE CORE - enforces Repetition)
 - `rules/typography.md` - Font pairing, type scale, line length/height, heading proximity, text color hierarchy, spacing
 - `rules/typography-presets.md` - Content-type presets: editorial, marketing, e-commerce, docs, dashboard (load when recommending improvements)
-- `rules/color.md` - APCA contrast, palette limits, 60-30-10, dark mode (enforces Contrast + Figure-Ground)
+- `rules/color.md` - APCA contrast floors vs targets, palette limits, 60-30-10, dark mode
 - `rules/layout.md` - Grid, max-width, margins, density, responsive, aspect ratios (enforces Alignment + Proximity)
 - `rules/interaction.md` - Forms, touch, animation, hover, navigation
 - `rules/accessibility.md` - Semantic HTML, ARIA, keyboard, focus (lower priority)
 - `rules/performance.md` - CLS, LCP, lazy loading, virtualization
-- `rules/anti-patterns.md` - Instant-fail patterns (the blocklist)
 
-Priority order: principles > design-tokens > typography > color > layout > interaction > performance > accessibility.
+Priority order: principles > anti-patterns > design-tokens > craft > typography >
+color > layout > interaction > performance > accessibility.
 
-When reporting failures, cite which principle is violated (Contrast, Repetition, Alignment, Proximity) alongside the specific threshold. This helps the developer understand not just what's wrong but why it matters.
+When reporting failures, cite which principle is violated alongside the specific
+threshold. This helps the developer understand not just what's wrong but why it
+matters.
 
 Any match in `rules/anti-patterns.md` = automatic FAIL regardless of context.
+
+## Scripts
+
+- `scripts/probe.js` - the computed-style probe. Pass its whole contents to
+  `browser_evaluate`. Returns contrast (APCA, both polarities, floor + target
+  per element), spacing scale, type scale, touch targets, real rendered line
+  length, clipped text, occluded text, broken images, missing image dimensions,
+  and placeholder copy.

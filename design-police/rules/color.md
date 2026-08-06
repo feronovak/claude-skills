@@ -2,28 +2,47 @@
 
 ## APCA Contrast (replaces WCAG 2.x ratio)
 
-APCA (Advanced Perceptual Contrast Algorithm) is more accurate than WCAG's simple ratio. Accounts for font size, weight, and polarity.
+APCA (Advanced Perceptual Contrast Algorithm) is more accurate than WCAG's
+simple ratio. It accounts for font size, weight, and polarity.
 
-**Minimum Lc values by use case:**
+**Do not hand-compute this. `scripts/probe.js` returns `Lc`, `floor` and
+`target` for every text element on the page.** The formula has two polarity
+branches, a soft-clamp for near-black values, and a ±0.027 offset; retyping it
+from memory drops one of those and silently mis-scores every light-text-on-dark
+element — which is every primary button you will ever audit.
 
-| Font size | Weight 400 | Weight 600 | Weight 700 |
-|-----------|-----------|-----------|-----------|
-| 14px | Lc 100 | Lc 80 | Lc 75 |
-| 16px | Lc 90 | Lc 75 | Lc 70 |
-| 18px | Lc 80 | Lc 70 | Lc 60 |
-| 24px | Lc 70 | Lc 55 | Lc 50 |
-| 36px | Lc 60 | Lc 50 | Lc 45 |
-| 48px+ | Lc 55 | Lc 45 | Lc 40 |
+### Two thresholds, and they are not the same thing
 
-**Non-text elements** (icons, borders, focus indicators): Lc >= 45
-**Placeholder/disabled text:** Lc >= 30
+Conflating these is the single most common way this audit produces a wrong
+answer. A legible white-on-blue CTA at Lc 80 is *fine*; failing it because a
+table somewhere says "90" burns the developer's trust in every other line of
+the report.
 
-**Measurement:** Extract text color + background color for every text element via computed styles. Calculate APCA Lc. Use `apca-w3` npm package or the formula:
-```
-Ytxt = linearize(textColor)
-Ybg = linearize(bgColor)
-Lc = (Ybg^0.56 - Ytxt^0.57) * 1.14
-```
+| | what it means | what you do |
+|---|---|---|
+| **floor** | below this, the text is genuinely hard to read | **FAIL** |
+| **target** (floor + 15) | the bar you'd hit with a free hand | note it, never fail it |
+
+**Floors** (compare `|Lc|` — polarity is already handled inside the algorithm):
+
+| condition | floor |
+|---|---|
+| >= 36px, or >= 24px and bold | 45 |
+| >= 24px, or >= 18px and bold | 55 |
+| >= 18px | 60 |
+| >= 16px | 68 |
+| 14–15px | 75 |
+
+Weight 700 subtracts 5; weight 600 subtracts 3 — heavier strokes stay readable
+at lower contrast.
+
+**Non-text** (icons, borders, focus rings): floor Lc 45.
+**Genuinely disabled/placeholder controls:** floor Lc 30. Do not use this as an
+excuse for low-contrast body copy.
+
+These floors are anchored on APCA's own published levels: Lc 90 preferred for
+body text, 75 the minimum for columns of body text, 60 for spot reading and
+headlines, 45 for large or bold text and non-text elements.
 
 ## 60-30-10 Color Proportion
 
