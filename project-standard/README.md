@@ -193,6 +193,16 @@ documentation-heavy product can be 41% markdown — both break the naive tests.
 | `warn` | 0 | worth knowing, not a defect — a gradual retrofit, or a fact about the repo |
 | `skipped` | 0 | the check could not run here, and says so |
 
+**The checker reads tracked files.** A document that exists on disk but has never
+been `git add`ed is invisible to it — a freshly written `LICENSE` keeps failing the
+broken-link check until it is staged. This is also why `generate` → commit →
+`generate` is the documented order: the index cannot list what git cannot see.
+
+**Trust stamps must be bold.** Check 12 matches `**Last reviewed:** YYYY-MM-DD`
+(`docs.py`), and counts nothing else. A plain `Last reviewed: 2026-08-06` is not a
+stamp and is reported as absent rather than as malformed — so a repo that stamps
+every document the wrong way reads as a repo that stamps none.
+
 **`skipped` is a third outcome on purpose.** A check that did not run must never
 read as a check that passed.
 
@@ -228,7 +238,7 @@ cd tool
 PYTHONPATH=.:tests python3 -m unittest discover -s tests -t . -v
 ```
 
-261 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
+267 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
 repos in temp directories, with `core.hooksPath` pointed at an empty directory
 so the global hygiene guards never interfere — otherwise a test that
 deliberately commits an assistant trailer would be blocked by the very hook the
