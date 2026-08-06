@@ -89,7 +89,13 @@ PASS - 0 failures found
 FAIL - N failures found
 ```
 
-No warnings. No suggestions. Pass or fail.
+The verdict is binary and it is the product. No warnings, no hedging, no
+"consider" — a thing is a failure or it is not reported as one.
+
+Suggestions exist in exactly one place: the POLISH section, which never counts
+toward the total and never changes PASS to FAIL. That fence is what keeps the
+verdict worth trusting — the developer can act on the failures without first
+sorting your opinions out of them.
 
 State coverage on the verdict line: which routes were audited, which were
 skipped, which were unreachable.
@@ -102,12 +108,23 @@ developer fixes the wrong things first. Three bands:
 |---|---|
 | **BLOCKER** | users are hurt or misled now — text unreadable below floor, controls occluded or clipped, broken images, placeholder copy shipped, destructive action not keyboard-reachable, horizontal scroll, touch targets below 44px on mobile |
 | **DEFECT** | real and wrong, not stopping anyone today — off-scale spacing values, missing image dimensions, `transition: all`, uppercase without tracking, line length over 80ch |
-| **POLISH** | taste, restraint, below-target contrast — never affects the verdict |
+| **POLISH** | judgement calls — never affects the verdict, **hard cap 3 lines** |
 
 Craft findings are BLOCKER or POLISH only, never DEFECT — see craft.md. An
 uneven last row in a responsive grid is arithmetic, not a defect.
 
 BLOCKER and DEFECT both count toward the FAIL total. POLISH never does.
+
+**POLISH is capped at 3 lines and holds taste only.** Two rules keep it from
+turning into a second report:
+
+- *Judgement, not measurements.* "Six elements clear their floor but sit under
+  target" is the numbers restated with no decision attached — it reads as
+  padding and it is where the section goes to die. If a measurement mattered it
+  was a failure; if it did not, it does not need a line.
+- *Three lines, ranked.* Uncapped, this section grows until nobody reads it,
+  and it is often read on a phone. If you have a fourth thing to say, it was
+  not worth saying.
 
 Collapse repeats. One line reading "9 distinct off-scale spacing values: 3, 5,
 6, 7, 9, 13, 21, 23, 26px" beats 27 lines naming each element — it is the same
@@ -194,12 +211,16 @@ FAIL [Repetition] /settings - 9 distinct off-scale spacing values: 3, 5, 6, 7, 9
 FAIL [Repetition] / 1440px - body line length 168ch (max 80); no max-width on the text container
 FAIL src/settings.tsx:32 - transition: all (must list properties)
 
-### POLISH (not counted)
+### POLISH (not counted, max 3)
 
 - [Craft] The three feature cards use 24px internal padding but 12px between them, so they read as one block rather than three
-- .card h2 at Lc 73.6 clears its floor of 70 but sits under the 85 target
 - Art director's note: every surface is the same white; one tinted band would give the page a spine
 ```
+
+Note what is absent from that POLISH block: no list of elements sitting between
+floor and target. Those were measured, they were not failures, and restating
+them would push the one observation worth reading off the bottom of a phone
+screen.
 
 Principle tags: `[Contrast]`, `[Repetition]`, `[Alignment]`, `[Proximity]`,
 `[Craft]`. These tell the developer which fundamental principle is violated, not
@@ -216,7 +237,7 @@ rules for a page with no dark mode.
 - `rules/craft.md` - The visual judgement pass: focal point, hierarchy, grouping, orphans. Catches what thresholds cannot.
 - `rules/design-tokens.md` - Spacing scale, type scale, color palette, shadows (THE CORE - enforces Repetition)
 - `rules/typography.md` - Font pairing, type scale, line length/height, heading proximity, text color hierarchy, spacing
-- `rules/typography-presets.md` - Content-type presets: editorial, marketing, e-commerce, docs, dashboard (load when recommending improvements)
+- `rules/typography-presets.md` - Content-type presets: editorial, marketing, e-commerce, docs, dashboard. Load to judge whether the typography suits the content type — an editorial measure on a dashboard is a real finding. Not a menu to recommend from; POLISH is 3 lines, not a redesign.
 - `rules/color.md` - APCA contrast floors vs targets, palette limits, 60-30-10, dark mode
 - `rules/layout.md` - Grid, max-width, margins, density, responsive, aspect ratios (enforces Alignment + Proximity)
 - `rules/interaction.md` - Forms, touch, animation, hover, navigation

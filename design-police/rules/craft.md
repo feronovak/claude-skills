@@ -92,7 +92,7 @@ the one place where you could invent a problem:
 ## The closing note
 
 After the verdict, whether PASS or FAIL, answer one more question and report it
-under **Polish** as a single non-blocking line:
+under **POLISH** as a single non-blocking line:
 
 > If everything here passed, what is the one thing an art director would still
 > change?
@@ -100,3 +100,8 @@ under **Polish** as a single non-blocking line:
 This is not a failure and must never affect the verdict. It exists because
 "technically compliant and slightly lifeless" is a real state, and the person
 reading the report would rather hear it than not.
+
+POLISH holds judgement only, and the whole section is capped at 3 lines — this
+note plus at most two others. Do not spend one of them restating measurements
+that already passed; a list of elements sitting between floor and target is not
+an observation, it is the probe output with a different heading.
