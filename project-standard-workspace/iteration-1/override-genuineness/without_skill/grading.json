@@ -1,0 +1,28 @@
+{
+  "eval_name": "override-genuineness",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Judges each declaration separately rather than one verdict for the block",
+      "passed": true,
+      "evidence": "Per-declaration verdict list; adopted/next-steps/release-flow/prds cleared, critical-paths flagged."
+    },
+    {
+      "text": "Clears next-steps, release-flow and prds as legitimate, citing the stated policy",
+      "passed": true,
+      "evidence": "Verifies .gitignore entries and that no matching file is tracked; checks the adopted commit resolves."
+    },
+    {
+      "text": "Reads pricing.py or the CI-gating flags rather than reasoning from contract text alone",
+      "passed": true,
+      "evidence": "pricing.py:12-29, 51-60, 63-253; cli.py:~1099, 1152-1160; pricing_freshness_report:111-154."
+    },
+    {
+      "text": "Engages with whether empty critical-paths is consistent with pricing and CI gating",
+      "passed": true,
+      "evidence": "Calls it 'gaming the checker's minimum bar'; notes the checker accepts a bare key, so the inline comment does the justifying."
+    }
+  ],
+  "passed": 4,
+  "total": 4
+}

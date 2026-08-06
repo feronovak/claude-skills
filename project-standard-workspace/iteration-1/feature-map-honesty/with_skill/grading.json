@@ -1,0 +1,33 @@
+{
+  "eval_name": "feature-map-honesty",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Runs the mechanical check first, then reads source rather than stopping at CLI output",
+      "passed": true,
+      "evidence": "Output opens with `project-standard check --repo eval-1` -> 9 errors, 28 warnings, then reads analysis/ and services/ source."
+    },
+    {
+      "text": "Flags the confidence-scoring row (claims price availability; the function reads no comp inputs)",
+      "passed": false,
+      "evidence": "No mention of confidence_scoring.py, calculate_confidence, or the price-availability claim anywhere in the output."
+    },
+    {
+      "text": "Flags the authenticity row as overclaiming a live vision read",
+      "passed": true,
+      "evidence": "Cites FEATURE_MAP.md:160 and commit 72beca98 'authenticity read had never once executed'."
+    },
+    {
+      "text": "Cites specific document lines against specific source lines",
+      "passed": true,
+      "evidence": "Row 160, analysis/niche_detect.py:27-38, services/runtime_config.py all cited by path and line."
+    },
+    {
+      "text": "Reports no claim as false that is in fact true of the code",
+      "passed": true,
+      "evidence": "Extra finding (niche camera_lens fallback) independently verified: commit 9c649983 real, _FALLBACK = GENERIC_NICHE confirms the doc is stale. True positive, not a fabrication."
+    }
+  ],
+  "passed": 4,
+  "total": 5
+}

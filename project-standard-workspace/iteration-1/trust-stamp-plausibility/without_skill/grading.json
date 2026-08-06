@@ -1,0 +1,28 @@
+{
+  "eval_name": "trust-stamp-plausibility",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Notices the stamp lags the repo's current version and flags it as stale",
+      "passed": true,
+      "evidence": "'Version/date stamp is stale by 3 releases'; v0.13.2 against VERSION 0.16.2."
+    },
+    {
+      "text": "Establishes the repo's actual version from tags rather than assuming",
+      "passed": true,
+      "evidence": "Enumerates tags v0.14.0..v0.16.2 and notes package.json 0.14.0 as a second disagreeing source."
+    },
+    {
+      "text": "Notices FEATURE_MAP.md in the same repo carries a much fresher stamp",
+      "passed": false,
+      "evidence": "No comparison against any sibling document's stamp."
+    },
+    {
+      "text": "Treats stamp staleness and body accuracy as two separate findings",
+      "passed": true,
+      "evidence": "Explicit 'What checks out' section verifying blueprints/ports/facade files, separate from the stamp and the static/ error."
+    }
+  ],
+  "passed": 3,
+  "total": 4
+}

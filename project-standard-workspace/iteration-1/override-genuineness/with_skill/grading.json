@@ -1,0 +1,28 @@
+{
+  "eval_name": "override-genuineness",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Judges each declaration separately rather than one verdict for the block",
+      "passed": true,
+      "evidence": "'Four declarations, judged separately' with a numbered section per declaration."
+    },
+    {
+      "text": "Clears next-steps, release-flow and prds as legitimate, citing the stated policy",
+      "passed": true,
+      "evidence": "Cites the AGENTS.md Git-hygiene policy and matching .gitignore entries for each."
+    },
+    {
+      "text": "Reads pricing.py or the CI-gating flags rather than reasoning from contract text alone",
+      "passed": true,
+      "evidence": "pricing.py:12-29, 63-82, 167-253; cli.py:1798-1803, 2066-2083; features.py:303-378 cost regression."
+    },
+    {
+      "text": "Engages with whether empty critical-paths is consistent with pricing and CI gating",
+      "passed": true,
+      "evidence": "Concludes the inline reason does not survive the source; also weighs capability_ledger as lower-stakes and declines to call it bad faith."
+    }
+  ],
+  "passed": 4,
+  "total": 4
+}

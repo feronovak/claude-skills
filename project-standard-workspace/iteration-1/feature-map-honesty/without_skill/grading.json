@@ -1,0 +1,33 @@
+{
+  "eval_name": "feature-map-honesty",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Flags the confidence-scoring row (claims price availability; the function reads no comp inputs)",
+      "passed": false,
+      "evidence": "No mention of confidence_scoring.py or the price-availability claim."
+    },
+    {
+      "text": "Flags the authenticity row as overclaiming a live vision read",
+      "passed": true,
+      "evidence": "Cites FEATURE_MAP.md:160 and cross-references NEXT_STEPS flagging it unverified."
+    },
+    {
+      "text": "Cites specific document lines against specific source lines",
+      "passed": true,
+      "evidence": "FEATURE_MAP.md:160 and sibling docs cited by line."
+    },
+    {
+      "text": "Reports no claim as false that is in fact true of the code",
+      "passed": true,
+      "evidence": "Findings hedged appropriately; no unsupported assertion."
+    },
+    {
+      "text": "Runs the mechanical check first, then reads source rather than stopping at CLI output",
+      "passed": null,
+      "evidence": "Not applicable: the control condition forbids the skill, so there is no CLI step to run."
+    }
+  ],
+  "passed": 3,
+  "total": 4
+}

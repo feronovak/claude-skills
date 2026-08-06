@@ -1,0 +1,28 @@
+{
+  "eval_name": "trust-stamp-plausibility",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Notices the stamp lags the repo's current version and flags it as stale",
+      "passed": true,
+      "evidence": "PROJECT_MAP.md:3 'As of: v0.13.2' against latest tag v0.16.2; called out as not trustworthy at face value."
+    },
+    {
+      "text": "Establishes the repo's actual version from tags rather than assuming",
+      "passed": true,
+      "evidence": "Resolves package.json=0.14.0, VERSION=0.16.2, latest tag v0.16.2, and flags the disagreement."
+    },
+    {
+      "text": "Notices FEATURE_MAP.md in the same repo carries a much fresher stamp",
+      "passed": false,
+      "evidence": "Names other docs stamped at v0.13.2 and the 24/154 stamp coverage, but never compares against FEATURE_MAP's fresher v0.16.0 stamp."
+    },
+    {
+      "text": "Treats stamp staleness and body accuracy as two separate findings",
+      "passed": true,
+      "evidence": "Separates the false static/ row (content) from the stamp (currency), and marks gitignored runtime paths as unverifiable rather than wrong."
+    }
+  ],
+  "passed": 3,
+  "total": 4
+}
