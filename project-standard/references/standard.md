@@ -91,6 +91,52 @@ The document format accepts what good documentation already looks like: table
 rows with the method and path in separate cells, inline `GET /path`, headings,
 and combined methods (`GET·POST`).
 
+## Enumerable units — how each document must be written
+
+Every document in the taxonomy has a **countable unit**, and the shape of the
+document is what makes it countable. This is not a formatting preference. A
+judgement pass over a document reports what it happened to read; over a
+worklist it reports coverage against a denominator, and can say what it
+skipped.
+
+The measurement behind the rule: five runs over one product map of ~40 rows
+each verified a different subset, none found every false row, and the run whose
+instruction most forcefully demanded thoroughness scored worst — while opening
+with a claim that it had checked every row. Recall follows sample size, not
+effort. So the standard makes the sample enumerable.
+
+| Document | Unit | Written as | Verifying one means |
+|---|---|---|---|
+| product map | a claim | one table row per feature | read the implementation it names; is it true today |
+| code map | a mapping | one table row per path | the path exists, and holds the responsibility described |
+| api reference | an endpoint | one table row, or `GET /path` inline | the route exists; the handler matches the description |
+| `NEXT_STEPS.md` | a backlog item | one list item per item, one line each | it is still open |
+| PRD | a header and a section | `**Status:**` / `**Backlog:**` / `**Owner:**`, then `##` sections | it is decided, linked and owned — **never** whether it is true of the code |
+| `CHANGELOG.md` | a release | `## [x.y.z] - date` | a tag exists, and the entry describes what shipped |
+| release flow | a bump rule | one table row per bump | it names a real consumer and a real consequence |
+| direction doc | — | prose | nothing to count; direction is judgement |
+
+`project-standard claims` prints this worklist. `--doc` narrows it to one file,
+`--json` makes it machine-readable.
+
+**A PRD is intent and is never checked against the code.** It is the one slot
+where "is this true of the implementation" is the wrong question — a proposal
+that were already true of the code would not need writing. What is checkable
+is that it is owned, linked to a backlog item, and carries a decided status.
+Conflating the two turns a checklist into a demand that proposals be facts.
+
+**A document with no countable unit says so rather than going missing.** The
+direction doc and the README hold no unit; both are reported as having none,
+with the reason. A document absent from the worklist must never read as a
+document with nothing to check — the same rule the mechanical half follows
+when it reports a check as skipped rather than passed.
+
+**Writing a document so it cannot be enumerated is a way of avoiding the
+check.** A product map written as paragraphs yields no rows, and a backlog
+written as prose yields no items. Where the shape does not match the slot, the
+worklist says the unit count is zero and names the document, so the gap is
+visible rather than silent.
+
 ## Trust stamps
 
 `**Last reviewed:** YYYY-MM-DD · **As of:** vX.Y.Z`
