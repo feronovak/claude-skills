@@ -272,8 +272,14 @@ def _duplicates(ctx, tracked):
                       "as current and will drift — it belongs in FEATURE_MAP.md",
                 path=rel))
 
+    # A README inside a PRD directory is its index, not a PRD — the same
+    # exemption the loop above already makes for `docs/prds/README.md`. Without
+    # it, a repository that keeps an archive of shipped PRDs is told its index
+    # is a misplaced PRD, which is both wrong and unfixable without deleting
+    # the index.
     stray = [f for f in tracked
              if re.search(r"(^|/)PRDs?[-_./]", f, re.I)
+             and Path(f).name != "README.md"
              and not f.startswith("docs/prds/") and not excluded(f)
              and f.endswith(".md")]
     for f in stray:
