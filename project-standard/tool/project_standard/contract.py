@@ -38,10 +38,16 @@ OVERRIDE_KEYS = ("profile", "http-api", "channels")
 # admissible. An open grammar cannot tell a future extension from a typo, and
 # the typo is far more common — `chanels:` parsed clean, the typed accessor
 # returned None, and the override the author believed in never took effect.
+#
+# `next-steps` and `release-flow` are read indirectly, through
+# `artifacts.LOCAL_ALLOWED`, rather than by a literal `raw.get("...")` — which
+# is how they were missed when this list was first derived, and how a closed
+# grammar came to reject a contract the standard itself blesses.
 KNOWN_KEYS = (
     "adopted", "profile", "http-api", "channels", "direction", "prds",
     "critical-paths", "api-coverage", "scaffold", "local-only",
     "track-anyway", "ai-attribution", "agent-contract",
+    "next-steps", "release-flow",
 )
 
 

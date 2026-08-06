@@ -51,6 +51,11 @@ def build_parser():
     r = sub.add_parser("routes", help="write docs/api/routes.json from the app")
     r.add_argument("--repo", default=".")
     r.add_argument("--app", help="import path, e.g. app:create_app")
+
+    v = sub.add_parser("vendor",
+                       help="copy the checker into a repo as "
+                            "scripts/project_standard so CI can run it")
+    v.add_argument("--repo", default=".")
     return p
 
 
@@ -82,6 +87,8 @@ def main(argv=None):
         return routes_mod.main(args)
     if args.command == "install-hooks":
         return _install_hooks(args)
+    if args.command == "vendor":
+        return _vendor(args)
 
     repos = resolve_repos(args)
     if not repos:
@@ -158,6 +165,41 @@ def _install_hooks(args):
     print(f"core.hooksPath set {'globally' if args.globally else 'for this repo'}")
     print("\nNote: setting core.hooksPath replaces any other hooks directory. "
           "If you already had one, merge its hooks into the new location.")
+    return 0
+
+
+def _vendor(args):
+    """Copy the running package into a repo so CI can import it.
+
+    The copy step used to be prose in the README — a `cp -r` a human runs once
+    and never runs again. That is how one repo ended up running nine stale
+    modules in CI. A command makes re-vendoring cheap enough to actually do.
+    """
+    import shutil
+
+    source = Path(__file__).resolve().parent
+    repo = repo_root(Path(args.repo)).resolve()
+    target = repo / "scripts" / "project_standard"
+
+    if target.resolve() == source:
+        print("refusing to vendor a package into itself", file=sys.stderr)
+        return 2
+
+    # Replace wholesale rather than merging: a module deleted upstream must
+    # not survive in the copy, which is exactly how a stale copy keeps
+    # answering questions the current one no longer asks.
+    if target.exists():
+        shutil.rmtree(target)
+    target.mkdir(parents=True, exist_ok=True)
+
+    copied = 0
+    for path in sorted(source.glob("*.py")):
+        shutil.copy2(path, target / path.name)
+        copied += 1
+
+    print(f"vendored {copied} module(s) at version {VERSION} into {target}")
+    print("commit this directory, and run `check` again to confirm it agrees "
+          "with canonical")
     return 0
 
 

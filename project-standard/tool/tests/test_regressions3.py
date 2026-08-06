@@ -165,6 +165,20 @@ class TestUnknownContractKeys(unittest.TestCase):
         self.assertEqual(set(), read - set(KNOWN_KEYS),
                          "a check reads a key the contract grammar rejects")
 
+    def test_the_grammar_covers_the_keys_read_indirectly(self):
+        # Grepping for `raw.get("literal")` cannot see a key reached through a
+        # lookup table. It missed `next-steps` and `release-flow`, and the
+        # closed grammar then rejected a contract the standard blesses.
+        from project_standard.artifacts import LOCAL_ALLOWED
+        from project_standard.contract import KNOWN_KEYS
+        self.assertEqual(set(), set(LOCAL_ALLOWED.values()) - set(KNOWN_KEYS),
+                         "a slot may be declared local under a key the "
+                         "contract grammar rejects")
+
+    def test_a_contract_declaring_slots_local_parses_clean(self):
+        c = self._parse("next-steps: local\nrelease-flow: local\nprds: local")
+        self.assertEqual([], c.errors)
+
     def test_a_reason_line_is_still_not_a_key(self):
         c = self._parse("profile: docs\n  reason: a collection of skills")
         self.assertEqual([], c.errors)

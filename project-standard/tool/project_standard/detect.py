@@ -108,13 +108,20 @@ def _json(repo, rel):
 
 
 def manifests(repo, tracked):
-    """Package manifests at the repository root."""
+    """Package manifests at the repository root, tracked ones only.
+
+    Presence is answered from git, never from the working tree. This decides
+    the profile, and the profile decides which documents the repo owes — so a
+    gitignored `package.json` reading as a product turned one commit into two
+    different verdicts depending on whose disk it was checked out on.
+    """
+    tracked = set(tracked)
     present = []
     for name in defaults.PACKAGE_MANIFESTS:
         if name.startswith("*"):
             if any(f.endswith(name[1:]) and "/" not in f for f in tracked):
                 present.append(name)
-        elif (Path(repo) / name).is_file():
+        elif name in tracked:
             present.append(name)
     return present
 

@@ -210,9 +210,9 @@ by eye when a PR is opened. Do not claim a guard that does not exist.
 **Anything in a repo with no git.** The checker refuses rather than reporting a
 repo as conformant on checks that never ran. Offer `git init`.
 
-## Seven checks the design describes and the code does not
+## Six checks the design describes and the code does not
 
-17, 21, 27, 31, 34, 35, 39 — listed in `README.md`. Do not report them as
+21, 27, 31, 34, 35, 39 — listed in `README.md`. Do not report them as
 passing; they never ran. 27 and 31 are judgement calls, so cover them yourself
 when the repo warrants it: a document that reads like a second backlog, and a
 direction concept restated in more than one place.

@@ -39,9 +39,17 @@ PYTHONPATH=/path/to/project-standard/tool \
   python3 -m project_standard.cli check --repo /path/to/your-repo
 ```
 
-To gate a repo's CI, copy `tool/project_standard/` into the target repository
-as `scripts/project_standard/` — an importable package name, with an
-underscore — and add a job (see **CI** below).
+To gate a repo's CI, vendor the checker into it and add a job (see **CI**
+below):
+
+```bash
+project-standard vendor --repo /path/to/your-repo
+```
+
+That writes `scripts/project_standard/` — an importable package name, with an
+underscore. Commit it. Re-run `vendor` whenever this tool changes: check 17
+compares the copy against canonical by content as well as by version, and
+reports a copy that has fallen behind.
 
 To install the authorship guards:
 
@@ -64,6 +72,7 @@ project-standard check --json             # machine-readable
 project-standard check --profile=ci       # skip what a runner cannot answer
 
 project-standard install-hooks            # install the authorship guards
+project-standard vendor                   # copy the checker in for CI
 project-standard generate                 # write docs/DOCMAP.md
 project-standard routes --app app:create_app   # write docs/api/routes.json
 ```
@@ -137,7 +146,10 @@ reports 150 failures on its first run does not survive the week.
 ```
 
 `PYTHONPATH=scripts` is what makes the vendored copy importable — the package
-directory must be `scripts/project_standard/`, not a hyphenated name.
+directory must be `scripts/project_standard/`, not a hyphenated name. Write it
+with `project-standard vendor`, and re-run that whenever the tool changes: a
+vendored copy is a fork the moment it stops matching, and CI then gates on
+checks that are not the ones this documentation describes.
 
 `fetch-depth: 0` is not optional. GitHub Actions clones one commit with no tags
 by default, which makes every history-dependent check unanswerable — they are
@@ -153,7 +165,7 @@ cd tool
 PYTHONPATH=.:tests python3 -m unittest discover -s tests -t . -v
 ```
 
-220 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
+235 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
 repos in temp directories, with `core.hooksPath` pointed at an empty directory
 so the global hygiene guards never interfere — otherwise a test that
 deliberately commits an assistant trailer would be blocked by the very hook the
@@ -188,6 +200,7 @@ tool/project_standard/
   api.py                     route enumeration and endpoint coverage
   baselines.py               the declared baselines, against what history recorded
   docmap.py                  the DOCMAP generator
+  vendored.py                a vendored copy against the canonical tool
   runner.py                  the registry, profiles, exit codes
   cli.py                     argument surface
   routes.py                  writes docs/api/routes.json from a live app
@@ -198,12 +211,11 @@ from its siblings. `gitio` is the only module that knows git exists.
 
 ## Checks
 
-47 checks are implemented. Seven that the design describes are **not**, and are
+48 checks are implemented. Six that the design describes are **not**, and are
 listed here rather than left to be discovered:
 
 | Not implemented | What it would do |
 |---|---|
-| 17 | vendored copy is behind the canonical version |
 | 21 | the repo restates global agent tiering instead of pointing at it |
 | 27 | a non-backlog document reads like an ordered backlog |
 | 31 | a direction concept is stated in more than one file |
@@ -213,6 +225,11 @@ listed here rather than left to be discovered:
 
 Checks 27 and 31 need judgement rather than pattern matching and belong to the
 skill's semantic half. The rest are mechanical and simply unwritten.
+
+Check 17 (a vendored copy behind canonical) compares content as well as the
+version string. The design specified a version comparison alone; measured on the
+fleet, a vendored copy differed from canonical in nine modules while both still
+declared the same version, so a version-only check would have called it current.
 
 Five checks exist beyond the design: `5b` (version sources disagree — split out
 because it needs no history and so must survive a shallow clone), `8e` (an

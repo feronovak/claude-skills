@@ -19,7 +19,7 @@ class TestVersionSource(unittest.TestCase):
         with TempRepo() as r:
             r.write("package.json", '{"version": "1.5.0"}')
             r.commit()
-            self.assertEqual(release.version_source(r.dir, []),
+            self.assertEqual(release.version_source(r.dir, [], Git(r.dir).ls_files()),
                              ("package.json", "1.5.0"))
 
     def test_polyglot_picks_the_source_the_tags_corroborate(self):
@@ -30,7 +30,7 @@ class TestVersionSource(unittest.TestCase):
             r.write("app.py", "x = 1\n")
             r.commit()
             r.tag("v0.13.2")
-            self.assertEqual(release.version_source(r.dir, Git(r.dir).tags()),
+            self.assertEqual(release.version_source(r.dir, Git(r.dir).tags(), Git(r.dir).ls_files()),
                              ("VERSION", "0.13.2"))
 
     def test_no_corroboration_falls_back_to_the_backend(self):
@@ -38,7 +38,7 @@ class TestVersionSource(unittest.TestCase):
             r.write("package.json", '{"version": "5.0.0"}')
             r.write("pyproject.toml", '[project]\nname="x"\nversion="0.2.0"\n')
             r.commit()
-            self.assertEqual(release.version_source(r.dir, [])[0],
+            self.assertEqual(release.version_source(r.dir, [], Git(r.dir).ls_files())[0],
                              "pyproject.toml")
 
     def test_disagreeing_sources_are_an_error(self):
