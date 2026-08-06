@@ -174,6 +174,29 @@ def prd_units(rel, text):
     return out
 
 
+def decision_units(rel, text):
+    """One unit per decision. Verifying means asking whether it still holds.
+
+    Not whether it was right — a decision that turned out badly is still a
+    true record of what was decided. A decision that no longer governs the
+    code is superseded, and saying so is a new entry, never an edit to the old
+    one.
+    """
+    out = []
+    for i, line in enumerate(text.splitlines(), start=1):
+        h = HEADING.match(line)
+        if not h or h.group("hashes") != "##":
+            continue
+        label = _trim(h.group("text"))
+        if not label or TODO.search(line):
+            continue
+        out.append(Unit(rel, i, "decision", label,
+                        "confirm this still governs the code — if it does "
+                        "not, supersede it with a new entry rather than "
+                        "editing this one"))
+    return out
+
+
 def changelog_units(rel, text):
     out = []
     for m in RELEASE.finditer(text):
@@ -209,6 +232,9 @@ def units_for(rel, text):
         return backlog_units(rel, text)
     if name in ("CHANGELOG.md",):
         return changelog_units(rel, text)
+    if name == "DECISIONS.md" or name.startswith("ADR-") \
+            or Path(rel).parent.name in ("adr", "adrs", "decisions"):
+        return decision_units(rel, text)
     if name in ("DEVELOPMENT_FLOW.md", "RELEASING.md"):
         return flow_units(rel, text)
     if "/prds/" in rel or Path(rel).parent.name == "prds" \
@@ -246,6 +272,9 @@ def scope(ctx):
             continue
         parent = Path(rel).parent.name
         if parent == "prds" or Path(rel).name.startswith("PRD-"):
+            out.add(rel)
+        if parent in ("adr", "adrs", "decisions") \
+                or Path(rel).name.startswith("ADR-"):
             out.add(rel)
     return {r for r in out if r in set(ctx.tracked)}
 

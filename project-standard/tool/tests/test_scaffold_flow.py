@@ -27,6 +27,7 @@ PLACEMENT = {
     "DEVELOPMENT_FLOW.md.tmpl": "docs/DEVELOPMENT_FLOW.md",
     "NORTH_STAR.md.tmpl": "docs/NORTH_STAR.md",
     "CHANGELOG.md.tmpl": "CHANGELOG.md",
+    "DECISIONS.md.tmpl": "docs/DECISIONS.md",
 }
 
 

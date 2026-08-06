@@ -166,7 +166,7 @@ cd tool
 PYTHONPATH=.:tests python3 -m unittest discover -s tests -t . -v
 ```
 
-250 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
+261 tests, stdlib `unittest`, no dependencies. Fixtures build throwaway git
 repos in temp directories, with `core.hooksPath` pointed at an empty directory
 so the global hygiene guards never interfere — otherwise a test that
 deliberately commits an assistant trailer would be blocked by the very hook the
