@@ -11,7 +11,7 @@ The skill chain had a hole in it:
 |---|---|
 | Shape a raw idea | `brainstormers-idea` |
 | Decide if it is worth building | `business-sharks` |
-| Generate candidates | `free-think-day`, `free-dev-day` |
+| Generate candidates | `product-thesis` |
 | **Scope the next release** | **— nothing —** |
 | Design one feature | `brainstorming` |
 | Plan one feature's build | `writing-plans` |

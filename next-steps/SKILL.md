@@ -1,6 +1,6 @@
 ---
 name: next-steps
-description: Scopes the next release out of an existing backlog using MoSCoW, then produces the build order for what it scoped. Use this skill when the user types "nextsteps" or "!nextsteps", or asks to "scope the next release", "what goes in the next release", "triage the backlog", "prioritise these", "what should I do next", "run MoSCoW on this", or wants a list of open work cut into what ships next and what waits. Writes the verdict back into the project's one backlog file as priority markers plus inline comments. Do NOT use for generating new ideas (free-think-day, free-dev-day), designing one feature (brainstorming), planning how to build one feature (writing-plans), reporting what already shipped (exec-steps), or validating documentation (project-standard).
+description: Scopes the next release out of an existing backlog using MoSCoW, then produces the build order for what it scoped. Use this skill when the user types "nextsteps" or "!nextsteps", or asks to "scope the next release", "what goes in the next release", "triage the backlog", "prioritise these", "what should I do next", "run MoSCoW on this", or wants a list of open work cut into what ships next and what waits. Writes the verdict back into the project's one backlog file as priority markers plus inline comments. Do NOT use for generating new ideas (product-thesis), designing one feature (brainstorming), planning how to build one feature (writing-plans), reporting what already shipped (exec-steps), or validating documentation (project-standard).
 version: "1.1"
 authors: Fero Novak <https://feronovak.com>
 ---
@@ -30,7 +30,7 @@ is written.
 |---|---|
 | session | Follow-ups from the work done in this session |
 | backlog | The rows already in the backlog file |
-| handoff | The tail of `exec-steps`, `free-think-day`, or `project-standard` |
+| handoff | The tail of `exec-steps`, `product-thesis`, or `project-standard` |
 
 Default to `backlog` when the argument does not say and a backlog file exists.
 An argument that names no source — empty, or a bare path — does not say.
@@ -238,7 +238,7 @@ Write the file. Then:
 |---|---|
 | Shape a raw idea | `brainstormers-idea` |
 | Decide if it is worth building | `business-sharks` |
-| Generate candidates | `free-think-day`, `free-dev-day` |
+| Generate candidates | `product-thesis` |
 | **Scope the next release** | **this skill** |
 | Design one feature | `brainstorming` |
 | Plan one feature's build | `writing-plans` |
