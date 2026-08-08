@@ -21,13 +21,13 @@ An item blocked by something **outside** this release is not `blocked by`. Never
 ```
 Release 1.5.0 — build order
 
-1. Session expiry on the magic-link flow    ready
-2. Rate-limit the login endpoint            blocked by 1
-3. Move image processing off request path   needs spec
-4. Invoice PDF generation                   ready · parallel with 1
+1. Expire share links after 30 days         ready
+2. Revoke links on password reset           blocked by 1
+3. Compress uploads in a worker             needs spec
+4. Weekly summary email                     ready · parallel with 1
 
 Gaps: 1 Must has no PRD (item 3).
-      1 Should dropped — proration on plan change needs the
+      1 Should dropped — team billing seats needs the
       billing migration, which is not in this release.
 ```
 

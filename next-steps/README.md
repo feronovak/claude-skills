@@ -67,3 +67,8 @@ work without git.
 The two judgment calls — the `needs spec` determination and the Must/Should
 boundary — are not covered by any fixture and will sometimes be wrong. Fixtures
 catch mechanics, not taste.
+
+The fixtures exercise Step 0 and Step 1 only. Nothing covers Step 2's correction
+loop, the `kill` disambiguation, Step 4's diff, Step 5's conditional stamp bump,
+the session source's create-and-seed branch, or the `handoff` source. Those
+paths ship unexercised, and saying so is cheaper than discovering it later.

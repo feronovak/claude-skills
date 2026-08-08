@@ -89,11 +89,12 @@ Print one table:
 
 ```
 #  Item                              Now  Proposed             Why
-1  Session expiry on magic links     🟥   MUST                 —
-2  Rate-limit the login endpoint     🟧   MUST                 auth hole is only
-                                                               half closed
-                                                               without it
-3  Passkey support                   ⬜   WON'T (ever)         magic link covers it
+1  Expire share links after 30 days  🟥   MUST                 —
+2  Revoke links on password reset    🟧   MUST                 links outlive the
+                                                               credential they
+                                                               were issued under
+3  Legacy XML importer               ⬜   WON'T (ever)         no tenant has used
+                                                               it in a year
 ```
 
 Propose Won't with its flavour — `WON'T (this release)` or `WON'T (ever)`. A
@@ -138,10 +139,10 @@ Show every line that will change, before writing anything:
 ```
 docs/NEXT_STEPS.md
 
-~ 🟧 → 🟥  Rate-limit the login endpoint
-+          *Held: not before session expiry lands.*
-- ⬜       Passkey support                        (Won't — ever, confirmed)
-+ ⬜       Retire the CSV exporter                (ADDED from session)
+~ 🟧 → 🟥  Revoke links on password reset
++          *Held: not before link expiry lands.*
+- ⬜       Legacy XML importer                    (Won't — ever, confirmed)
++ ⬜       Retire the v1 webhook                  (ADDED from session)
 ```
 
 Session follow-ups are the **only** rows this skill ever adds, and they appear as

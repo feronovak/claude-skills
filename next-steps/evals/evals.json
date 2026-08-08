@@ -16,7 +16,7 @@
         "Notices that rate-limit the login endpoint depends on session expiry and orders them accordingly",
         "Computes the guard against the in-release total — Must plus Should plus Could, excluding Won't rows — and names the rows it summed, rather than asserting a figure without arithmetic"
       ],
-      "result": "pass — named the boundary as a bump from 1.4.0, lettered all eight items, caught the stated dependency of the rate-limit item on session expiry, and computed the guard against the 49-hour total. Run also surfaced that the guard's denominator was undefined (16% vs 38% from the same data); fixed in 43d9079."
+      "result": "pass, re-run against the corrected text — named the boundary as a bump from 1.4.0 and stated the assumed bump size rather than picking silently, lettered all eight items, caught the stated dependency, and computed the guard against the in-release total of 14 hr (Must+Should+Could), naming the rows summed. The earlier run of this eval reported a 49-hr denominator under a rule since replaced. This run also found the skill's worked examples reused this fixture's item names; the examples were renamed so a pattern-matching run cannot appear to pass."
     },
     {
       "id": 2,
@@ -30,7 +30,7 @@
         "Declares the cut-off soft rather than implying a firm boundary",
         "Still completes the round — a soft boundary is a caveat, not a refusal"
       ],
-      "result": "pass — found no manifest, declared the boundary as the next block of work, stated the cut-off is soft, and completed the round rather than refusing. The guard genuinely tripped here at ~86% (Musts 90 of 105 minutes), exercising the mechanism on real data."
+      "result": "pass, re-run against the corrected text — found no manifest, declared the boundary as the next block of work and said the cut-off is soft, and completed the round. The guard tripped at ~86% on the in-release denominator (1.5 of 1.75 hr) and was carried into Step 2 rather than blocking at Step 1."
     },
     {
       "id": 3,
@@ -58,7 +58,7 @@
         "States that no effort estimates are present",
         "Produces no percentage and no invented hour figures"
       ],
-      "result": "pass — lettered all five items and declined the guard explicitly. No percentage, ratio or hour figure appeared anywhere in the run."
+      "result": "pass, re-run against the corrected text — lettered all five items, declined the guard explicitly, and stated no percentage, ratio or hour figure anywhere. Applied a Won't flavour using the spare-capacity test."
     }
   ]
 }
