@@ -18,7 +18,9 @@ invent work.
 
 ## Step 0 — Resolve
 
-Four things, in this order. Report all four back before proposing anything.
+Four things, in this order. State all four before proposing anything — this is
+narration, not a checkpoint; do not wait for a reply. Step 2 is the round's
+first blocking question, and Step 4 the second when the scale must be settled.
 
 **Source.** One of:
 
@@ -56,8 +58,9 @@ second backlog it will silently ratify.
 
 **The priority scale.** Read `references/conventions.md`. Find the scale the
 backlog already uses — from its legend, from its rows, or find that it has
-none. Name the bands you found. Where there is none, do not adopt one here;
-Step 5 asks first.
+none. Name the bands you found. Where there is none, do not adopt one here —
+Step 4 asks before anything is
+written.
 
 **The release.** Read the version from a manifest — `package.json`,
 `pyproject.toml`, `Cargo.toml`, a `VERSION` file.
@@ -76,6 +79,10 @@ the owner can do is not a next step for development: it never receives a
 letter, never enters the release, and moves to `## Yours`. Report those
 separately, with what each needs.
 
+Once split, check the top band. If no buildable row sits in it, say so plainly:
+the development scope has no urgent item, and whatever is most pressing is
+under `## Yours`. Separating the sections is what makes this easy to miss.
+
 Read `references/moscow.md` now.
 
 Assign a letter to **every buildable** item. Nothing is left blank, and nothing
@@ -90,6 +97,9 @@ is mandatory. Where it agrees, a bare `—` is enough.
 The test reads a marker, and the lowest band carries both Could and Won't. So
 for any row currently sitting in the lowest band the test cannot resolve, and
 the reason is always mandatory.
+
+A backlog with no scale has no standing markers at all, so nothing can agree
+with anything. Give every row a reason.
 
 Propose against the release boundary and against dependencies between items —
 never against the existing markers. A pre-fill that mirrors the current markers
@@ -149,6 +159,12 @@ Mark any row that waits on the owner as `blocked by you` and say what is
 needed; it stays in the release, but it cannot start until they act.
 
 ## Step 4 — Diff
+
+**If Step 0 found no scale, settle it here, before showing the diff.** Say the
+backlog has none, offer MoSCoW words (`**Must**`, `**Should**`, `**Could**`) as
+the default because they need no legend to be read, and ask whether the user
+wants those or their own. Do not choose for them. Once they choose, the diff
+shows the legend line being added along with the rows.
 
 Show every line that will change, before writing anything:
 

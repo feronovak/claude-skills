@@ -47,3 +47,9 @@ sections.
 Judge by where the substance sits. If the buildable part is the work and the
 human part is a gate, it is a mixed row. If the human part *is* the work, it
 belongs under `## Yours`.
+
+When the buildable part is trivial and the gate is substantive, ask which one a
+reader would call *the work*. If removing the human decision leaves a task not
+worth a backlog row on its own, the row is theirs. A config flip behind a spend
+decision belongs under `## Yours`; a week of migration behind a five-minute
+access grant is a mixed row.

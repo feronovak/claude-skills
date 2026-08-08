@@ -24,6 +24,12 @@ does not.
 | **Could** | Only if everything above lands with room to spare. |
 | **Won't** | Explicitly out. Two flavours — see below. |
 
+**Where the boundary is soft**, "the release does not ship without it" has no
+ship event to test against. Use consequence-of-omission instead: if this is
+still undone when the block of work ends, does something stay broken, unsafe,
+or blocked for somebody? That is a Must. If the honest answer is that it would
+merely have been good to have, it is a Should.
+
 **Won't has two flavours and they are not interchangeable:**
 
 - **Won't — this release.** Still wanted, just not now. Stays in the backlog.
