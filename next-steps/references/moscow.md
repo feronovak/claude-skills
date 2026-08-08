@@ -75,9 +75,12 @@ done-section.
 
 Where the backlog carries effort estimates (`~1 hr`, `2–3 hr`), sum them. The
 denominator is the work going **into** the release — Must plus Should plus
-Could. Won't rows are out of scope and are not counted. Normalise mixed units
-to hours before summing. If the Musts exceed **roughly 60%** of that total, say
-so, name the rows you summed, and say what should drop.
+Could. Won't rows are out of scope and are not counted. Could rows count here
+even though `release-plan.md` leaves them out of the build order. That is
+deliberate: the guard asks what share of the release's work is mandatory, and a
+Could is work you have said you would take if there is room. Normalise mixed
+units to hours before summing. If the Musts exceed **roughly 60%** of that
+total, say so, name the rows you summed, and say what should drop.
 
 This is the only mechanical defence against everything becoming Must, and it is
 the reason to read the estimates rather than skim past them.
@@ -86,6 +89,11 @@ the reason to read the estimates rather than skim past them.
 estimate the items yourself to make the arithmetic possible. A percentage
 derived from invented figures looks exactly like a percentage derived from real
 ones, and that is the failure this instruction exists to prevent.
+
+**Where only some rows carry estimates, the guard cannot be checked either.** Say
+so, and say how many rows are unestimated. A sum over the rows that happen to
+carry numbers is a percentage of the wrong denominator, and it looks exactly like
+a real one.
 
 ## Comments
 

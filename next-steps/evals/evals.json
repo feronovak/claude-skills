@@ -14,7 +14,7 @@
         "Assigns a letter to all eight items, none left blank",
         "Gives a reason on every item whose proposed letter differs from its standing marker",
         "Notices that rate-limit the login endpoint depends on session expiry and orders them accordingly",
-        "Computes the 60% guard against the 49-hour total rather than asserting it without arithmetic"
+        "Computes the guard against the in-release total — Must plus Should plus Could, excluding Won't rows — and names the rows it summed, rather than asserting a figure without arithmetic"
       ],
       "result": "pass — named the boundary as a bump from 1.4.0, lettered all eight items, caught the stated dependency of the rate-limit item on session expiry, and computed the guard against the 49-hour total. Run also surfaced that the guard's denominator was undefined (16% vs 38% from the same data); fixed in 43d9079."
     },

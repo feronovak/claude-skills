@@ -33,11 +33,16 @@ An argument that names no source — empty, or a bare path — does not say.
 Use `session` when there is no backlog file, or when the user's phrasing points
 at what was just done.
 
-**The backlog file.** Look for all three of `docs/NEXT_STEPS.md`, `ROADMAP.md`
-and `TODO.md` — every one, every time. This is not a first-match chain: the
-refusal below can only fire if you checked all three. Where exactly one exists,
-that is the backlog; where the canonical slot must be named, it is
-`docs/NEXT_STEPS.md`.
+**The backlog file.** Look for every one of `NEXT_STEPS.md`, `ROADMAP.md`,
+`TODO.md`, `BACKLOG.md`, `PLAN.md` and `IMPLEMENTATION_ROADMAP.md` — all six,
+every time, matched by filename anywhere in the tree rather than at the root
+alone. This is not a first-match chain: the refusal below can only fire if you
+checked them all. Where exactly one exists, that is the backlog; where the
+canonical slot must be named, it is `docs/NEXT_STEPS.md`.
+
+Those six are `BACKLOG_NAMES` in the checker this refusal cites
+(`project-standard/tool/project_standard/docs.py`). Keep the two lists in step —
+a name this skill does not look for is a second backlog it will silently ratify.
 
 - **More than one match — refuse to write, and stop.** Name every file found.
   Do not triage the items anyway and offer to write afterwards; the refusal
@@ -88,7 +93,7 @@ Print one table:
 2  Rate-limit the login endpoint     🟧   MUST                 auth hole is only
                                                                half closed
                                                                without it
-3  Passkey support                   ⬜   WON'T (this release) nobody has asked
+3  Passkey support                   ⬜   WON'T (ever)         magic link covers it
 ```
 
 Propose Won't with its flavour — `WON'T (this release)` or `WON'T (ever)`. A
@@ -110,6 +115,11 @@ changed, then ask again. **Loop until the user stops correcting.**
 
 `kill` is ambiguous on its own — it may mean Won't-ever or already-done, and both
 delete the row. Ask which, once, per row.
+
+Any row **you** proposed as `WON'T (ever)` needs its own explicit confirmation
+here, one row at a time, before it reaches the diff. The diff is not the
+confirmation: a user who replies "looks good" to the table has not agreed to
+delete anything.
 
 ## Step 3 — Plan
 
@@ -136,6 +146,13 @@ docs/NEXT_STEPS.md
 
 Session follow-ups are the **only** rows this skill ever adds, and they appear as
 `ADDED` here before they are written.
+
+The example above shows one; a round whose source is `backlog` has no such row.
+
+**The inline comment records what a later reader needs to know about where the
+row now stands** — a Could's condition, a Should's blocker, a Must's dependency.
+Where Step 1's Why already says it, reuse it in the present tense. A row whose
+Why was a bare `—` gets no comment.
 
 ## Step 5 — Apply
 
