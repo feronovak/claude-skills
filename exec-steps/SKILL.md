@@ -1,6 +1,6 @@
 ---
 name: exec-steps
-description: Validates what actually got done in a work session against real evidence, then writes a board-ready executive summary — Why, What, How, Value — plus ranked next steps. Use this skill when the user types "exesteps" or "!exesteps", or asks for an executive summary of the session, a board summary, a status write-up for leadership, "what did we do and what's next", "summarise this session for the board", "wrap this up for exec", or a weekly/daily summary of shipped work. Every completion claim is verified against commits, files, and tests before it is reported as done. Do NOT use for writing a git commit message, a changelog, a session recap buffer, or a technical design doc.
+description: Validates what actually got done in a work session against real evidence, then writes a board-ready executive summary — Why, What, How, Value — plus ranked next steps. Use this skill when the user types "exesteps" or "!exesteps", or asks for an executive summary of the session, a board summary, a status write-up for leadership, "what did we get done", "summarise this session for the board", "wrap this up for exec", or a weekly/daily summary of shipped work. Every completion claim is verified against commits, files, and tests before it is reported as done. Do NOT use for writing a git commit message, a changelog, a session recap buffer, a technical design doc, or for prioritising a backlog and scoping the next release (next-steps).
 version: "1.0"
 authors: Fero Novak <https://feronovak.com>
 ---
