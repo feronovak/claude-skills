@@ -60,12 +60,16 @@ over:
 
 | Verdict | Effect |
 |---|---|
-| Must | `🟥` |
-| Should | `🟧` |
-| Could | `⬜` |
-| Won't — this release | `⬜` |
+| Must | top band |
+| Should | middle band |
+| Could | lowest band |
+| Won't — this release | lowest band |
 | Won't — ever | row deleted, confirmed individually |
 | Already done | row deleted, confirmed individually |
+
+Bands are the project's own. The skill reads the scale from the backlog's
+legend or its rows and writes in that vocabulary; where a project has no scale,
+it asks before adopting one rather than importing a house style.
 
 Reasoning lands inline under the row, in the present tense.
 

@@ -42,12 +42,16 @@ Won't.
 
 | Verdict | Effect on the backlog |
 |---|---|
-| Must | `🟥` |
-| Should | `🟧` |
-| Could | `⬜` |
-| Won't — this release | `⬜` — demote it if it currently reads `🟥` or `🟧` |
+| Must | the project's top band |
+| Should | its middle band |
+| Could | its lowest band |
+| Won't — this release | its lowest band, demoted if the row currently sits higher |
 | Won't — ever | row **deleted**, one explicit confirmation for that row |
-| Already done | row **deleted**, one explicit confirmation for that row |
+| Already done | row **deleted**, same per-row confirmation |
+
+Bands are whatever the project already uses — see `references/conventions.md`.
+In a file whose legend reads `Priority: 🟥 near-term · 🟧 scheduled · ⬜ backlog`,
+the top band is 🟥 and the lowest is ⬜.
 
 **Already done is not a proposal-time verdict.** Every item gets one of the four
 letters at Step 1. Already-done surfaces only at Step 2, when a correction turns
@@ -57,14 +61,14 @@ The letters themselves do not persist. They are the round's verdict; their only
 effect is to move the standing marker. One scale survives in the file, so there
 is no second column to maintain and nothing that can disagree with itself.
 
-**Could and Won't-this-release both land on `⬜`.** Three markers cannot carry
-four letters. The collapse is accepted, not solved — the standing scale is
-deliberately coarser than the round's verdict. Where the difference matters,
-the inline comment carries it:
+**Could and Won't-this-release both land in the lowest band.** A three-band
+scale cannot carry four letters. The collapse is accepted, not solved — the
+standing scale is deliberately coarser than the round's verdict. Where the
+difference matters, the inline comment carries it:
 
     *Could: if the release has room after the ACL lands.*
 
-Do not invent a fourth marker. That would add a symbol to every backlog in the
+Do not invent an extra band. That would add a symbol to every backlog in the
 fleet to record a state that lasts one round.
 
 **A row reported as already shipped is deleted, not marked done.** A roadmap

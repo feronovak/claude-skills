@@ -74,6 +74,34 @@
         "Treats the paid ranking tier as one row, scoped and marked blocked by you, rather than splitting or exiling it",
         "Notes that the only near-term row in the file is not buildable, so the development scope has no urgent item"
       ]
+    },
+    {
+      "id": 6,
+      "name": "writes-in-the-projects-own-scale",
+      "prompt": "nextsteps",
+      "fixture": "foreign-scale",
+      "expected_output": "Reports the scale as P0/P1/P2 read from the legend, and writes every verdict as P0, P1 or P2. No 🟥/🟧/⬜ appears anywhere in the output or the proposed file.",
+      "failure_mode": "Importing the skill's documentation examples as the vocabulary — proposing 🟥/🟧/⬜ into a project that uses P0/P1/P2. The examples in SKILL.md and moscow.md use emoji bands, so a run that copies them rather than reading this project's legend will corrupt the file.",
+      "expectations": [
+        "Names the scale as P0/P1/P2 and says it came from the legend line",
+        "Maps Must to P0, Should to P1, Could and Won't-this-release to P2",
+        "Emits no 🟥, 🟧 or ⬜ anywhere",
+        "Does not propose adding a legend — the file already has one"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "asks-before-adopting-a-scale",
+      "prompt": "nextsteps",
+      "fixture": "no-scale",
+      "expected_output": "Reports that the backlog has no priority scale, and asks which to adopt rather than choosing one. Proposes MoSCoW words as the safe default and offers to write a legend line.",
+      "failure_mode": "Silently adopting a scale — most likely the emoji bands from the skill's own examples — into a repository that never asked for one. Introducing a vocabulary into someone else's project without asking is the failure this eval exists to catch.",
+      "expectations": [
+        "States plainly that no scale was found",
+        "Asks before adopting one rather than picking silently",
+        "Offers MoSCoW words as the default and explains they need no legend to read",
+        "Does not write any emoji band into the proposal"
+      ]
     }
   ]
 }

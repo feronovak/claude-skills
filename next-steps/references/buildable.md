@@ -31,7 +31,7 @@ blocked hook — the work is the owner's by construction, whatever it looks like
 
 Non-buildable rows move to a `## Yours` section at the end of the backlog,
 under a one-line note saying what the section is for. They carry **no priority
-marker**: 🟥 🟧 ⬜ scope a release, and these are not in one. Order them
+band**: the scale scopes a release, and these are not in one. Order them
 most-consequential first, and say what each one unblocks.
 
 Never delete a row to get it out of the way. Moving it is the point — the work

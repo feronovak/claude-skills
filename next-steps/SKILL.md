@@ -18,7 +18,7 @@ invent work.
 
 ## Step 0 — Resolve
 
-Three things, in this order. Report all three back before proposing anything.
+Four things, in this order. Report all four back before proposing anything.
 
 **Source.** One of:
 
@@ -40,18 +40,25 @@ alone. This is not a first-match chain: the refusal below can only fire if you
 checked them all. Where exactly one exists, that is the backlog; where the
 canonical slot must be named, it is `docs/NEXT_STEPS.md`.
 
-Those six are `BACKLOG_NAMES` in the checker this refusal cites
-(`project-standard/tool/project_standard/docs.py`). Keep the two lists in step —
-a name this skill does not look for is a second backlog it will silently ratify.
+Those six are the names the `project-standard` checker treats as backlogs,
+where a project uses it. That is a default, not a requirement: if the user
+names a different file, use theirs. A name this skill does not look for is a
+second backlog it will silently ratify.
 
 - **More than one match — refuse to write, and stop.** Name every file found.
   Do not triage the items anyway and offer to write afterwards; the refusal
   comes before the round. Choosing one silently is how a second backlog is born,
-  which is the condition `project-standard` check 26 exists to prevent.
+  which is the condition a second backlog creates: two lists of open work that
+  disagree.
 - **No match, source is `session`** — offer to create `docs/NEXT_STEPS.md` and
   seed it with the session's follow-ups.
 - **No match, any other source** — say there is nothing to triage. Do not scan
   the repo to manufacture candidates.
+
+**The priority scale.** Read `references/conventions.md`. Find the scale the
+backlog already uses — from its legend, from its rows, or find that it has
+none. Name the bands you found. Where there is none, do not adopt one here;
+Step 5 asks first.
 
 **The release.** Read the version from a manifest — `package.json`,
 `pyproject.toml`, `Cargo.toml`, a `VERSION` file.
@@ -81,9 +88,9 @@ standing marker only afterwards, to decide whether the reason must be shown.
 Where the proposed letter **differs** from the item's standing marker, a reason
 is mandatory. Where it agrees, a bare `—` is enough.
 
-The test reads a marker, and `⬜` carries both Could and Won't. So for any row
-currently marked `⬜` the test cannot resolve, and the reason is always
-mandatory.
+The test reads a marker, and the lowest band carries both Could and Won't. So
+for any row currently sitting in the lowest band the test cannot resolve, and
+the reason is always mandatory.
 
 Propose against the release boundary and against dependencies between items —
 never against the existing markers. A pre-fill that mirrors the current markers
@@ -91,6 +98,8 @@ back is worthless: the user would be approving their own past self, and the
 round would have added nothing.
 
 Print one table:
+
+This example's project uses `🟥 / 🟧 / ⬜`; yours writes whatever bands yours has.
 
 ```
 #  Item                              Now  Proposed             Why
@@ -144,6 +153,8 @@ needed; it stays in the release, but it cannot start until they act.
 
 Show every line that will change, before writing anything:
 
+Again in the example project's bands — substitute the ones you found in Step 0.
+
 ```
 docs/NEXT_STEPS.md
 
@@ -171,9 +182,10 @@ Why was a bare `—` gets no comment.
 
 Write the file. Then:
 
-- Bump `Last reviewed:` **only** if the round checked rows against the code or
-  infrastructure they describe. Re-ordering is not verification; a round that
-  only re-ordered leaves the stamp where it was.
+- Bump a `Last reviewed:` stamp **only** if the file already carries one and
+  the round checked rows against the code or infrastructure they describe.
+  Re-ordering is not verification, and a file without a stamp does not gain one
+  here.
 - Report what changed in one short paragraph. No summary table — the diff was
   step 4.
 
@@ -185,8 +197,9 @@ Write the file. Then:
   they are shown as `ADDED` in the diff first.
 - **Never write a PRD.** A non-trivial Must without one is named as a gap, with
   the reason, and handed to `brainstorming` only on agreement.
-- **Never validate.** `project-standard` owns that, including the one-backlog
-  rule this skill writes into. Do not re-implement its checks.
+- **Never validate.** Checking that a project's documents are correct is a
+  different job. Where `project-standard` is in use it owns that, including the
+  one-backlog rule this skill writes into.
 - **Never delete in a batch.** Won't-ever and already-done each need their own
   confirmation. This is the only destructive act in the skill.
 - **Never introduce a fourth marker.** Three markers, four letters, and the
