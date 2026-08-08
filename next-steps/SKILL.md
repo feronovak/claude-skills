@@ -47,9 +47,8 @@ second backlog it will silently ratify.
 
 - **More than one match — refuse to write, and stop.** Name every file found.
   Do not triage the items anyway and offer to write afterwards; the refusal
-  comes before the round. Choosing one silently is how a second backlog is born,
-  which is the condition a second backlog creates: two lists of open work that
-  disagree.
+  comes before the round. Choosing one silently is how a second backlog is born:
+  two lists of open work that disagree, with no way to tell which is current.
 - **No match, source is `session`** — offer to create `docs/NEXT_STEPS.md` and
   seed it with the session's follow-ups.
 - **No match, any other source** — say there is nothing to triage. Do not scan
@@ -202,8 +201,9 @@ Write the file. Then:
   one-backlog rule this skill writes into.
 - **Never delete in a batch.** Won't-ever and already-done each need their own
   confirmation. This is the only destructive act in the skill.
-- **Never introduce a fourth marker.** Three markers, four letters, and the
-  collapse is documented in `references/moscow.md`.
+- **Never invent a band the project does not have.** Where its scale has fewer
+  bands than the four letters, they collapse — `references/moscow.md` says how.
+  Where it has four or more, each letter maps to its own and nothing collapses.
 - **Never write a dated narrative into a backlog row.** Present tense only.
 
 ## Where this sits
