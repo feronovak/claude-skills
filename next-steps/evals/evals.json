@@ -71,9 +71,10 @@
         "Letters exactly three rows: thumbnailing, request logging, and the paid ranking tier",
         "Moves the backup purchase, the key rotation and the vendor decision to a Yours section, none of them lettered",
         "Gives no priority marker to any row under Yours",
-        "Treats the paid ranking tier as one row, scoped and marked blocked by you, rather than splitting or exiling it",
+        "Sends the paid ranking tier to Yours, per the tiebreaker for a trivial build behind a substantive gate, rather than scoping it",
         "Notes that the only near-term row in the file is not buildable, so the development scope has no urgent item"
-      ]
+      ],
+      "result": "pass — lettered only the buildable rows, moved the backup purchase, the key rotation and the vendor decision to Yours with what each needs, and reported that no buildable row sits in the top band so the development scope has no urgent item. The paid ranking tier went to Yours by the trivial-build-behind-a-substantive-gate tiebreaker, cited as a rule rather than judged."
     },
     {
       "id": 6,
@@ -87,7 +88,8 @@
         "Maps Must to P0, Should to P1, Could and Won't-this-release to P2",
         "Emits no 🟥, 🟧 or ⬜ anywhere",
         "Does not propose adding a legend — the file already has one"
-      ]
+      ],
+      "result": "pass — read P0/P1/P2 from the legend, mapped Must to P0, Should to P1, Could and Won't-this-release to P2, and emitted no emoji anywhere. Correctly stayed silent on the vocabulary question because the file already had a legend."
     },
     {
       "id": 7,
@@ -101,7 +103,8 @@
         "Asks before adopting one rather than picking silently",
         "Offers MoSCoW words as the default and explains they need no legend to read",
         "Does not write any emoji band into the proposal"
-      ]
+      ],
+      "result": "run twice. The first run found the scale-adoption ask was documented in a reference and wired into no step, so the round could never reach it; that is now wired into Step 4. Re-run after the blocker fixes is pending."
     }
   ]
 }

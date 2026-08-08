@@ -19,8 +19,10 @@ invent work.
 ## Step 0 — Resolve
 
 Four things, in this order. State all four before proposing anything — this is
-narration, not a checkpoint; do not wait for a reply. Step 2 is the round's
-first blocking question, and Step 4 the second when the scale must be settled.
+narration, not a checkpoint; do not wait for a reply. The round blocks twice:
+at Step 2 for corrections, and at Step 4, which shows the diff and waits for a
+go-ahead before anything is written — and which also settles the scale first
+when the backlog has none.
 
 **Source.** One of:
 
@@ -59,8 +61,7 @@ second backlog it will silently ratify.
 **The priority scale.** Read `references/conventions.md`. Find the scale the
 backlog already uses — from its legend, from its rows, or find that it has
 none. Name the bands you found. Where there is none, do not adopt one here —
-Step 4 asks before anything is
-written.
+Step 4 asks before anything is written.
 
 **The release.** Read the version from a manifest — `package.json`,
 `pyproject.toml`, `Cargo.toml`, a `VERSION` file.
@@ -79,7 +80,7 @@ the owner can do is not a next step for development: it never receives a
 letter, never enters the release, and moves to `## Yours`. Report those
 separately, with what each needs.
 
-Once split, check the top band. If no buildable row sits in it, say so plainly:
+Once split, and where the backlog has a scale, check the top band. If no buildable row sits in it, say so plainly:
 the development scope has no urgent item, and whatever is most pressing is
 under `## Yours`. Separating the sections is what makes this easy to miss.
 
@@ -94,9 +95,10 @@ standing marker only afterwards, to decide whether the reason must be shown.
 Where the proposed letter **differs** from the item's standing marker, a reason
 is mandatory. Where it agrees, a bare `—` is enough.
 
-The test reads a marker, and the lowest band carries both Could and Won't. So
-for any row currently sitting in the lowest band the test cannot resolve, and
-the reason is always mandatory.
+Wherever the mapping puts two letters in one band, the test cannot resolve — a
+row sitting in that band could be either. Give those rows a reason regardless.
+In a three-band scale that is the lowest band; in a two-band scale it is the
+top one.
 
 A backlog with no scale has no standing markers at all, so nothing can agree
 with anything. Give every row a reason.
@@ -126,7 +128,7 @@ bare `WON'T` leaves the destructive case invisible in the table until Step 2.
 Then apply the 60% guard from `references/moscow.md` and report the result —
 including reporting that it could not be computed, when no estimates exist. If
 the guard trips, state it and carry the question into Step 2. Do not stop and
-wait here; Step 2 is the one place the round blocks for input.
+wait here; Step 2 is the next place the round blocks for input.
 
 ## Step 2 — Correct
 
@@ -167,6 +169,8 @@ wants those or their own. Do not choose for them. Once they choose, the diff
 shows the legend line being added along with the rows.
 
 Show every line that will change, before writing anything:
+
+Wait for a go-ahead before Step 5. A diff nobody can answer is decoration.
 
 Again in the example project's bands — substitute the ones you found in Step 0.
 
@@ -218,8 +222,9 @@ Write the file. Then:
 - **Never delete in a batch.** Won't-ever and already-done each need their own
   confirmation. This is the only destructive act in the skill.
 - **Never invent a band the project does not have.** Where its scale has fewer
-  bands than the four letters, they collapse — `references/moscow.md` says how.
-  Where it has four or more, each letter maps to its own and nothing collapses.
+  bands than the four letters, they collapse — `references/conventions.md` says
+  how. Where it has four, each letter maps to its own and nothing collapses;
+  beyond four, map the letters to the top four bands and say so.
 - **Never write a dated narrative into a backlog row.** Present tense only.
 
 ## Where this sits

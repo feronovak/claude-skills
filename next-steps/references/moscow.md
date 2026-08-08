@@ -48,10 +48,10 @@ Won't.
 
 | Verdict | Effect on the backlog |
 |---|---|
-| Must | the project's top band |
-| Should | its middle band |
-| Could | its lowest band |
-| Won't — this release | its lowest band, demoted if the row currently sits higher |
+| Must | the band the mapping gives it — see references/conventions.md |
+| Should | likewise |
+| Could | likewise |
+| Won't — this release | likewise, demoted if the row currently sits higher |
 | Won't — ever | row **deleted**, one explicit confirmation for that row |
 | Already done | row **deleted**, same per-row confirmation |
 
@@ -67,7 +67,7 @@ The letters themselves do not persist. They are the round's verdict; their only
 effect is to move the standing marker. One scale survives in the file, so there
 is no second column to maintain and nothing that can disagree with itself.
 
-**Could and Won't-this-release both land in the lowest band.** A three-band
+**In a three-band scale, Could and Won't-this-release both land in the lowest band.** A three-band
 scale cannot carry four letters. The collapse is accepted, not solved — the
 standing scale is deliberately coarser than the round's verdict. Where the
 difference matters, the inline comment carries it:
@@ -107,7 +107,8 @@ a real one.
 
 ## Comments
 
-Comments land inline under the row they belong to, in the present tense:
+Comments land inline under the row they belong to, in the present tense. The
+example below uses one project's bands (🟥/🟧/⬜); substitute whatever yours has:
 
     - 🟧 **OpenClaw as non-root** (2–3 hr). Turns the allowlist from a
       speed-bump into a real boundary.

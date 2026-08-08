@@ -34,6 +34,11 @@ under a one-line note saying what the section is for. They carry **no priority
 band**: the scale scopes a release, and these are not in one. Order them
 most-consequential first, and say what each one unblocks.
 
+Each row keeps its existing text unchanged and gains one line naming what it
+needs before anyone can build it — the account to open, the decision to make,
+the key to rotate. Stripping the band must not strip the context that made the
+row a decision.
+
 Never delete a row to get it out of the way. Moving it is the point — the work
 still matters, it is just not development's to schedule.
 
@@ -48,7 +53,7 @@ Judge by where the substance sits. If the buildable part is the work and the
 human part is a gate, it is a mixed row. If the human part *is* the work, it
 belongs under `## Yours`.
 
-When the buildable part is trivial and the gate is substantive, ask which one a
+When the buildable part is trivial and the gate is substantive, decide which one a
 reader would call *the work*. If removing the human decision leaves a task not
 worth a backlog row on its own, the row is theirs. A config flip behind a spend
 decision belongs under `## Yours`; a week of migration behind a five-minute
