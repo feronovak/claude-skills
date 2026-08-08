@@ -15,7 +15,8 @@
         "Gives a reason on every item whose proposed letter differs from its standing marker",
         "Notices that rate-limit the login endpoint depends on session expiry and orders them accordingly",
         "Computes the 60% guard against the 49-hour total rather than asserting it without arithmetic"
-      ]
+      ],
+      "result": "pass — named the boundary as a bump from 1.4.0, lettered all eight items, caught the stated dependency of the rate-limit item on session expiry, and computed the guard against the 49-hour total. Run also surfaced that the guard's denominator was undefined (16% vs 38% from the same data); fixed in 43d9079."
     },
     {
       "id": 2,
@@ -28,7 +29,8 @@
         "Says explicitly that no version was found",
         "Declares the cut-off soft rather than implying a firm boundary",
         "Still completes the round — a soft boundary is a caveat, not a refusal"
-      ]
+      ],
+      "result": "pass — found no manifest, declared the boundary as the next block of work, stated the cut-off is soft, and completed the round rather than refusing. The guard genuinely tripped here at ~86% (Musts 90 of 105 minutes), exercising the mechanism on real data."
     },
     {
       "id": 3,
@@ -41,7 +43,8 @@
         "Refuses to write to either file",
         "Names both files it found",
         "Does not triage the items anyway and offer to write later — the refusal comes before the round, not after"
-      ]
+      ],
+      "result": "pass — stopped at Step 0, named both files, ran no triage, and diff -r against the fixture was empty. The run exposed that the search order read as first-match-wins, which would have made this refusal unreachable; fixed in 43d9079 and re-run confirmed the amended wording leaves no room to guess."
     },
     {
       "id": 4,
@@ -54,7 +57,8 @@
         "Assigns a letter to all five items",
         "States that no effort estimates are present",
         "Produces no percentage and no invented hour figures"
-      ]
+      ],
+      "result": "pass — lettered all five items and declined the guard explicitly. No percentage, ratio or hour figure appeared anywhere in the run."
     }
   ]
 }

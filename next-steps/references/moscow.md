@@ -77,7 +77,7 @@ Where the backlog carries effort estimates (`~1 hr`, `2–3 hr`), sum them. The
 denominator is the work going **into** the release — Must plus Should plus
 Could. Won't rows are out of scope and are not counted. Normalise mixed units
 to hours before summing. If the Musts exceed **roughly 60%** of that total, say
-so, name the rows you summed, and ask what drops.
+so, name the rows you summed, and say what should drop.
 
 This is the only mechanical defence against everything becoming Must, and it is
 the reason to read the estimates rather than skim past them.
