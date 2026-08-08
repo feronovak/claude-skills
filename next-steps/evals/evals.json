@@ -1,0 +1,60 @@
+{
+  "skill_name": "next-steps",
+  "notes": "This skill ships no code, so there is no unit suite. Each fixture is a plain directory, not a git clone, because the skill must work without git. Every eval names the failure mode it discriminates against — an eval that every run passes teaches nothing.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "release-boundary-is-a-version",
+      "prompt": "nextsteps",
+      "fixture": "versioned-product",
+      "expected_output": "Names the next release as a version bump from 1.4.0, proposes a MoSCoW letter for all eight items, and reports that the Musts exceed roughly 60% of the 49-hour total if they do.",
+      "failure_mode": "Scoping to a calendar window ('the next two weeks') instead of a release. The package.json declares 1.4.0; a run that never mentions a version has ignored the one signal that makes MoSCoW meaningful here.",
+      "expectations": [
+        "Reads package.json and names the release as a bump from 1.4.0",
+        "Assigns a letter to all eight items, none left blank",
+        "Gives a reason on every item whose proposed letter differs from its standing marker",
+        "Notices that rate-limit the login endpoint depends on session expiry and orders them accordingly",
+        "Computes the 60% guard against the 49-hour total rather than asserting it without arithmetic"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "soft-cutoff-is-declared",
+      "prompt": "nextsteps",
+      "fixture": "unversioned-docs",
+      "expected_output": "States that the repo carries no version, that 'the next release' therefore means the next block of work, and that the cut-off is soft.",
+      "failure_mode": "Silently proceeding as though a hard release boundary exists, which overstates how much discipline the round carries. Inventing a version number is the same failure in a louder form.",
+      "expectations": [
+        "Says explicitly that no version was found",
+        "Declares the cut-off soft rather than implying a firm boundary",
+        "Still completes the round — a soft boundary is a caveat, not a refusal"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "refuses-two-backlogs",
+      "prompt": "nextsteps",
+      "fixture": "two-backlogs",
+      "expected_output": "Refuses to write, naming both docs/NEXT_STEPS.md and ROADMAP.md.",
+      "failure_mode": "Picking docs/NEXT_STEPS.md because it is first in the search order and writing to it. That silently ratifies a second backlog, the exact condition project-standard check 26 exists to prevent.",
+      "expectations": [
+        "Refuses to write to either file",
+        "Names both files it found",
+        "Does not triage the items anyway and offer to write later — the refusal comes before the round, not after"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "declines-the-uncomputable-guard",
+      "prompt": "nextsteps",
+      "fixture": "no-estimates",
+      "expected_output": "Runs the round and states that the 60% guard cannot be checked because no item carries an effort estimate.",
+      "failure_mode": "Producing a percentage anyway from invented effort figures. A fabricated number here is worse than no number, because it looks like the guard ran.",
+      "expectations": [
+        "Assigns a letter to all five items",
+        "States that no effort estimates are present",
+        "Produces no percentage and no invented hour figures"
+      ]
+    }
+  ]
+}
