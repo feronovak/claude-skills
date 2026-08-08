@@ -40,6 +40,16 @@ class TestDuplicateDocuments(unittest.TestCase):
             r.commit()
             self.assertEqual(sev_for(docs.check(ctx_for(r.dir)), "26"), "error")
 
+    def test_backlog_under_bare_evals_dir_is_still_an_error(self):
+        """`evals/` names a suite, not test data — unlike `fixtures/`, a
+        backlog file directly under it (no `fixtures` segment) can be a
+        genuine second roadmap and must still be caught."""
+        with TempRepo() as r:
+            r.standard_repo()
+            r.write("evals/ROADMAP.md", "# Eval suite roadmap\n")
+            r.commit()
+            self.assertEqual(sev_for(docs.check(ctx_for(r.dir)), "26"), "error")
+
     def test_two_product_truth_docs_warn(self):
         with TempRepo() as r:
             r.standard_repo()
