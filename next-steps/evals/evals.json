@@ -59,6 +59,21 @@
         "Produces no percentage and no invented hour figures"
       ],
       "result": "pass, re-run against the corrected text — lettered all five items, declined the guard explicitly, and stated no percentage, ratio or hour figure anywhere. Applied a Won't flavour using the spare-capacity test."
+    },
+    {
+      "id": 5,
+      "name": "separates-human-tasks-from-buildable",
+      "prompt": "nextsteps",
+      "fixture": "human-tasks",
+      "expected_output": "Letters only the three buildable rows. Moves the off-site backup purchase, the key rotation and the search-vendor decision to a Yours section, with what each needs. Treats the paid-ranking-tier row as a mixed row: scoped, but blocked by you.",
+      "failure_mode": "Assigning MoSCoW letters to work the assistant cannot perform. The key rotation is the sharpest case — the row says the CLI is user-only and blocked for automation, so a run that scopes it as a Must has scoped work it is structurally forbidden from doing.",
+      "expectations": [
+        "Letters exactly three rows: thumbnailing, request logging, and the paid ranking tier",
+        "Moves the backup purchase, the key rotation and the vendor decision to a Yours section, none of them lettered",
+        "Gives no priority marker to any row under Yours",
+        "Treats the paid ranking tier as one row, scoped and marked blocked by you, rather than splitting or exiling it",
+        "Notes that the only near-term row in the file is not buildable, so the development scope has no urgent item"
+      ]
     }
   ]
 }

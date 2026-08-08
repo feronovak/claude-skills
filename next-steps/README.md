@@ -31,6 +31,17 @@ no cut is a list, not a plan.
 - **Is not `writing-plans`.** This decides which items and in what order;
   `writing-plans` decides how to build one of them.
 
+## What is a next step
+
+Work that can be built. A backlog also collects things only its owner can do —
+buying a tier, rotating a key, deciding a vendor — and those are not
+development next steps. They move to a `## Yours` section, unlettered and out
+of the release. A row that is buildable but waits on the owner stays in the
+release, marked `blocked by you`.
+
+The line is capability, not effort: a twenty-hour migration is buildable, a
+two-minute credential rotation is not.
+
 ## Usage
 
 ```

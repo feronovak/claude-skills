@@ -10,6 +10,7 @@ Produced at step 3, for the **Musts and Shoulds only**. Coulds are not ordered
 | `ready` | Can start now. Nothing blocks it and nothing needs designing first. |
 | `blocked by <n>` | Depends on another item **in this release**, named by its row number. |
 | `needs spec` | Non-trivial, and no `docs/prds/<name>.md` exists for it. |
+| `blocked by you` | Waits on an action only the owner can take. Name the action. |
 
 An item blocked by something **outside** this release is not `blocked by`. Never record an unsatisfiable dependency — say what is actually true:
 

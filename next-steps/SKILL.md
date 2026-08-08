@@ -1,7 +1,7 @@
 ---
 name: next-steps
 description: Scopes the next release out of an existing backlog using MoSCoW, then produces the build order for what it scoped. Use this skill when the user types "nextsteps" or "!nextsteps", or asks to "scope the next release", "what goes in the next release", "triage the backlog", "prioritise these", "what should I do next", "run MoSCoW on this", or wants a list of open work cut into what ships next and what waits. Writes the verdict back into the project's one backlog file as priority markers plus inline comments. Do NOT use for generating new ideas (free-think-day, free-dev-day), designing one feature (brainstorming), planning how to build one feature (writing-plans), reporting what already shipped (exec-steps), or validating documentation (project-standard).
-version: "1.0"
+version: "1.1"
 authors: Fero Novak <https://feronovak.com>
 ---
 
@@ -65,10 +65,15 @@ a name this skill does not look for is a second backlog it will silently ratify.
 
 ## Step 1 — Propose
 
+**Classify before you letter.** Read `references/buildable.md` now. A row only
+the owner can do is not a next step for development: it never receives a
+letter, never enters the release, and moves to `## Yours`. Report those
+separately, with what each needs.
+
 Read `references/moscow.md` now.
 
-Assign a letter to **every** item. Nothing is left blank, and nothing is handed
-to the user that could have been reasoned about first.
+Assign a letter to **every buildable** item. Nothing is left blank, and nothing
+is handed to the user that could have been reasoned about first.
 
 Reason from the release boundary and the dependencies first; compare against the
 standing marker only afterwards, to decide whether the reason must be shown.
@@ -132,6 +137,9 @@ invoke it without agreement. Name any Should that drops out because something
 outside the release blocks it — dropping one silently is the failure this step
 guards against.
 
+Mark any row that waits on the owner as `blocked by you` and say what is
+needed; it stays in the release, but it cannot start until they act.
+
 ## Step 4 — Diff
 
 Show every line that will change, before writing anything:
@@ -143,12 +151,16 @@ docs/NEXT_STEPS.md
 +          *Held: not before link expiry lands.*
 - ⬜       Legacy XML importer                    (Won't — ever, confirmed)
 + ⬜       Retire the v1 webhook                  (ADDED from session)
+→ Yours     Rotate the billing provider key         (user-only CLI)
 ```
 
 Session follow-ups are the **only** rows this skill ever adds, and they appear as
 `ADDED` here before they are written.
 
 The example above shows one; a round whose source is `backlog` has no such row.
+
+A `→ Yours` line moves a row into that section. It is a move, never a delete —
+the row keeps its text and its history, and nothing is lost.
 
 **The inline comment records what a later reader needs to know about where the
 row now stands** — a Could's condition, a Should's blocker, a Must's dependency.
