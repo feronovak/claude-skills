@@ -226,7 +226,11 @@ def _duplicates(ctx, tracked):
     out = []
     live = [f for f in markdown_files(tracked) if not excluded(f)]
 
-    backlogs = [f for f in live if Path(f).name in BACKLOG_NAMES]
+    # A backlog-named file under a fixtures/ or evals/ path segment is test
+    # data feeding the checker itself, never the repo's own backlog — a
+    # naive filename match otherwise counts eval fixtures as live roadmaps.
+    backlogs = [f for f in live if Path(f).name in BACKLOG_NAMES
+                and not set(Path(f).parts) & {"fixtures", "evals"}]
     others = [f for f in backlogs if f != CANONICAL_BACKLOG]
     if CANONICAL_BACKLOG in backlogs and others:
         for f in others:

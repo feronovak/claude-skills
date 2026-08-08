@@ -11,6 +11,8 @@ EXCLUDED_CASES = [
     "project-management/archives/v5.10/NEXT_STEPS_ANALYSIS.md",
     "docs/done/ROADMAP.md",
     "docs/superpowers/plans/2026-01-01-todo.md",
+    "next-steps/evals/fixtures/two-backlogs/ROADMAP.md",
+    "next-steps/evals/fixtures/two-backlogs/docs/NEXT_STEPS.md",
 ]
 
 
