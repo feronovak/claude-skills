@@ -1,6 +1,6 @@
 ---
 name: business-sharks-screen
-description: Ultrafast single-idea pre-screen — a 2-3 minute go/no-go gate before committing to a full business-sharks validation. Use this skill when the user wants a quick triage on a raw idea, asks "is this worth a deep dive", "screen this idea", "fast check on this", "triage this idea", "should I bother researching X", "quick screen before full validation", or is sifting many candidate ideas (e.g. from Reddit) to decide which few deserve a real run. KILL-biased by design — most ideas should not survive.
+description: Ultrafast single-idea pre-screen — a 2-3 minute go/no-go gate before committing to a full business-sharks validation. Use this skill when the user wants a quick triage on a raw idea, asks "is this worth a deep dive", "screen this idea", "fast check on this", "triage this idea", "should I bother researching X", "quick screen before full validation", or is sifting many candidate ideas (e.g. from Reddit) to decide which few deserve a real run. KILL-biased by design — most ideas should not survive. Do NOT use for the full validation itself (business-sharks) or for shaping a raw hunch into a concrete idea (brainstormers-idea); this is only the gate that decides whether either is worth starting.
 version: "1.0"
 authors: Fero Novak <https://feronovak.com>
 ---

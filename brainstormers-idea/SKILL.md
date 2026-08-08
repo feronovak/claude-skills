@@ -1,6 +1,6 @@
 ---
 name: brainstormers-idea
-description: Use when you have a raw idea — a phrase, hunch, or one-liner — and want to shape it into something concrete before validation. Interviews for context, then runs four parallel research streams (market, competition, timing, revenue) and synthesizes a refined idea with strategy. Triggers on phrases like 'brainstorm this idea', 'research this concept', 'help me shape this idea', 'explore this opportunity', 'is this idea any good'.
+description: Use when you have a raw idea — a phrase, hunch, or one-liner — and want to shape it into something concrete before validation. Interviews for context, then runs four parallel research streams (market, competition, timing, revenue) and synthesizes a refined idea with strategy. Triggers on phrases like 'brainstorm this idea', 'research this concept', 'help me shape this idea', 'explore this opportunity', 'is this idea any good'. Do NOT use for deciding whether an idea is worth building (business-sharks), for a fast kill on one of many candidates (business-sharks-screen), or for finding the edge in a product that already has a codebase (product-thesis).
 version: "2.3"
 authors: Fero Novak <https://feronovak.com>
 ---
