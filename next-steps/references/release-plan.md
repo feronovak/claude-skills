@@ -11,10 +11,10 @@ Produced at step 3, for the **Musts and Shoulds only**. Coulds are not ordered
 | `blocked by <n>` | Depends on another item **in this release**, named by its row number. |
 | `needs spec` | Non-trivial, and no `docs/prds/<name>.md` exists for it. |
 
-An item blocked by something **outside** this release is not `blocked by` — it
-is a Must that cannot ship, which means either the blocker belongs in the
-release or this item does not. Say so rather than recording an unsatisfiable
-dependency.
+An item blocked by something **outside** this release is not `blocked by`. Never record an unsatisfiable dependency — say what is actually true:
+
+- **A Must that cannot ship** means either the blocker belongs in the release or this item does not. Force that question.
+- **A Should that cannot ship** drops out of the build order. Its absence is a disappointment, not a failure, so it does not force the release open. Name it under `Gaps:` with what blocks it — dropping it silently is the one thing this rule exists to prevent.
 
 ## Output format
 
@@ -27,6 +27,8 @@ Release 1.5.0 — build order
 4. Invoice PDF generation                   ready · parallel with 1
 
 Gaps: 1 Must has no PRD (item 3).
+      1 Should dropped — invoice PDF needs the billing
+      migration, which is not in this release.
 ```
 
 Order is dependency order, not importance order — importance was already
