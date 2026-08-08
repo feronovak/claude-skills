@@ -27,8 +27,8 @@ Release 1.5.0 — build order
 4. Invoice PDF generation                   ready · parallel with 1
 
 Gaps: 1 Must has no PRD (item 3).
-      1 Should dropped — invoice PDF needs the billing
-      migration, which is not in this release.
+      1 Should dropped — proration on plan change needs the
+      billing migration, which is not in this release.
 ```
 
 Order is dependency order, not importance order — importance was already
