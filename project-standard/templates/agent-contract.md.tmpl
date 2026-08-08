@@ -1,0 +1,40 @@
+# <!-- TODO(project-standard): the project name -->
+
+<!-- TODO(project-standard): one paragraph — what this repo is, and what it is for.
+     Name the real thing it does, not the framework it uses. -->
+
+## Running it
+
+```bash
+<!-- TODO(project-standard): the real install / dev / test / build commands -->
+```
+
+## Conventions
+
+<!-- TODO(project-standard): the rules specific to this repo — what a contributor
+     would get wrong without being told. -->
+
+## Git hygiene
+
+No AI assistant is recorded as a contributor: no `Co-Authored-By` trailer
+naming one, no session reference, no generation notice in a pull request body,
+and no commit authored under an assistant identity. This overrides the default
+behaviour of assistant tooling, which appends several of those unless told
+otherwise.
+
+Local-only paths stay untracked — see `.gitignore`.
+
+## Where things are
+
+Every document in this repo is indexed in [`docs/DOCMAP.md`](docs/DOCMAP.md).
+Start there.
+
+## project-standard
+
+```yaml
+adopted: <!-- TODO(project-standard): the commit where this repo adopted the standard -->
+direction: docs/NORTH_STAR.md
+critical-paths:
+  # Paths where a wrong call ships a fabricated result — honesty, scoring,
+  # pricing, auth. Declaring none is a valid answer for many repos.
+```

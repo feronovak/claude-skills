@@ -14,6 +14,11 @@ Not generic tooling. Not framework-of-the-week. Each skill is rigorous enough to
 | `/business-sharks` | Rigorous startup validation — market research, competitive intel, SEO/GEO, financials, and a YC-style shark panel. Honest verdicts: GO / CONDITIONAL / NO-GO with WWNBT and pivot suggestions. |
 | `/app-factory` | End-to-end app development from a validated idea: spec, design, engineering, QA, and parallel product validation. |
 | `/domain-validator` | Score and rank domain candidates: writing risk, dictation clarity, brand fit, distinctiveness. EN + Slovak markets. |
+| `/exec-steps` | Validates what actually got done in a session against real evidence, then writes a board-ready summary: Why, What, How, Value, plus ranked next steps. Unverified claims are reported as unverified. |
+| `/brainstormers-content` | Content research and recommendation team. Finds hot topics, analyzes audience, and proposes what to publish next. |
+| `/business-sharks-screen` | Ultrafast single-idea pre-screen — a 2–3 minute go/no-go gate before committing to the full `business-sharks` run. |
+| `/design-police` | Binary pass/fail audit of a web interface. Reads source and inspects live pages at multiple viewports; any anti-pattern is a failure. |
+| `/project-standard` | Validates and scaffolds a project's documentation, release flow and git hygiene against one standard. Ships a stdlib-only checker with 47 checks. |
 
 The first three form a complete pipeline: brainstorm → validate → build. Each runs independently or chains into the next.
 
@@ -40,6 +45,8 @@ cd ~/projects/claude-skills && git pull
 /business-sharks A B2B SaaS that automates compliance reporting for fintech
 /app-factory A Next.js app for kids' story illustration with AI
 /domain-validator talealbum.com vs storybook.app vs makemystory.io
+exesteps                        # executive summary of this session, validated against evidence
+exesteps week                   # last 7 days; also 'today' or 'since <ref>'
 ```
 
 ## Philosophy
@@ -57,7 +64,7 @@ These skills started as personal tooling for evaluating side-project ideas witho
 
 ## Roadmap
 
-Curated, not comprehensive. Each new skill needs to earn its place against the same bar as the existing four.
+Curated, not comprehensive. Each new skill needs to earn its place against the same bar as the ones already here.
 
 Things being considered, in no particular order:
 - A media-strategy skill drawing on operating consumer publishing at scale (Aktuality, Azet, Pokec)

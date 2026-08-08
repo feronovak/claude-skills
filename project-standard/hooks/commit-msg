@@ -1,0 +1,38 @@
+#!/bin/bash
+# project-standard: keep an AI assistant out of the authorship record.
+#
+# Install with `project-standard install-hooks`, which points core.hooksPath at
+# the directory holding this file.
+#
+# This is a house rule with a default, not a universal truth. It is on by
+# default because assistant tooling appends these markers unless told
+# otherwise, so a silent repo gets the marker rather than its absence.
+# A repo that wants the attribution declares `ai-attribution: allow` in its
+# agent contract and should not install this hook.
+
+# One list, matching the checker's. Guarding a single vendor would let the same
+# marker through under a different name.
+ASSISTANTS='claude|anthropic|codex|copilot|cursor|aider|gemini|windsurf'
+
+msg_file="$1"
+[ -f "$msg_file" ] || exit 0
+
+fail() {
+  echo "BLOCKED: $1"
+  echo "This repository does not record an AI assistant as a contributor."
+  exit 1
+}
+
+grep -qiE "^[[:space:]]*co-authored-by:.*($ASSISTANTS)" "$msg_file" \
+  && fail "commit message carries an assistant Co-Authored-By trailer."
+
+grep -qiE "^[[:space:]]*($ASSISTANTS|assistant)-session:|(claude\.ai|chatgpt\.com|cursor\.com)/[^[:space:]]*session" "$msg_file" \
+  && fail "commit message carries an assistant session reference."
+
+grep -qiE "^[[:space:]]*signed-off-by:.*($ASSISTANTS)" "$msg_file" \
+  && fail "commit message signs off as an assistant."
+
+grep -qiE "generated (with|by) \[?($ASSISTANTS)|🤖 generated with" "$msg_file" \
+  && fail "commit message carries an assistant generation notice."
+
+exit 0
