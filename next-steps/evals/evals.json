@@ -104,7 +104,7 @@
         "Offers MoSCoW words as the default and explains they need no legend to read",
         "Does not write any emoji band into the proposal"
       ],
-      "result": "run twice. The first run found the scale-adoption ask was documented in a reference and wired into no step, so the round could never reach it; that is now wired into Step 4. Re-run after the blocker fixes is pending."
+      "result": "pass, on the third run. The first run found the scale-adoption ask was documented in a reference and wired into no step. The second stopped at Step 2 and never reached it. A sentence 106 lines from the fix still claimed Step 2 was the only place the round blocks, which would have let a run adopt a vocabulary silently. With that reconciled, a run driven past Step 2 reached Step 4, was asked which vocabulary to write, and stopped without choosing one."
     }
   ]
 }

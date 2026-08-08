@@ -58,3 +58,8 @@ has three bands, so Must writes 🟥, Should writes 🟧, and both Could and
 Won't-this-release write ⬜. A file using `P0`/`P1`/`P2` gets exactly the same
 verdicts written as `P0`/`P1`/`P2`. The round is identical; only the vocabulary
 changes.
+
+Nothing about this changes how the round is conducted. The letters are the
+round's language; the bands are the file's. A project with no scale is still
+reasoned about in MUST/SHOULD/COULD — the only open question is what those
+letters become on disk.

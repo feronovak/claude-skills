@@ -19,10 +19,10 @@ invent work.
 ## Step 0 — Resolve
 
 Four things, in this order. State all four before proposing anything — this is
-narration, not a checkpoint; do not wait for a reply. The round blocks twice:
-at Step 2 for corrections, and at Step 4, which shows the diff and waits for a
-go-ahead before anything is written — and which also settles the scale first
-when the backlog has none.
+narration, not a checkpoint; do not wait for a reply. The round blocks at
+Step 2 for corrections, then at Step 4 — twice there when the backlog has no
+scale: once to settle the vocabulary, then again on the diff before anything
+is written.
 
 **Source.** One of:
 
@@ -79,6 +79,11 @@ Step 4 asks before anything is written.
 the owner can do is not a next step for development: it never receives a
 letter, never enters the release, and moves to `## Yours`. Report those
 separately, with what each needs.
+
+The four letters are the round's language and stay the same in every project.
+The scale is only what gets **written into the file**. So the proposal table,
+the guard and the build order all read MUST/SHOULD/COULD whatever the backlog
+uses, and nothing needs retranslating when Step 4 settles the vocabulary.
 
 Once split, and where the backlog has a scale, check the top band. If no buildable row sits in it, say so plainly:
 the development scope has no urgent item, and whatever is most pressing is
