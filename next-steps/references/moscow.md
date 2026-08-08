@@ -32,6 +32,12 @@ does not.
 Never collapse the second into the first to avoid a deletion. An item nobody
 will ever do, left in the backlog, costs a re-read every future round.
 
+**Could and Won't-this-release are the pair that blur.** The test: a Could is
+something you would genuinely pick up if the release ran light. A
+Won't-this-release is something you would not start even with room to spare,
+because its time has not come. If spare capacity would not tempt you, it is
+Won't.
+
 ## Writing the verdict back
 
 | Verdict | Effect on the backlog |
@@ -42,6 +48,10 @@ will ever do, left in the backlog, costs a re-read every future round.
 | Won't — this release | `⬜` — demote it if it currently reads `🟥` or `🟧` |
 | Won't — ever | row **deleted**, one explicit confirmation for that row |
 | Already done | row **deleted**, one explicit confirmation for that row |
+
+**Already done is not a proposal-time verdict.** Every item gets one of the four
+letters at Step 1. Already-done surfaces only at Step 2, when a correction turns
+out to mean the work already shipped.
 
 The letters themselves do not persist. They are the round's verdict; their only
 effect is to move the standing marker. One scale survives in the file, so there
@@ -63,9 +73,11 @@ done-section.
 
 ## The 60% guard
 
-Where the backlog carries effort estimates (`~1 hr`, `2–3 hr`), sum them. If
-the Musts exceed **roughly 60% of the release's total estimated effort**, say
-so and ask what drops.
+Where the backlog carries effort estimates (`~1 hr`, `2–3 hr`), sum them. The
+denominator is the work going **into** the release — Must plus Should plus
+Could. Won't rows are out of scope and are not counted. Normalise mixed units
+to hours before summing. If the Musts exceed **roughly 60%** of that total, say
+so, name the rows you summed, and ask what drops.
 
 This is the only mechanical defence against everything becoming Must, and it is
 the reason to read the estimates rather than skim past them.

@@ -29,11 +29,15 @@ Three things, in this order. Report all three back before proposing anything.
 | handoff | The tail of `exec-steps`, `free-think-day`, or `project-standard` |
 
 Default to `backlog` when the argument does not say and a backlog file exists.
+An argument that names no source — empty, or a bare path — does not say.
 Use `session` when there is no backlog file, or when the user's phrasing points
 at what was just done.
 
-**The backlog file.** Search in this order: `docs/NEXT_STEPS.md`, then
-`ROADMAP.md`, then `TODO.md`.
+**The backlog file.** Look for all three of `docs/NEXT_STEPS.md`, `ROADMAP.md`
+and `TODO.md` — every one, every time. This is not a first-match chain: the
+refusal below can only fire if you checked all three. Where exactly one exists,
+that is the backlog; where the canonical slot must be named, it is
+`docs/NEXT_STEPS.md`.
 
 - **More than one match — refuse to write, and stop.** Name every file found.
   Do not triage the items anyway and offer to write afterwards; the refusal
@@ -47,7 +51,9 @@ at what was just done.
 **The release.** Read the version from a manifest — `package.json`,
 `pyproject.toml`, `Cargo.toml`, a `VERSION` file.
 
-- **Found** — the boundary is the next bump from that version. Name it.
+- **Found** — the boundary is the next bump from that version. Name it. Where
+  nothing indicates whether the bump is patch, minor or major, say which you
+  assumed in one clause. Never pick one silently.
 - **Not found** — the boundary is "the next block of work". **Say the cut-off is
   soft**, so the round is not mistaken for carrying more discipline than it does.
   Do not invent a version number.
@@ -59,8 +65,15 @@ Read `references/moscow.md` now.
 Assign a letter to **every** item. Nothing is left blank, and nothing is handed
 to the user that could have been reasoned about first.
 
+Reason from the release boundary and the dependencies first; compare against the
+standing marker only afterwards, to decide whether the reason must be shown.
+
 Where the proposed letter **differs** from the item's standing marker, a reason
-is mandatory. Where it agrees, one line is enough.
+is mandatory. Where it agrees, a bare `—` is enough.
+
+The test reads a marker, and `⬜` carries both Could and Won't. So for any row
+currently marked `⬜` the test cannot resolve, and the reason is always
+mandatory.
 
 Propose against the release boundary and against dependencies between items —
 never against the existing markers. A pre-fill that mirrors the current markers
@@ -70,15 +83,21 @@ round would have added nothing.
 Print one table:
 
 ```
-#  Item                              Now  Proposed  Why
-1  Session expiry on magic links     🟥   MUST      —
-2  Rate-limit the login endpoint     🟧   MUST      auth hole is only half
-                                                    closed without it
-3  Passkey support                   ⬜   WON'T     nobody has asked
+#  Item                              Now  Proposed             Why
+1  Session expiry on magic links     🟥   MUST                 —
+2  Rate-limit the login endpoint     🟧   MUST                 auth hole is only
+                                                               half closed
+                                                               without it
+3  Passkey support                   ⬜   WON'T (this release) nobody has asked
 ```
 
+Propose Won't with its flavour — `WON'T (this release)` or `WON'T (ever)`. A
+bare `WON'T` leaves the destructive case invisible in the table until Step 2.
+
 Then apply the 60% guard from `references/moscow.md` and report the result —
-including reporting that it could not be computed, when no estimates exist.
+including reporting that it could not be computed, when no estimates exist. If
+the guard trips, state it and carry the question into Step 2. Do not stop and
+wait here; Step 2 is the one place the round blocks for input.
 
 ## Step 2 — Correct
 
