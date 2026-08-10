@@ -67,7 +67,7 @@ Flag these if found — they indicate design defaulting:
 **Model:** Sonnet
 **Reads:** `docs/product-spec.md`, all source code
 **Writes:** `docs/review-seo.md`
-**Enhanced by:** `seo-technical-optimization` skills — if available, you MUST run them as your PRIMARY audit for structured data, keyword density, and snippet optimization. Run the built-in checks below ONLY to supplement gaps.
+**Enhanced by:** `seo-aeo-best-practices` — if available, you MUST run it as your PRIMARY audit for metadata, structured data, snippet optimization, and AI answer surfaces. Run the built-in checks below ONLY to supplement gaps.
 
 **Skip this reviewer if** the product is: desktop app (Tauri/Electron), internal tool, CLI, or any non-web-facing product.
 
@@ -93,7 +93,7 @@ Flag these if found — they indicate design defaulting:
 **Model:** Opus
 **Reads:** All source code, package.json/config, build config, tests
 **Writes:** `docs/review-code-quality.md`
-**Enhanced by:** `security-scanning:security-sast` — if available, you MUST run SAST analysis as your PRIMARY security audit. It catches vulnerabilities the manual checklist below will miss. Run the built-in checks ONLY to supplement gaps.
+**Enhanced by:** `/security-review` — run it as your PRIMARY security audit. It reasons over the branch's actual changes and catches vulnerabilities the manual checklist below will miss. Run the built-in checks ONLY to supplement gaps. Where the `security-guidance` plugin is installed, its hooks have already flagged issues during the build — read those before starting.
 
 ### Code Quality Audit (built-in, always runs)
 1. **Organization** — logical file/folder structure, consistent naming convention (camelCase, PascalCase, kebab-case used purposefully), small focused files (under 200 lines preferred).

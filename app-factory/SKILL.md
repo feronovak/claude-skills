@@ -17,7 +17,7 @@ The team-lead reads SKILL.md (this file) plus `references/skill-dependency-check
 
 | File | Read by | Contains |
 |---|---|---|
-| `references/skill-dependency-check.md` | team-lead (Phase 0) | Optional skill detection (interface-design, frontend-design, security-scanning, etc.) |
+| `references/skill-dependency-check.md` | team-lead (Phase 0) | Optional skill detection (superpowers, interface-design, frontend-design, project-standard, design-police, etc.) |
 | `references/pitch-author.md` | pitch-author (Phase 1A, SERIOUS BET only) | Press release + 6-pager + hostile-review templates |
 | `references/strategist.md` | strategist (Phase 1) | Product spec, RICE, hosting topology, RTO/RPO, SLOs |
 | `references/security-strategist.md` | security-strategist (Phase 1) | STRIDE per trust boundary, Data Lifecycle (GDPR), security acceptance criteria |
@@ -73,7 +73,7 @@ $ARGUMENTS is empty. Ask: "What do you want to build? You can point me to brains
 
 ## SKILL DEPENDENCY CHECK
 
-After project setup, check which optional enhancement skills are installed. These improve output quality in design and security; `security-scanning:security-sast` is **required for FULL and SERIOUS BET modes**.
+After project setup, check which optional enhancement skills are installed. These improve output quality in design, engineering method, repo hygiene and security. Anything found there **owns its area** — the built-in methodology defers rather than running a second rulebook alongside it.
 
 Read `references/skill-dependency-check.md` for the full check procedure, the recommendations to present, and the user's response options.
 
@@ -92,7 +92,7 @@ Ask the user which mode to use.
 - Phase 1: strategist (Opus) + security-strategist (Opus, full STRIDE pass + Data Lifecycle)
 - Phase 2: designer (Opus) → engineer (Sonnet) → qa-reviewer (Sonnet) — serial — engineer ships full DevOps deliverables: deploy + observability with **distributed tracing + SLOs**, secrets, **incident response runbook**, **declared RTO/RPO**, **signed images + SBOM**, README + ADRs + postmortem template
 - Phase 3: 7 parallel reviewers + loop-back fixes
-- Requires: `security-scanning:security-sast` skill installed
+- Requires: `/security-review` callable (built in — no install needed)
 - Best for: ≥1 month of build, real budget, brand you care about, public launch
 - Adds 2-4 hours of pitch work upfront. Saves 10× that in scope creep, missed assumptions, and rework.
 
@@ -100,7 +100,7 @@ Ask the user which mode to use.
 - Phase 1: strategist (Opus) + security-strategist (Opus)
 - Phase 2: designer (Opus) → engineer (Sonnet) → qa-reviewer (Sonnet) — serial — engineer ships DevOps deliverables: deploy + observability (logs + error tracker + health checks + at-minimum availability SLO), secrets, README + ADRs, **SBOM + pinned base images**, runbook
 - Phase 3: 7 parallel reviewers + loop-back fixes
-- Requires: `security-scanning:security-sast` skill installed
+- Requires: `/security-review` callable (built in — no install needed)
 - Best for: production-quality builds, paid products, anything reaching real users
 
 **BUILD ONLY**: Build without validation. Phases 1 + 2 only.
