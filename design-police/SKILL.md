@@ -1,6 +1,6 @@
 ---
 name: design-police
-description: "Use when reviewing any web UI for quality - after building web pages, web apps, components, or layouts. Triggers: \"review UI\", \"check design\", \"audit page\", \"validate frontend\", \"design police\", \"does this look good\", \"check my site\". Also use proactively after building or modifying any web interface, even if not explicitly asked. Inspects source code AND live pages via Playwright at multiple viewports. Binary pass/fail - any anti-pattern = FAIL."
+description: "Use when reviewing any web UI for quality - after building web pages, web apps, components, or layouts. Triggers: \"review UI\", \"check design\", \"audit page\", \"validate frontend\", \"design police\", \"does this look good\", \"check my site\". Also use proactively after building or modifying any web interface, even if not explicitly asked. Inspects source code AND live pages via Playwright at multiple viewports. Binary pass/fail - any anti-pattern = FAIL. This skill judges the rendered interface. Do NOT use for auditing a repository's documentation, release flow or git hygiene (project-standard), or for making an interface distinctive in the first place (frontend-design) - it measures a page that already exists, and never designs one."
 version: "1.0"
 authors: Fero Novak <https://feronovak.com>
 ---
