@@ -1,6 +1,8 @@
 ---
 name: domain-validator
 description: "Use when: user asks to check, score, or rank domain candidates - \"is X.com a good domain\", \"should I buy X.com\", \"evaluate domain for brand\", \"rank these domains\", \"pre ktorú doménu by som išiel\", \"oplatí sa kúpiť X.com\", or provides a list to compare. Evaluates spelling risk, phone-dictation clarity, brand fit, distinctiveness, extensibility, and optional domain equity (SEO history). EN and Slovak first-class; other CEE languages supported."
+version: "1.0"
+authors: Fero Novak <https://feronovak.com>
 ---
 
 # domain-validator

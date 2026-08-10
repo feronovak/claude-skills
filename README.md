@@ -19,6 +19,7 @@ Not generic tooling. Not framework-of-the-week. Each skill is rigorous enough to
 | `/business-sharks-screen` | Ultrafast single-idea pre-screen — a 2–3 minute go/no-go gate before committing to the full `business-sharks` run. |
 | `/design-police` | Binary pass/fail audit of a web interface. Reads source and inspects live pages at multiple viewports; any anti-pattern is a failure. |
 | `/project-standard` | Validates and scaffolds a project's documentation, release flow and git hygiene against one standard. Ships a stdlib-only checker with 47 checks. |
+| `/next-steps` | Cuts an existing backlog into the next release with MoSCoW, then gives the build order. Writes the verdict back into the project's own priority vocabulary — and refuses to write into a band that turns out to mean severity rather than schedule. |
 
 The first three form a complete pipeline: brainstorm → validate → build. Each runs independently or chains into the next.
 
@@ -47,6 +48,7 @@ cd ~/projects/claude-skills && git pull
 /domain-validator talealbum.com vs storybook.app vs makemystory.io
 exesteps                        # executive summary of this session, validated against evidence
 exesteps week                   # last 7 days; also 'today' or 'since <ref>'
+nextsteps                       # cut the backlog into the next release, then order the build
 ```
 
 ## Philosophy

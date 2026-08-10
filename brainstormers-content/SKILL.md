@@ -1,6 +1,6 @@
 ---
 name: brainstormers-content
-description: Content research and recommendation team. Finds hot topics, analyzes audience demand and competitive landscape, scores for authenticity/timeliness/differentiation, recommends content with platform assignments. Use when the user wants content ideas, topic research, content strategy for LinkedIn/blog/newsletter, or trending topics. Triggers on 'what should I write about', 'content brainstorm', 'find me content ideas', 'what's trending in X'. Do NOT trigger for: copy-editing drafts (use humanizer), single-topic article writing, or generic brainstorming without research need.
+description: "Content research and recommendation team. Finds hot topics, analyzes audience demand and competitive landscape, scores for authenticity/timeliness/differentiation, recommends content with platform assignments. Use when the user wants content ideas, topic research, content strategy for LinkedIn/blog/newsletter, or trending topics. Triggers on 'what should I write about', 'content brainstorm', 'find me content ideas', 'what's trending in X'. Do NOT trigger for: copy-editing drafts (use humanizer), single-topic article writing, or generic brainstorming without research need."
 version: "2.4"
 authors: kraboo-labs
 ---

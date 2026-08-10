@@ -1,6 +1,8 @@
 ---
 name: project-standard
 description: Use when validating or setting up a project's documentation, release flow and git hygiene — checking whether CLAUDE.md/AGENTS.md actually describes the project, whether the code map and product map are current, whether every endpoint is documented, whether releases agree with their tags and changelog, whether local-only files leaked into git, or whether an AI assistant was marked as a contributor. Also use when starting a new repo that should follow the standard from commit 1, when retrofitting an existing repo, or when the user asks "is this project set up right", "check my docs", "scaffold the docs", or "make this repo consistent with the others".
+version: "0.2.0"
+authors: Fero Novak <https://feronovak.com>
 license: MIT
 allowed-tools: Bash(project-standard *) Bash(${CLAUDE_SKILL_DIR}/bin/project-standard *)
 ---
