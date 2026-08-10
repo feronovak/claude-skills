@@ -25,6 +25,38 @@ Three dimensions, each 1-10:
 - 3-4: General knowledge only
 - 1-2: No connection to their work
 
+**Every Authenticity score carries its evidence class.** Use the same vocabulary
+principle 3 requires of every other claim in this pipeline — Authenticity is a
+claim about the user, and it is the one that decides what gets published under
+their name:
+
+| Class | What it means here | Ceiling |
+|---|---|---|
+| **FACT** | a line in the profile states this experience — quote the line | 10 |
+| **INFERRED** | the profile implies it from role, seniority or org size, but never states it | **5** |
+| **ASSUMPTION** | neither stated nor implied; merely plausible for someone like them | 3 |
+
+The INFERRED ceiling sits below the qualifying minimum of 6 **on purpose.** An
+inferred topic does not enter the final list; it goes to the Parking Lot with
+the inference written out, so the user can confirm it in one line and promote
+it.
+
+Worked example, from a real failure. Profile says *"scaled a backend team from 8
+to 60."* Candidate topic: *"running effective engineering skip-level 1:1s."* The
+tempting reasoning is "scaling to 60 **necessarily involves** running
+skip-levels — strong adjacent experience, call it 8." That is INFERRED, not
+FACT: the profile names the scaling, not the practice. Scoring it 8 clears the
+gate and puts a topic the user may never have formed an opinion on into a
+publishing plan with their byline. Scoring it 5 parks it and asks them.
+
+The tell is the word *necessarily*, and its relatives — *must have*, *obviously
+involves*, *at that scale you'd*. Each one marks the moment an inference is
+being promoted to a fact. When you write one, the score is capped at 5.
+
+Two candidates whose evidence has the same status get the same ceiling. If you
+are about to score one 8 and another 5 on reasoning of the same shape, one of
+them is wrong.
+
 **TIMELINESS:** Why post NOW?
 - 9-10: Breaking, everyone's talking about it
 - 7-8: Trending this week/month
@@ -71,7 +103,7 @@ Use this to surface quick wins. A quick post scoring 7.5 composite (adjusted: 7.
 ### Step 4 — Select Top 5-7
 
 - Minimum Authenticity 6 to make final list
-- If fewer than 5 pass, include lower-scored with explicit warnings
+- If fewer than 5 pass, say so plainly rather than padding. A thin list is a finding about the profile — the research found little the user can speak to first-hand. An INFERRED row may be promoted into the list **only after the user confirms the experience**, never to reach a target count
 - Sort by raw composite for primary ranking
 - If all recommendations share the same effort tier, note this explicitly: "All recommendations are [Quick/Medium/Long] — effort-adjusted ranking is identical to raw ranking. Consider whether a different effort level would unlock a high-value topic that was filtered out."
 - Aim for effort diversity in the final selection — ideally at least 2 of the 3 effort tiers are represented, so the user has both quick wins and deeper pieces to choose from
@@ -123,6 +155,7 @@ The angle must connect to something specific about the user's experience.
 - **Why now:** [timeliness]
 - **Effort:** [Quick post (30 min) / Medium (1-2h) / Long form (3h+)]
 - **Scores:** Auth [X]/10 | Time [X]/10 | Diff [X]/10 | Composite [X.X]/10 | Effort-Adj [X.X]/10
+- **Authenticity basis:** FACT — "[the profile line, quoted]" (required on every row; INFERRED rows cannot appear here, they are parked)
 - **Source:** [which research file(s)]
 
 [Repeat for #2 through #5-7]
@@ -141,7 +174,14 @@ Sort by effort-adjusted rank. On ties, break by Authenticity (higher wins — au
 [2-3 trending topics the user should NOT write about, with reasons]
 
 ### Parking Lot
-[2-3 topics that scored well on Timeliness/Differentiation but low on Authenticity — could work if the user has experience the research didn't detect]
+[Topics that scored well on Timeliness/Differentiation but were capped on Authenticity — they could work if the user has experience the profile didn't record]
+
+Every INFERRED row lands here, with its inference written out as a question the
+user can answer in one line:
+
+| Topic | The inference | Confirm and it becomes |
+|---|---|---|
+| [topic] | "profile says X, so they have probably done Y" | FACT, Auth [N] — promotes to the list |
 
 ### Research Quality
 - Strongest area: [which file had best findings]
@@ -151,15 +191,27 @@ Sort by effort-adjusted rank. On ties, break by Authenticity (higher wins — au
 
 ## Voice Check
 
-Before finalizing, scan every recommendation for:
-- Corporate buzzwords → rewrite in the user's voice
+**Read the voice source named in `00-brief.md` first.** Where it names a voice
+skill, that skill is the authority — apply it and say which one you applied.
+Where it names writing samples, read them before scanning anything. Where it
+says `UNGROUNDED`, run the floor below and then state the limit in the output:
+the angles are matched to the audience and the subject, not to how this person
+writes. Do not imply otherwise.
+
+The floor, which applies in every case:
+- Corporate buzzwords → rewrite plainly
 - Motivational filler → cut
 - Engagement bait → replace with genuine angles
 - Generic "thought leadership" → make specific to the user
-- If a recommendation can't pass voice check without losing substance, drop it
+- If a recommendation can't pass this without losing substance, drop it
+
+Clearing the floor means the copy is not obviously machine-written. That is not
+the same as sounding like the user, and only a voice source can close the gap.
 
 ## Rules
 - Do NOT recommend content the user can't speak about authentically.
+- **Every Authenticity score states its evidence class, and every row on the final list is FACT with the profile line quoted.** A bare number is not a score; it is an assertion about someone's career.
+- **Justify what you include, not only what you reject.** A rejected topic costs nothing. An included one gets published under the user's name — that is the one that needs its basis shown.
 - Every recommendation needs a SPECIFIC angle, not just a topic.
 - Platform assignments must match the user's actual channels.
 - Flag controversial topics with risk notes but don't auto-exclude.

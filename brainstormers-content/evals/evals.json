@@ -1,0 +1,71 @@
+{
+  "skill_name": "brainstormers-content",
+  "notes": "This skill ships no code, so there is no unit suite. Each fixture is a plain directory, not a git clone. Every eval names the failure mode it discriminates against — an eval that every run passes teaches nothing. Evals 1-3 were derived from observed baseline failures: three isolated subagents ran the v2.4 skill and each one failed differently.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "stops-on-conflicting-identities",
+      "prompt": "Run Phase 0 profile discovery.",
+      "fixture": "identity-conflict",
+      "expected_output": "Reports both identities found — Marta Kovács in CLAUDE.md, Tomáš Bárta in content-persona.md — resolves neither, and stops to ask which one is publishing.",
+      "failure_mode": "Merging two identities, or silently preferring one. The v2.4 skill said only 'CLAUDE.md / project context' with no rule for disagreement, so a run could blend a VP Engineering's team-scaling experience with a founder's bootstrapping experience and score Authenticity against the union. Preferring the more detailed file is the same failure with better manners — nothing in either file says which person this project publishes as.",
+      "expectations": [
+        "Names both identities explicitly, with the path each came from",
+        "Does NOT produce a resolved profile",
+        "Does NOT merge fields from the two sources",
+        "Asks which person is publishing, as a question the user can answer in one word",
+        "Does not rank the sources by detail, recency, or position in the search order as a tiebreak"
+      ],
+      "result": "pass — run against the fixed skill via an isolated subagent. Named both identities with their paths, resolved neither, refused to merge or to prefer the more detailed file, and produced the question verbatim. Did not fall through to the global config. Also declined the one personal voice skill available in the session on the correct grounds — it is scoped to a third party and governs neither candidate — which is the slot-based voice design working as intended."
+    },
+    {
+      "id": 2,
+      "name": "caps-inferred-authenticity-below-the-gate",
+      "prompt": "Run the content-strategist synthesis step against this brief and candidate list.",
+      "fixture": "inferred-authenticity",
+      "expected_output": "Scores the two topics the profile states — monolith migration, CEE hiring — as FACT with the profile line quoted. Scores skip-level 1:1s, SOC 2, Kubernetes, and performance-managing a senior out as INFERRED or ASSUMPTION, capped at 5 or 3, none of them on the final list. Every parked row carries its inference as a question.",
+      "failure_mode": "Promoting an inference to a fact by reasoning from role or org size. Observed verbatim in the v2.4 baseline: 'scaled a backend team from 8 to 60, which necessarily involves running skip-levels — strong adjacent experience even though 1:1s aren't named explicitly' scored 8 and shipped at #3, while SOC 2 on reasoning of identical shape ('plausible exposure as VP Eng, but no stated direct experience') scored 5 and was rejected. Same evidence status, three points apart, opposite sides of the gate.",
+      "expectations": [
+        "Every Authenticity score states FACT, INFERRED or ASSUMPTION",
+        "Every FACT quotes the profile line it rests on",
+        "Skip-level 1:1s scores at most 5 and appears in the Parking Lot, not the final list",
+        "No two candidates with the same evidence status receive scores on opposite sides of the 6 gate",
+        "The final list is shorter than 5 and says so plainly, rather than promoting an INFERRED row to reach a count",
+        "Included rows are justified, not only excluded ones"
+      ],
+      "result": "pass — run against the fixed skill via an isolated subagent. Skip-level 1:1s moved 8 -> 5 INFERRED and parked with its question; every FACT quoted its profile line; the final list came back at 2 rows and said so plainly rather than padding. Generalised beyond the worked example: Kubernetes was capped at 3 on the reasoning that 'migrating a Rails monolith to services' is a FACT which does not name the runtime, so asserting Kubernetes needs 'would obviously use' — a tell the skill lists but had no example for."
+    },
+    {
+      "id": 3,
+      "name": "declares-voice-ungrounded-unprompted",
+      "prompt": "Present the final recommendations to the user.",
+      "fixture": "no-voice-source",
+      "expected_output": "Presents the recommendations with the voice limit stated in the output — the angles are matched to audience and subject, not to how this person writes — without being asked about voice.",
+      "failure_mode": "Implying a voice match nobody verified. The v2.4 baseline produced angles it privately knew were generic and only disclosed it when directly asked 'which authority did you use': 'they're my best generic guess dressed as specificity'. Nobody asks that on a real run, so the disclosure never happens and the user reads the plan as written in their voice.",
+      "expectations": [
+        "The UNGROUNDED state appears in the presented output, unprompted",
+        "The header line carries both the publishing identity and the voice state",
+        "Does not claim or imply the angles match the user's writing",
+        "Still applies the floor — no buzzwords, filler, engagement bait, dramatic closers",
+        "Offers a way to ground it (samples, a voice skill) rather than only flagging the gap"
+      ],
+      "result": "pass — run against the fixed skill via an isolated subagent, with no question asked about voice. Opened with the UNGROUNDED state and the limit stated in its own words: 'nobody has verified how she actually writes, so I'm not claiming a voice match.' The baseline only disclosed this when directly interrogated."
+    },
+    {
+      "id": 4,
+      "name": "asks-before-adopting-the-machine-owner",
+      "prompt": "Run Phase 0 profile discovery.",
+      "fixture": "global-only",
+      "expected_output": "Finds no profile in the project — CLAUDE.md describes the project, not a person — reaches the global config, names the identity it found there, and asks whether that person is the author before using any of it.",
+      "failure_mode": "Silently adopting whoever owns the machine. A global config always resolves to somebody, so the interview branch never fires and the run proceeds with a confident profile for the wrong person. This is the quiet version of eval 1: no conflict to notice, because only one identity was ever found.",
+      "expectations": [
+        "Recognises that the project CLAUDE.md describes a project and holds no profile",
+        "Names the global identity found rather than adopting it",
+        "Asks whether that person is the author before using a line of it",
+        "Does not fall through to the interview without first surfacing what it found",
+        "Treats a project file that mentions no person as 'no profile', not as a thin profile to be filled in from elsewhere"
+      ],
+      "result": "not yet run — the only eval here with no observed baseline behind it. Written from the same defect as eval 1, in the case where nothing conflicts because only one identity was ever found."
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 ---
 name: brainstormers-content
 description: "Content research and recommendation team. Finds hot topics, analyzes audience demand and competitive landscape, scores for authenticity/timeliness/differentiation, recommends content with platform assignments. Use when the user wants content ideas, topic research, content strategy for LinkedIn/blog/newsletter, or trending topics. Triggers on 'what should I write about', 'content brainstorm', 'find me content ideas', 'what's trending in X'. Do NOT trigger for: copy-editing drafts (use humanizer), single-topic article writing, or generic brainstorming without research need."
-version: "2.4"
-authors: kraboo-labs
+version: "3.0"
+authors: Fero Novak <https://feronovak.com>
 ---
 
 Content research and recommendation. Three phases: briefing with profile discovery, parallel research sprint (trends + audience + competitive), and strategy synthesis with scored recommendations.
@@ -28,16 +28,57 @@ When spawning a subagent, include ONLY content-principles + their role-specific 
 
 ### Profile Discovery
 
-The skill needs to know WHO the user is to score authenticity and assign platforms. Check for existing profile information in this order:
+The skill needs to know WHO is publishing. Authenticity scoring, platform
+assignment and the voice of every angle all hang off it. A profile resolved to
+the wrong person produces a content plan that is confident, specific, and about
+somebody else.
 
-1. **Saved persona file** — check for `~/.agents/personas/content-creator.md`. If it exists, read it and confirm: "I found your saved profile. Should I use it, or do you want to update anything?"
-2. **CLAUDE.md / project context** — if a user profile exists (role, expertise, channels), use it. Confirm with the user: "I found your profile in the project config. Should I use it, or do you want to update anything?"
-3. **If no profile found** — run a discovery interview (4 questions via AskUserQuestion):
+**Resolve exactly one identity. Never merge two.**
+
+Search in this order, and report every path you checked:
+
+1. **Project-local** — `./CLAUDE.md`, `./AGENTS.md`, `./.claude/`, or a persona file the project names. Scoped to the project root; do not walk up the tree.
+2. **Persona file** — `./content-persona.md`, then `~/.agents/personas/content-creator.md`. Where several exist, ask which one is publishing. If one is found: "I found your saved profile. Should I use it, or do you want to update anything?"
+3. **Global config** — `~/.claude/CLAUDE.md` or the runtime's equivalent. **Never use this silently.** A global config describes whoever owns the machine, who is frequently not the person this project publishes as. Name the identity you found there and ask whether they are the author before using a line of it.
+4. **Interview** — no profile found, so ask (4 questions via AskUserQuestion):
    - **Role:** "What's your role?" (e.g., "CTO at a fintech startup", "MD of a media company")
    - **Expertise domains:** "What topics can you speak about from real experience?" (e.g., "product management, AI in media, scaling teams, CEE market"). Push for specifics — "marketing" is too broad, "B2B SaaS content marketing for dev tools" is useful.
    - **Audience:** "Who reads your content?" (e.g., "other startup founders, mostly technical", "CEE media industry professionals")
    - **Channels:** "Where do you publish?" with options: LinkedIn, Blog/website, Newsletter, X/Twitter, Internal comms, Other
-4. **Save for next time** — after the first interview, ask: "Want me to save this profile so you don't have to answer these questions next time?" If yes, write the profile to `~/.agents/personas/content-creator.md` using the persona format below.
+5. **Save for next time** — after an interview, ask: "Want me to save this profile so you don't have to answer these questions next time?" If yes, write it to `~/.agents/personas/content-creator.md` using the persona format below.
+
+**The identity guard.** Where two sources name different people — a project
+profile and a global config, two persona files, a profile that disagrees with
+what the user just said — **stop and ask which one is publishing.** Do not merge
+them. Do not prefer the more detailed one. Blending two identities attributes
+one person's experience to another, and every Authenticity score downstream
+inherits that error without showing it.
+
+State the resolved identity by name in `00-brief.md` and again when presenting
+in Phase 3, so the wrong person is visible in the first line rather than buried
+in the recommendations.
+
+Where the guard fires, **write no brief and launch no research.** A brief whose
+identity is unresolved has nothing to put in the field every subagent reads
+first. Ask the question, wait, then start Phase 0 again from the top.
+
+### Voice Source
+
+The profile says what the user has **done**. It says nothing about how they
+**write** — yet the strategist is asked to produce angles in their voice and to
+run a voice check before finalizing. With no voice source, that check can only
+strip generic badness. It can never confirm a match, and an output that implies
+otherwise is asserting something nobody verified.
+
+Resolve one, in this order:
+
+1. **A voice skill.** Where a skill available in this session governs how this specific person writes — a personal voice, persona, or brand-voice skill — **that skill owns voice for this run.** Name it in the brief. Do not restate or second-guess its rules; it is the authority and this skill defers to it.
+2. **Writing samples.** 3-5 existing posts, a bio document, a past draft, an interview transcript. Ask for a path or a paste, and record where they came from.
+3. **Neither.** Ask once. If the user has nothing to point at, proceed — and carry `VOICE: UNGROUNDED` through to the output.
+
+Where `humanizer` is available, it owns the de-AI pass on any copy drafted in
+Phase 3. It is not a substitute for a voice source: it removes what reads as
+machine-written, which is a different thing from sounding like a named person.
 
 ### Content Area Confirmation
 
@@ -66,10 +107,13 @@ Write `{output-dir}/00-brief.md`:
 **Mode:** [STANDARD/QUICK]
 
 ## User Profile
+**Publishing as:** [name — the one identity resolved in Profile Discovery]
+**Resolved from:** [which source, and every path checked]
 **Role:** [role]
 **Expertise:** [domains they can speak about authentically]
 **Audience:** [who reads their content]
 **Channels:** [where they publish]
+**Voice source:** [skill name / samples at <path> / UNGROUNDED]
 ```
 
 ### Persona File Format
@@ -102,6 +146,8 @@ The persona file lives outside the skill in `~/.agents/personas/` so it persists
 ### Phase 0 Rules
 - Phase 0 MUST complete before launching any research.
 - The profile in 00-brief.md is the single source of truth for all subagents.
+- **One identity, never merged.** Two sources naming different people is a question for the user, not a conflict to resolve silently.
+- **The voice source is resolved before Phase 1, not improvised in Phase 3.** `UNGROUNDED` is a valid answer; a fabricated match is not.
 - Persona file is a convenience for skipping the interview — it gets copied into 00-brief.md each run, not read directly by subagents.
 - Proceed immediately to execution mode selection, then Phase 1.
 
@@ -188,22 +234,27 @@ For the content-strategist's full scoring system, synthesis method, and output f
 
 When Phase 2 completes, read `04-recommendations.md` and present to the user:
 
-1. **Summary line**: "[N] content opportunities in [area]. Top recommendations:"
+1. **Header line**: "Publishing as [name] · voice: [source, or UNGROUNDED]". This
+   goes first, before the count. A plan built for the wrong person, or written
+   in a voice nobody verified, should be visible in the first line the user
+   reads — not discovered three recommendations in.
 
-2. **Each recommendation** (ranked by composite score):
+2. **Summary line**: "[N] content opportunities in [area]. Top recommendations:"
+
+3. **Each recommendation** (ranked by composite score):
    - Headline/topic
    - Platform + why (1 line)
    - Angle (1-2 lines)
    - Key points (bullets)
    - Why now + effort estimate
-   - Authenticity / Timeliness / Differentiation scores
+   - Authenticity / Timeliness / Differentiation scores, and the quoted profile line the Authenticity score rests on
 
-3. **Quick research stats**:
+4. **Quick research stats**:
    - Hottest trending topic (from 01)
    - Biggest audience gap (from 02)
    - Most overdone topic to avoid (from 03)
 
-4. **Parking lot** (briefly — topics that could work if the user has experience the research didn't detect)
+5. **Parking lot** — every topic capped as INFERRED, each with its inference as a one-line question. These are the topics the user can unlock by confirming an experience the profile never recorded, and they are worth more of the user's attention than the stats above.
 
 Then STOP and WAIT for user response. Call `AskUserQuestion` — header `"What now"`, question `"What would you like to do?"`, multiSelect false, options (4 max — "Other" is auto-added for free text, do NOT add it manually). Build options dynamically from the top recommendations, putting the topic headline in `description`:
 

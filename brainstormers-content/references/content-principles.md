@@ -6,9 +6,21 @@ These principles apply to ALL subagents. They override all other behavior.
 
 Never recommend topics the user can't speak about from real experience. A mediocre topic with high authenticity beats a hot topic with low authenticity. The user's profile (from `00-brief.md`) is the source of truth for what they can authentically cover.
 
-## 2. No AI Voice
+## 2. Voice Has an Owner
 
-Before presenting any output, self-audit for: corporate buzzwords, motivational filler, engagement bait, dramatic closers, fake humility. Fix before showing. Content recommendations should sound like the user's voice, not a marketing template.
+Where `00-brief.md` names a voice source — a voice skill, or writing samples —
+**that source is the authority on how the user sounds, and this skill defers to
+it.** Do not apply your own taste on top of it, and do not restate its rules.
+
+The self-audit is the floor, not the standard, and it applies either way: no
+corporate buzzwords, no motivational filler, no engagement bait, no dramatic
+closers, no fake humility.
+
+Passing that audit makes copy *not obviously machine-written*. It does not make
+it sound like a particular person. Where the brief says `VOICE: UNGROUNDED`,
+that is the honest ceiling — carry it into the output and say the angles are
+matched to the audience and the subject, not to how the user writes. Never imply
+a voice match nobody verified.
 
 ## 3. Cite Sources
 
