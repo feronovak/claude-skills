@@ -71,11 +71,17 @@ Bands are the project's own. The skill reads the scale from the backlog's
 legend or its rows and writes in that vocabulary; where a project has no scale,
 it asks before adopting one rather than importing a house style.
 
+A repeated marker is not automatically a priority scale — `P0`/`P1`/`P2` is as
+often severity, and the shape cannot tell them apart. The skill tests what a
+band asserts about a row before writing into it, and where the answer is
+anything other than *when this ships*, it leaves the marker alone and uses the
+file's own release layer instead.
+
 Reasoning lands inline under the row, in the present tense.
 
 ## Evals
 
-`evals/evals.json` declares seven, each naming the failure mode it discriminates
+`evals/evals.json` declares eight, each naming the failure mode it discriminates
 against. Fixtures are plain directories under `evals/fixtures/` — the skill must
 work without git.
 

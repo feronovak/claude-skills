@@ -1,7 +1,7 @@
 ---
 name: next-steps
 description: Scopes the next release out of an existing backlog using MoSCoW, then produces the build order for what it scoped. Use this skill when the user types "nextsteps" or "!nextsteps", or asks to "scope the next release", "what goes in the next release", "triage the backlog", "prioritise these", "what should I do next", "run MoSCoW on this", or wants a list of open work cut into what ships next and what waits. Writes the verdict back into the project's one backlog file as priority markers plus inline comments. Do NOT use for generating new ideas (product-thesis), designing one feature (brainstorming), planning how to build one feature (writing-plans), reporting what already shipped (exec-steps), or validating documentation (project-standard).
-version: "1.1"
+version: "1.2"
 authors: Fero Novak <https://feronovak.com>
 ---
 
@@ -60,8 +60,15 @@ second backlog it will silently ratify.
 
 **The priority scale.** Read `references/conventions.md`. Find the scale the
 backlog already uses — from its legend, from its rows, or find that it has
-none. Name the bands you found. Where there is none, do not adopt one here —
-Step 4 asks before anything is written.
+none. Name the bands you found.
+
+Then run the second test in that file: **a repeated marker is not automatically
+a priority scale.** `P0`/`P1`/`P2` is as often severity, and severity is
+indistinguishable from priority by shape alone. Where the bands turn out to
+answer something other than *when this ships*, say so, write nothing into them,
+and use the file's own release layer if it has one. Where there is no scale — or
+none that this skill may write into — do not adopt one here; Step 4 asks before
+anything is written.
 
 **The release.** Read the version from a manifest — `package.json`,
 `pyproject.toml`, `Cargo.toml`, a `VERSION` file.
@@ -173,6 +180,13 @@ the default because they need no legend to be read, and ask whether the user
 wants those or their own. Do not choose for them. Once they choose, the diff
 shows the legend line being added along with the rows.
 
+**If Step 0 found a marker that is not a priority scale, the diff must show it
+unchanged.** Where the file has its own release layer, the diff writes there;
+where it has none, ask as above and show the new markers going in *alongside*
+the existing ones. A diff that shows a severity band being rewritten is the
+failure this branch exists to prevent — it should never reach the user for
+approval in the first place.
+
 Show every line that will change, before writing anything:
 
 Wait for a go-ahead before Step 5. A diff nobody can answer is decoration.
@@ -230,6 +244,10 @@ Write the file. Then:
   bands than the four letters, they collapse — `references/conventions.md` says
   how. Where it has four, each letter maps to its own and nothing collapses;
   beyond four, map the letters to the top four bands and say so.
+- **Never write release scope into a band that does not mean release scope.**
+  Severity, size, confidence and area all wear the same `P0`/`P1`/`P2` costume.
+  Rewriting one to record what ships makes the file assert something false and
+  destroys the only record of what it did mean. Test the bands before writing.
 - **Never write a dated narrative into a backlog row.** Present tense only.
 
 ## Where this sits

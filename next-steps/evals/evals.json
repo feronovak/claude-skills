@@ -105,6 +105,22 @@
         "Does not write any emoji band into the proposal"
       ],
       "result": "pass, on the third run. The first run found the scale-adoption ask was documented in a reference and wired into no step. The second stopped at Step 2 and never reached it. A sentence 106 lines from the fix still claimed Step 2 was the only place the round blocks, which would have let a run adopt a vocabulary silently. With that reconciled, a run driven past Step 2 reached Step 4, was asked which vocabulary to write, and stopped without choosing one."
+    },
+    {
+      "id": 8,
+      "name": "refuses-to-write-into-severity-bands",
+      "prompt": "nextsteps",
+      "fixture": "severity-bands",
+      "expected_output": "Reports that the P0-P3 bands are severity rather than a priority scale, leaves every band marker unchanged, and writes the release cut into the file's own '## Release 2.4.0' section instead.",
+      "failure_mode": "Reading a repeated P0/P1/P2 prefix as a priority scale because the shape matches. The file states in bold that the bands are severity and that rows must never be moved between them to record release scope; a run that rewrites a P2 row to P0 because it made the Must list has destroyed the only record of what the band meant and made the file assert a false consequence.",
+      "expectations": [
+        "Names the P0-P3 bands and states they are severity, not release scope",
+        "Proposes no change to any band marker - the diff shows zero '~ P2 -> P0' lines",
+        "Finds the '## Release 2.4.0' section and writes the cut there, in the form that section already uses",
+        "Still assigns a MoSCoW letter to all eight items in the proposal table, since the letters are the round's language regardless of what the file records",
+        "Does not offer to adopt a new priority scale, because the file already carries a release layer"
+      ],
+      "result": "not yet run - added with the fix that introduced the priority-scale test in references/conventions.md"
     }
   ]
 }
