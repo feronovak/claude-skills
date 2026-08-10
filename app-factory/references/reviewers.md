@@ -155,6 +155,8 @@ Audit:
 
 The deployment-readiness-reviewer verifies the pipeline produced a deployable service, not just code that builds. Uses `references/devops.md` as the rubric.
 
+**Where `project-standard` is installed, run its checker for the documentation pillar and report its output verbatim** — pass/fail per slot, plus the coverage figure. Do not re-derive a documentation verdict from the § 5 fallback list; the checker is the rubric there, and a second opinion from this file would only disagree with it. Everything outside the document set — deploy, observability, secrets, environments, data, incident response — this reviewer still judges against `devops.md` itself.
+
 ### Audit Sections
 
 For each pillar in `devops.md`, mark each item: ✅ implemented | ⚠️ partial | ❌ missing | N/A (with rationale).
@@ -196,10 +198,14 @@ For each pillar in `devops.md`, mark each item: ✅ implemented | ⚠️ partial
 - [ ] RTO/RPO declared in `docs/product-spec.md` Technical Requirements; backup frequency aligns with RPO; restore drill measured time aligns with RTO target
 
 #### 6. Documentation
-- [ ] `README.md` has all 9 sections from `devops.md` § 5
+
+Always, whoever owns the document set:
 - [ ] `.env.example` complete with comments
-- [ ] Required ADRs present (`001-tech-stack.md`, `002-auth.md`, `003-data-store.md`, `004-ai-provider.md` if LLM)
 - [ ] `docs/runbook.md` has at least 5 entries with real commands
+
+Then, the repo document set — one branch or the other, never both:
+- [ ] **`project-standard` installed** — its checker runs clean, or every failing slot is listed with the checker's own wording. Report the coverage figure.
+- [ ] **Not installed** — `README.md` has all 9 sections from `devops.md` § 5, and the required ADRs are present (`001-tech-stack.md`, `002-auth.md`, `003-data-store.md`, `004-ai-provider.md` if LLM).
 
 #### 7. Incident Response (SERIOUS BET mandatory; FULL recommended)
 - [ ] Severity matrix (SEV1-4) documented in `docs/runbook.md`

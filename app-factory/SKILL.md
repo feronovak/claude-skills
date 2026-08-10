@@ -2,7 +2,7 @@
 name: app-factory
 description: Use when the user wants to BUILD a complete app, product, or MVP from a description. Triggers strongly on phrases like 'build this app', 'create this product', 'make me an X', 'develop this', 'turn this into an MVP', 'ship this', 'build the MVP', or any request to produce a full working application from a product description. Also triggers when input from brainstormers-idea or business-sharks is ready for execution, or when the user pastes a folder path containing validated idea documents. Use this skill whenever the user describes a product to build (not just a feature to add), even if they don't say 'app-factory' explicitly. Do NOT trigger for adding features to existing apps (use feature-dev), single scripts, debugging, code review, refactoring, or pure deployment tasks.
 metadata:
-  version: "4.3"
+  version: "4.4"
   team: app-factory
   authors: Fero Novak <https://feronovak.com>
 ---
@@ -78,6 +78,8 @@ After project setup, check which optional enhancement skills are installed. Thes
 Read `references/skill-dependency-check.md` for the full check procedure, the recommendations to present, and the user's response options.
 
 Store the result as `{enhanced_skills}` and pass it to teammates.
+
+**If `project-standard` is among them, run its `init` mode now**, before Phase 1. It scaffolds the repo's document set and git hygiene at commit 1, which is the only moment they are cheap. The engineer then fills the slots it created instead of inventing a parallel set in Phase 2 — see `references/devops.md` § 5.
 
 ---
 
@@ -225,15 +227,18 @@ For each teammate's responsibilities, read their reference file.
 ### Engineer Deliverables
 
 Beyond `src/`, the engineer ships:
-- `README.md` (root) — full structure per `devops.md` § 5
 - `.env.example` — every required key with comments, no values
 - `Dockerfile` (or framework-native deploy config) and `.dockerignore`
 - CI workflow file (typecheck + lint + tests + build + deploy on `main`)
-- `docs/adr/001-tech-stack.md`, `002-auth.md`, `003-data-store.md`, plus `004-ai-provider.md` if LLM is used
 - `docs/runbook.md` with at least 5 entries (deploy fail, error spike, DB issues, cost spike, rollback)
 - Tests per `qa-reviewer.md` Layer 1 + 2 (and Layer 3 if rate-limited / paid endpoints exist)
 
-These are not optional. The deployment-readiness-reviewer in Phase 3 verifies each one.
+Plus the repo's documentation, whose owner depends on the Phase 0 check:
+
+- **`project-standard` installed** — it owns the document set. `init` created the slots at Phase 0; the engineer fills them with this build's content and leaves the shape to the standard.
+- **Not installed** — the engineer writes `README.md` per `devops.md` § 5 and `docs/adr/001-tech-stack.md`, `002-auth.md`, `003-data-store.md`, plus `004-ai-provider.md` if LLM is used.
+
+These are not optional. The deployment-readiness-reviewer in Phase 3 verifies each one — against `project-standard`'s checker where it is installed, and against `devops.md` otherwise.
 
 ### Phase 2 Rules
 - Serial execution: designer → engineer → qa-reviewer. No parallelism.

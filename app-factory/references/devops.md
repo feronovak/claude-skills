@@ -19,7 +19,7 @@ A senior team won't approve a service that is missing any of these. Skip none �
 | Secrets | Per-environment secret manager, never in repo, never in image |
 | Environments | dev, staging, prod (or documented why staging is skipped for v1) |
 | Data | Migrations with rollback, tested backup/restore drill, seed data, declared RTO/RPO |
-| Documentation | README, .env.example, architecture diagram, runbook |
+| Documentation | README, .env.example, architecture diagram, runbook — see § 5, which hands the repo document set to `project-standard` where it is installed |
 | Incident Response | Severity matrix, comms template, postmortem requirement, on-call expectations |
 
 ## 1. Deploy
@@ -172,6 +172,24 @@ Alerts to wire from day one:
 ## 5. Documentation deliverables
 
 Engineer writes these as part of Phase 2. Reviewer checks they exist and are accurate.
+
+> **Where `project-standard` is installed, it owns this section.** It defines the
+> repo's document set — `CLAUDE.md`, `README.md`, `docs/DOCMAP.md`,
+> `docs/PROJECT_MAP.md`, `docs/FEATURE_MAP.md`, `docs/NEXT_STEPS.md`,
+> `docs/DEVELOPMENT_FLOW.md`, `CHANGELOG.md`, a direction doc, and the decision
+> log that `docs/adr/**` satisfies — and it ships a checker that verifies them.
+> Run `project-standard init` at Phase 0 so the repo carries the standard from
+> commit 1, and let the engineer fill the slots it created. Do **not** also apply
+> the README and ADR specs below; two rulebooks for one file drift, and the
+> deployment-readiness-reviewer then cannot say which one the output was judged
+> against.
+>
+> What stays with app-factory either way, because `project-standard` has no slot
+> for it: `.env.example`, `docs/runbook.md`, the architecture diagram, and
+> everything in sections 1–4 and 6 of this file.
+>
+> The rest of this section is the **fallback** — what to write when
+> `project-standard` is not installed.
 
 ### `README.md` (project root)
 Minimum sections:
