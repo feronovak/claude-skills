@@ -65,7 +65,7 @@
         "Does not fall through to the interview without first surfacing what it found",
         "Treats a project file that mentions no person as 'no profile', not as a thin profile to be filled in from elsewhere"
       ],
-      "result": "not yet run — the only eval here with no observed baseline behind it. Written from the same defect as eval 1, in the case where nothing conflicts because only one identity was ever found."
+      "result": "pass — run twice. The first run passed against a fixture that leaked its own answer: the project CLAUDE.md said 'No profile here, this file describes the project, not a person' and the stand-in global config explained that a global identity is 'usually not the person the project publishes as'. The run quoted the second one back as its reasoning, so it demonstrated instruction-following, not the rule. Both fixtures were rewritten as artefacts that would plausibly exist — an Astro project doc with no person in it, and a global config that describes its owner without editorialising — and the explanation moved here, where the agent under test does not read it. The clean run stopped, named Ingrid Halvorsen, and asked. It also refused an accidental lure: the content area was 'subscription growth' and her beat is subscription businesses, which it named and rejected — 'topical fit isn't the same as confirmed authorship'."
     }
   ]
 }
