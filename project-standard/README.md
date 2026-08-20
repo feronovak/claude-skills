@@ -305,11 +305,35 @@ version string. The design specified a version comparison alone; measured on the
 fleet, a vendored copy differed from canonical in nine modules while both still
 declared the same version, so a version-only check would have called it current.
 
-Five checks exist beyond the design: `5b` (version sources disagree — split out
+Seven checks exist beyond the design: `5b` (version sources disagree — split out
 because it needs no history and so must survive a shallow clone), `8e` (an
-assistant generation notice in a commit message), `40` (no secret scanner
-configured), `41` (a credential-shaped string in tracked documentation) and
-`42` (a baseline was loosened).
+assistant generation notice in a commit message), `20a` and `20b` (a declared
+required-reading reference is missing, or carries no provenance), `40` (no
+secret scanner configured), `41` (a credential-shaped string in tracked
+documentation) and `42` (a baseline was loosened).
+
+Checks `20a`/`20b` back an optional extension to `critical-paths`. A bare path
+says *be careful here*; it does not say **what you must have read** before
+editing, and that is the half a newcomer — or an agent — cannot guess, because
+a project's reference lookups are discoverable only once you know they exist.
+An entry may therefore name one:
+
+```yaml
+critical-paths:
+  - services/scoring/                        # unchanged, and still the common case
+  - path: src/integrations/
+    reference: docs/reference/FIELD_MAP.md
+```
+
+The checker cannot make anyone read a document. What it stops is a declared
+reference quietly ceasing to be one: `20a` errors when the file is gone, so the
+promise points at nothing; `20b` warns when it carries neither a `Last
+reviewed:` stamp nor a generated-file marker, so a reader cannot tell whether to
+trust it. A generated reference is accepted without a stamp on purpose —
+demanding a review date for a file whose own header says *do not hand-edit*
+teaches the habit the stamp exists to detect. `20b` is a warning rather than an
+error because failing a gate over a missing stamp would push projects to stop
+declaring references at all, which loses more than it gains.
 
 Check 42 is what makes the baselines mean anything. The design states that a
 baseline may never rise, but a baseline compared only against today's contract

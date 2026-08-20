@@ -37,4 +37,16 @@ direction: docs/NORTH_STAR.md
 critical-paths:
   # Paths where a wrong call ships a fabricated result — honesty, scoring,
   # pricing, auth. Declaring none is a valid answer for many repos.
+  #
+  # An entry may also name what must be READ before editing that path:
+  #
+  #   - path: src/integrations/
+  #     reference: docs/reference/FIELD_MAP.md
+  #
+  # A bare path says "be careful here". A reference says where the knowledge
+  # is, which is the part a newcomer — or an agent — cannot guess. Use it for
+  # the lookup that would have prevented a defect, not for background reading:
+  # a contract, a generated field map, an ownership register. The checker
+  # verifies the file exists and can say whether it is current; it cannot make
+  # anyone read it.
 ```

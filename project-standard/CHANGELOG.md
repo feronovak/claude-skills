@@ -10,6 +10,39 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **`critical-paths` entries may name the reference that must be read before
+  editing that path.** A bare path says *be careful here*; it does not say where
+  the knowledge lives, and that half is the one a newcomer or an agent cannot
+  guess — a project's reference lookups are discoverable only once you already
+  know they exist, so the reader most likely to miss one is editing exactly the
+  code that needed it.
+
+  ```yaml
+  critical-paths:
+    - services/scoring/                        # unchanged
+    - path: src/integrations/
+      reference: docs/reference/FIELD_MAP.md
+  ```
+
+  Additive and backward compatible: bare strings parse as before, `critical_paths`
+  still yields plain paths, and a contract that declares no reference is never
+  flagged. New checks `20a` (the reference does not exist, so the promise points
+  at nothing) and `20b` (it carries neither a `Last reviewed:` stamp nor a
+  generated-file marker, so a reader cannot tell whether to trust it). A generated
+  reference is accepted without a stamp deliberately — demanding a review date for
+  a file whose header says *do not hand-edit* teaches the habit the stamp exists
+  to detect.
+
+  The list-item mapping form is gated on a closed key allow-list (`path`,
+  `reference`) rather than on "contains a colon", so a value that happens to hold
+  one keeps parsing exactly as before. This parser is deliberately not YAML, and
+  widening it by shape rather than by name is how a simple parser starts silently
+  reinterpreting old contracts.
+
+### Fixed — documentation
+
 Documentation fixes only — no behaviour change. Every item came from retrofitting
 one real repository (a React/TypeScript product with 35 living docs) and hitting
 the guidance where it was wrong or silent.

@@ -45,6 +45,29 @@ class TestContractParser(unittest.TestCase):
         self.assertTrue(any("no `## project-standard` block" in e
                             for e in c.errors))
 
+    def test_a_critical_path_may_declare_its_required_reading(self):
+        """The mapping form is additive: bare strings and mappings coexist in one list."""
+        c = parse_contract(
+            "## project-standard\n\n```yaml\ncritical-paths:\n"
+            "  - services/scoring/\n"
+            "  - path: src/integrations/\n"
+            "    reference: docs/reference/FIELD_MAP.md\n```\n")
+        # Every existing consumer asks for paths and must still get plain strings.
+        self.assertEqual(c.critical_paths, ["services/scoring/", "src/integrations/"])
+        self.assertEqual(c.critical_path_refs,
+                         [("src/integrations/", "docs/reference/FIELD_MAP.md")])
+
+    def test_a_bare_critical_path_list_declares_no_references(self):
+        """Adopting the key must cost nothing: the common contract keeps behaving exactly as it did."""
+        c = parse_contract(BLOCK)
+        self.assertEqual(c.critical_path_refs, [])
+
+    def test_a_mapping_without_a_reference_is_still_just_a_path(self):
+        c = parse_contract("## project-standard\n\n```yaml\ncritical-paths:\n"
+                           "  - path: services/scoring/\n```\n")
+        self.assertEqual(c.critical_paths, ["services/scoring/"])
+        self.assertEqual(c.critical_path_refs, [])
+
     def test_empty_critical_paths_is_present_but_empty(self):
         c = parse_contract("## project-standard\n\n```yaml\n"
                            "critical-paths:\n```\n")

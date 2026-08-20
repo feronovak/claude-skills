@@ -295,4 +295,41 @@ def _contract_sections(ctx):
                 out.append(F.warn(
                     "20", f"declared critical path `{p}` no longer exists",
                     path=c.path))
+    out.extend(_critical_path_references(ctx, c))
+    return out
+
+
+# A reference a project declares as required reading is a promise to whoever edits that path next.
+# Two ways it silently stops being one, and both are worse than never having declared it: the file
+# moves, so the promise points at nothing; or it drifts, so the promise points at something wrong
+# and is believed. An undeclared reference misleads nobody.
+STAMP_HINT = "**Last reviewed:**"
+
+
+def _critical_path_references(ctx, c):
+    out = []
+    for path, ref in c.critical_path_refs:
+        target = Path(ctx.repo) / str(ref).lstrip("/")
+        if not target.exists():
+            out.append(F.error(
+                "20a", f"`{path}` declares `{ref}` as required reading, and that file does not "
+                       f"exist — anyone told to read it before editing `{path}` cannot",
+                path=c.path))
+            continue
+        # Generated references are the common case for this key (a field map, a schema dump), and
+        # they carry no review stamp because nobody reviews them — they are re-derived. Asking one
+        # for a stamp would train projects to hand-write a date onto a generated file, which is the
+        # opposite of the point. So the stamp is only *reported*, never required.
+        try:
+            text = target.read_text(encoding="utf-8", errors="replace")
+        except OSError as exc:                       # unreadable is not the same as absent
+            out.append(F.warn(
+                "20b", f"`{ref}` declared as required reading for `{path}` could not be read "
+                       f"({type(exc).__name__})", path=c.path))
+            continue
+        if STAMP_HINT not in text and "do not hand-edit" not in text.lower():
+            out.append(F.warn(
+                "20b", f"`{ref}` is declared as required reading for `{path}` but carries neither "
+                       f"a `Last reviewed:` stamp nor a generated-file marker, so a reader cannot "
+                       f"tell whether to trust it", path=c.path))
     return out
