@@ -244,6 +244,54 @@ class TestBaselinesRatchet(unittest.TestCase):
             hits = by_check(baselines.check(ctx_for(r.dir)), "42")
             self.assertTrue(hits, "the ratchet forgot once the edit was committed")
 
+    def test_lowering_a_floor_with_a_reason_is_sanctioned(self):
+        # A documented route can be removed with its reference entry, lowering
+        # the floor honestly. The reset is trusted when the contract says why,
+        # exactly as every other override in this standard is.
+        with TempRepo() as r:
+            self._repo(r, adopted="HEAD", api_coverage=35)
+            r.commit()
+            block = r.contract_block(**{
+                "critical-paths": [], "adopted": "HEAD", "api-coverage": 5})
+            block = block.replace(
+                "api-coverage: 5\n",
+                "api-coverage: 5\n  reason: a documented route was retired "
+                "with its reference entry\n")
+            r.write("CLAUDE.md", block)
+            self.assertEqual([], by_check(baselines.check(ctx_for(r.dir)), "42"),
+                             "a reasoned floor reset was reported as a breach")
+
+    def test_a_reasoned_reset_stays_sanctioned_once_committed(self):
+        # The reason lives in the tracked contract, so the sanction is durable
+        # — it does not evaporate the release after the reset lands.
+        with TempRepo() as r:
+            self._repo(r, adopted="HEAD", api_coverage=35)
+            r.commit()
+            block = r.contract_block(**{
+                "critical-paths": [], "adopted": "HEAD", "api-coverage": 5})
+            block = block.replace(
+                "api-coverage: 5\n",
+                "api-coverage: 5\n  reason: a documented route was retired\n")
+            r.write("CLAUDE.md", block)
+            r.commit("release: reset the floor for a removed route")
+            self.assertEqual([], by_check(baselines.check(ctx_for(r.dir)), "42"))
+
+    def test_a_reason_on_a_different_key_does_not_sanction(self):
+        # The reason must sit on the baseline that moved. A reason attached to
+        # some other key is not a licence to lower this one silently.
+        with TempRepo() as r:
+            self._repo(r, adopted="HEAD", api_coverage=35)
+            r.commit()
+            block = r.contract_block(**{
+                "critical-paths": [], "adopted": "HEAD", "profile": "product",
+                "api-coverage": 5})
+            block = block.replace(
+                "profile: product\n",
+                "profile: product\n  reason: detection is confused here\n")
+            r.write("CLAUDE.md", block)
+            hits = by_check(baselines.check(ctx_for(r.dir)), "42")
+            self.assertTrue(hits, "a reason on another key sanctioned the drop")
+
     def test_walking_adopted_forward_is_an_error(self):
         with TempRepo() as r:
             self._repo(r)

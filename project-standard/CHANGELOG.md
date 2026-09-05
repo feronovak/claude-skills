@@ -10,8 +10,20 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-05
+
 ### Added
 
+- **A count baseline may be reset with a written `reason:`.** Check 42 is a
+  monotonic ratchet: `api-coverage` may never document fewer endpoints than the
+  repository once recorded. But a documented route can be *removed* along with
+  its reference entry, lowering the count honestly — the denominator shrank and
+  nothing was un-documented. The number alone cannot tell that from a doc being
+  deleted while the route lives on, so the reset is now permitted when the
+  contract attaches a `reason:` to the baseline key, exactly as every other
+  override in this standard is trusted with a written reason. A silent lowering
+  still fails, and the invariant the count only approximates — every live route
+  documented — is enforced by a test, not by the ratchet.
 - **`critical-paths` entries may name the reference that must be read before
   editing that path.** A bare path says *be careful here*; it does not say where
   the knowledge lives, and that half is the one a newcomer or an agent cannot
@@ -140,5 +152,6 @@ Initial release. One standard for how a project documents itself, releases and
 records who wrote it: a stdlib-only checker for what a machine can decide, and
 a skill for what it cannot.
 
+[0.3.0]: https://github.com/feronovak/claude-skills/releases/tag/project-standard%2Fv0.3.0
 [0.2.0]: https://github.com/feronovak/claude-skills/releases/tag/project-standard%2Fv0.2.0
 [0.1.0]: https://github.com/feronovak/claude-skills/releases/tag/project-standard%2Fv0.1.0
